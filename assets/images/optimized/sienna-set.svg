@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="100%" height="100%">
+  <rect width="900" height="1200" fill="#F5F0EB"/>
+  
+  <!-- Architectural Studio Shadow -->
+  <polygon points="0,0 450,0 900,1200 0,1200" fill="#EAE2D8" opacity="0.6"/>
+  
+  <!-- Product Illustration - The Sienna Set -->
+  <g transform="translate(250, 250)">
+    <!-- Bust Form / Hanger Silhouette -->
+    <path d="M 120 100 Q 200 60 280 100 L 320 280 Q 200 320 80 280 Z" fill="#E5D9CC"/>
+    
+    <!-- Halter Triangle Bikini Top -->
+    <polygon points="120,130 200,240 120,250" fill="#1A1615"/>
+    <polygon points="280,130 200,240 280,250" fill="#1A1615"/>
+    <!-- Self-Tie Straps -->
+    <line x1="200" y1="60" x2="200" y2="240" stroke="#1A1615" stroke-width="3"/>
+    <line x1="80" y1="245" x2="320" y2="245" stroke="#1A1615" stroke-width="3"/>
+
+    <!-- High-cut Bottoms (Lower section) -->
+    <g transform="translate(0, 320)">
+      <path d="M 90 60 L 310 60 L 200 240 Z" fill="#1A1615"/>
+      <line x1="70" y1="60" x2="330" y2="60" stroke="#1A1615" stroke-width="3"/>
+    </g>
+  </g>
+
+  <!-- Editorial Label watermark -->
+  <text x="450" y="1120" font-family="'Playfair Display', Georgia, serif" font-size="20" letter-spacing="4" fill="#1A1615" text-anchor="middle" opacity="0.4">SIENNA SET — UNBLEACHED LINEN</text>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="100%" height="100%">
+  <rect width="900" height="1200" fill="#FAF7F2"/>
+  
+  <g transform="translate(250, 240)">
+    <!-- Terracotta Cup Top -->
+    <ellipse cx="140" cy="180" rx="55" ry="60" fill="#B85338"/>
+    <ellipse cx="260" cy="180" rx="55" ry="60" fill="#B85338"/>
+    <circle cx="200" cy="180" r="8" fill="#D4AF37"/> <!-- Brass ring -->
+    <line x1="85" y1="180" x2="315" y2="180" stroke="#B85338" stroke-width="4"/>
+
+    <!-- Tie Bottoms -->
+    <g transform="translate(0, 320)">
+      <path d="M 80 60 L 320 60 L 200 240 Z" fill="#B85338"/>
+      <!-- Brass bead accents on side ties -->
+      <circle cx="60" cy="60" r="6" fill="#D4AF37"/>
+      <circle cx="340" cy="60" r="6" fill="#D4AF37"/>
+    </g>
+  </g>
+
+  <text x="450" y="1120" font-family="'Playfair Display', Georgia, serif" font-size="20" letter-spacing="4" fill="#1A1615" text-anchor="middle" opacity="0.4">SOLIS SET — TERRACOTTA & BRASS</text>
+</svg>

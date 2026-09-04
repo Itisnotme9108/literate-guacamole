@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#FAF7F2"/>
+  <rect x="20" y="20" width="760" height="560" fill="#F5EFE9" rx="8"/>
+  <!-- Skein of Yarn & Hook Illustration -->
+  <g transform="translate(400, 300)">
+    <ellipse cx="0" cy="0" rx="140" ry="90" fill="#E6B8AF"/>
+    <ellipse cx="0" cy="0" rx="110" ry="70" fill="#C88A7E" stroke="#FAF7F2" stroke-width="4" stroke-dasharray="10 8"/>
+    <!-- Crochet Hook -->
+    <path d="M -160 -100 L 160 100" stroke="#D4AF37" stroke-width="12" stroke-linecap="round"/>
+    <path d="M 160 100 Q 180 110 170 90" stroke="#D4AF37" stroke-width="10" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>

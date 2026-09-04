@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="100%" height="100%">
+  <rect width="1000" height="1000" fill="#EAE2D8"/>
+  <rect x="40" y="40" width="920" height="920" fill="none" stroke="#D9D0C5" stroke-width="1"/>
+
+  <!-- Minimalist Craftsmanship Moodboard Graphic -->
+  <g transform="translate(200, 200)">
+    <rect width="600" height="600" fill="#FAF7F2" rx="2"/>
+    <path d="M 100 500 Q 300 200 500 500 Z" fill="#F5F0EB"/>
+    <circle cx="300" cy="220" r="80" fill="#B85338" opacity="0.8"/>
+  </g>
+
+  <text x="500" y="900" font-family="'Playfair Display', Georgia, serif" font-size="22" letter-spacing="6" fill="#1A1615" text-anchor="middle">ATELIER PHILOSOPHY — SUSTAINABLE RESORT</text>
+</svg>

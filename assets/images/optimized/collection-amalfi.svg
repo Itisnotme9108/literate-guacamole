@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#F5F0EB"/>
+  <rect x="30" y="30" width="740" height="540" fill="#FAF7F2" rx="4"/>
+  <circle cx="400" cy="300" r="180" fill="#EAE2D8"/>
+  <text x="400" y="310" font-family="Georgia, serif" font-size="28" fill="#1A1615" text-anchor="middle">AMALFI COAST '26</text>
+</svg>

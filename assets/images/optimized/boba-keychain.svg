@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <rect width="400" height="400" rx="30" fill="#FBF3EA"/>
+  
+  <g transform="translate(0, 10)">
+    <!-- Keychain Ring & Chain -->
+    <circle cx="200" cy="50" r="16" fill="none" stroke="#D4AF37" stroke-width="5"/>
+    <rect x="197" y="66" width="6" height="24" fill="#D4AF37" rx="3"/>
+    
+    <!-- Boba Cup Body -->
+    <path d="M 140 120 L 260 120 L 245 300 L 155 300 Z" fill="#F4D3C5" stroke="#3D2E2B" stroke-width="4" rx="12"/>
+    
+    <!-- Lid -->
+    <rect x="130" y="105" width="140" height="20" rx="10" fill="#FFFFFF" stroke="#3D2E2B" stroke-width="3"/>
+    <!-- Straw -->
+    <rect x="192" y="45" width="16" height="70" rx="4" fill="#E899A2" stroke="#3D2E2B" stroke-width="3"/>
+
+    <!-- Boba Tea Liquid Layer -->
+    <path d="M 145 160 L 255 160 L 245 300 L 155 300 Z" fill="#E8B49B" rx="10"/>
+
+    <!-- Boba Pearls -->
+    <circle cx="170" cy="275" r="9" fill="#3D2E2B"/>
+    <circle cx="195" cy="280" r="9" fill="#3D2E2B"/>
+    <circle cx="225" cy="272" r="9" fill="#3D2E2B"/>
+    <circle cx="180" cy="255" r="9" fill="#3D2E2B"/>
+    <circle cx="210" cy="258" r="9" fill="#3D2E2B"/>
+
+    <!-- Cute Face -->
+    <circle cx="180" cy="200" r="5" fill="#3D2E2B"/>
+    <circle cx="220" cy="200" r="5" fill="#3D2E2B"/>
+    <path d="M 195 208 Q 200 215 205 208" stroke="#3D2E2B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="170" cy="206" rx="6" ry="4" fill="#E899A2" opacity="0.7"/>
+    <ellipse cx="230" cy="206" rx="6" ry="4" fill="#E899A2" opacity="0.7"/>
+  </g>
+
+  <!-- Tag badge -->
+  <rect x="20" y="20" width="110" height="32" rx="16" fill="#A8C3A0"/>
+  <text x="75" y="41" font-family="sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Physical Item</text>
+</svg>

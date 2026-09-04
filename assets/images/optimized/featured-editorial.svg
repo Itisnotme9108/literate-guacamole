@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#F5EFE9"/>
+  <circle cx="400" cy="300" r="220" fill="#F4E8E5"/>
+  <g transform="translate(400, 270)">
+    <path d="M 0 0 C -160 -100, -200 100, 0 0 Z" fill="#C88A7E"/>
+    <path d="M 0 0 C 160 -100, 200 100, 0 0 Z" fill="#C88A7E"/>
+    <path d="M -15 15 Q -80 180 -140 240 L -80 240 Q -15 120 0 15 Z" fill="#B5776B"/>
+    <path d="M 15 15 Q 80 180 140 240 L 80 240 Q 15 120 0 15 Z" fill="#B5776B"/>
+    <circle cx="0" cy="0" r="25" fill="#2C2523"/>
+  </g>
+  <text x="400" y="540" font-family="Georgia, serif" font-size="24" fill="#2C2523" text-anchor="middle">KNOTIQUE ATELIER</text>
+</svg>

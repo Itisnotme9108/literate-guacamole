@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="100%" height="100%">
+  <rect width="900" height="1200" fill="#FAF7F2"/>
+  <rect x="50" y="50" width="800" height="1100" fill="none" stroke="#D9D0C5" stroke-width="1"/>
+
+  <!-- Terracotta Halter Top Illustration -->
+  <g transform="translate(250, 300)">
+    <path d="M 100 150 L 200 50 L 300 150 L 320 300 L 80 300 Z" fill="#B85338"/>
+    <!-- Scalloped knit ribbing detail lines -->
+    <line x1="80" y1="280" x2="320" y2="280" stroke="#8E3C27" stroke-width="4" stroke-dasharray="8,6"/>
+    <line x1="200" y1="50" x2="200" y2="300" stroke="#8E3C27" stroke-width="2"/>
+    <!-- Back Tie Strings -->
+    <path d="M 80 280 Q 20 360 40 420" fill="none" stroke="#B85338" stroke-width="4"/>
+    <path d="M 320 280 Q 380 360 360 420" fill="none" stroke="#B85338" stroke-width="4"/>
+  </g>
+
+  <text x="450" y="1120" font-family="'Playfair Display', Georgia, serif" font-size="20" letter-spacing="4" fill="#1A1615" text-anchor="middle" opacity="0.4">AMALFI HALTER — TERRACOTTA</text>
+</svg>

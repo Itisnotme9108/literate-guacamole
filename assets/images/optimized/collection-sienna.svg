@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#EAE2D8"/>
+  <rect x="30" y="30" width="740" height="540" fill="#F5F0EB" rx="4"/>
+  <circle cx="400" cy="300" r="180" fill="#FAF7F2"/>
+  <text x="400" y="310" font-family="Georgia, serif" font-size="28" fill="#B85338" text-anchor="middle">SIENNA SUNSET CAPSULE</text>
+</svg>

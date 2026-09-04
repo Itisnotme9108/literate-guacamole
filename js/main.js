@@ -194,41 +194,9 @@ function updateYear() {
   }
 }
 
-const CLOUDINARY_CLOUD_NAME = 'dl4xxbq4';
-
-function getCloudinaryUrl(src, width, format = null) {
-  if (!src) return '';
-
-  const formatOpt = format ? `f_${format},` : 'f_auto,';
-
-  // 1. Direct Cloudinary upload URL or public ID
-  if (src.includes('res.cloudinary.com')) {
-    const parts = src.split('/upload/');
-    if (parts.length > 1) {
-      let rest = parts[1].replace(/^(f_auto,q_auto,w_\d+\/|f_auto,q_auto\/|f_[a-z]+,q_auto,w_\d+\/)/, '');
-      return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${formatOpt}q_auto,w_${width}/${rest}`;
-    }
-  }
-
-  // 2. Specific public ID check for Mallorca dress
-  if (src.includes('aegean-crochet-dress')) {
-    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${formatOpt}q_auto,w_${width}/aegean-crochet-dress`;
-  }
-
-  // 3. SVG assets stay local / SVG
-  if (src.endsWith('.svg')) {
-    return src;
-  }
-
-  // 4. Fetch mode for all other images hosted on Vercel
-  const cleanPath = src.replace(/^\.\.\//, '').replace(/^\//, '');
-  const absoluteUrl = `https://literate-guacamole-rho.vercel.app/${cleanPath}`;
-  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/fetch/${formatOpt}q_auto,w_${width}/${absoluteUrl}`;
-}
-
 /**
- * Generates responsive <picture> element HTML (AVIF -> WebP -> JPEG fallback) using Cloudinary delivery URLs.
- * @param {string} imgSrc - Relative path or Cloudinary URL
+ * Generates responsive <picture> element HTML (AVIF -> WebP -> JPEG fallback) for local optimized images.
+ * @param {string} imgSrc - Relative path to image (e.g. "assets/images/aegean-crochet-dress.jpg")
  * @param {string} altText - Accessible alt text
  * @param {Object} options - Custom options: { pictureClass, imgClass, sizes, width, height, style, loading, fetchpriority }
  * @returns {string} HTML string
@@ -245,16 +213,33 @@ function createResponsivePictureHTML(imgSrc, altText, options = {}) {
   const loadingAttr = options.loading !== undefined ? (options.loading ? `loading="${options.loading}"` : '') : 'loading="lazy"';
   const fetchPriorityAttr = options.fetchpriority ? `fetchpriority="${options.fetchpriority}"` : '';
 
+  // Handle SVG assets
   if (imgSrc.toLowerCase().endsWith('.svg')) {
-    return `<img src="${imgSrc}" alt="${alt}" ${imgClassAttr} ${widthAttr} ${heightAttr} ${styleAttr} ${loadingAttr} ${fetchPriorityAttr}>`;
+    const svgPath = imgSrc.includes('assets/images/optimized/')
+      ? imgSrc
+      : imgSrc.replace('assets/images/', 'assets/images/optimized/');
+    return `<img src="${svgPath}" alt="${alt}" ${imgClassAttr} ${widthAttr} ${heightAttr} ${styleAttr} ${loadingAttr} ${fetchPriorityAttr}>`;
+  }
+
+  // Determine optimized base path
+  let optimizedBase = imgSrc;
+  const extMatch = imgSrc.match(/\.(jpg|jpeg|png|webp|avif)$/i);
+  if (extMatch) {
+    const ext = extMatch[0];
+    const pathWithoutExt = imgSrc.slice(0, -ext.length);
+    if (!pathWithoutExt.includes('/optimized/')) {
+      optimizedBase = pathWithoutExt.replace(/assets\/images\//, 'assets/images/optimized/');
+    } else {
+      optimizedBase = pathWithoutExt;
+    }
   }
 
   const sizes = options.sizes || '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw';
 
-  const avifSrcset = `${getCloudinaryUrl(imgSrc, 480, 'avif')} 480w, ${getCloudinaryUrl(imgSrc, 960, 'avif')} 960w, ${getCloudinaryUrl(imgSrc, 1600, 'avif')} 1600w`;
-  const webpSrcset = `${getCloudinaryUrl(imgSrc, 480, 'webp')} 480w, ${getCloudinaryUrl(imgSrc, 960, 'webp')} 960w, ${getCloudinaryUrl(imgSrc, 1600, 'webp')} 1600w`;
-  const jpegSrcset = `${getCloudinaryUrl(imgSrc, 480, 'jpg')} 480w, ${getCloudinaryUrl(imgSrc, 960, 'jpg')} 960w, ${getCloudinaryUrl(imgSrc, 1600, 'jpg')} 1600w`;
-  const fallbackSrc = getCloudinaryUrl(imgSrc, 960);
+  const avifSrcset = `${optimizedBase}-480.avif 480w, ${optimizedBase}-960.avif 960w, ${optimizedBase}-1600.avif 1600w`;
+  const webpSrcset = `${optimizedBase}-480.webp 480w, ${optimizedBase}-960.webp 960w, ${optimizedBase}-1600.webp 1600w`;
+  const jpegSrcset = `${optimizedBase}-480.jpg 480w, ${optimizedBase}-960.jpg 960w, ${optimizedBase}-1600.jpg 1600w`;
+  const fallbackSrc = `${optimizedBase}-960.jpg`;
 
   return `<picture ${picClassAttr}>
     <source type="image/avif" srcset="${avifSrcset}" sizes="${sizes}">

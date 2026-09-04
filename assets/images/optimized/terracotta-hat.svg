@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <rect width="400" height="400" rx="30" fill="#FDF5EE"/>
+  
+  <g transform="translate(0, 30)">
+    <!-- Bucket Hat Top/Crown -->
+    <path d="M 120 180 C 120 100 280 100 280 180 Z" fill="#D96B52" stroke="#B84F38" stroke-width="4"/>
+    
+    <!-- Cream Stripe -->
+    <path d="M 124 165 C 135 140 265 140 276 165 C 265 175 135 175 124 165 Z" fill="#FAF6EE"/>
+
+    <!-- Bucket Hat Brim -->
+    <path d="M 120 180 C 70 240 330 240 280 180 Z" fill="#E27961" stroke="#B84F38" stroke-width="4"/>
+    
+    <!-- Stitch Ribbing Lines -->
+    <path d="M 100 215 Q 200 235 300 215" fill="none" stroke="#FFFFFF" stroke-dasharray="6,6" stroke-width="3" opacity="0.8"/>
+    <path d="M 115 200 Q 200 218 285 200" fill="none" stroke="#FFFFFF" stroke-dasharray="6,6" stroke-width="2" opacity="0.6"/>
+
+    <!-- Cute Sun Patch detail -->
+    <circle cx="200" cy="135" r="18" fill="#F7C844"/>
+    <path d="M 200 110 L 200 104 M 200 160 L 200 166 M 175 135 L 169 135 M 225 135 L 231 135" stroke="#E6B325" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- Tag badge -->
+  <rect x="20" y="20" width="110" height="32" rx="16" fill="#A8C3A0"/>
+  <text x="75" y="41" font-family="sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Physical Item</text>
+</svg>

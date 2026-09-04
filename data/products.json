@@ -225,8 +225,8 @@
     "subCategory": "resortwear",
     "type": "single",
     "collection": "amalfi-26",
-    "image": "https://res.cloudinary.com/dl4xxbq4/image/upload/f_auto,q_auto/aegean-crochet-dress",
-    "secondaryImage": "https://res.cloudinary.com/dl4xxbq4/image/upload/f_auto,q_auto/aegean-crochet-dress",
+    "image": "assets/images/aegean-crochet-dress.jpg",
+    "secondaryImage": "assets/images/aegean-crochet-dress.jpg",
     "descriptor": "Chunky crochet rib • Slate blue knit",
     "description": "Sculpted from a breathable cotton-linen ribbed crochet in soft slate blue. Features a plunging neckline, tonal ring-bound waist cutouts, and bishop sleeves with handcrafted tassel ties.",
     "variants": {

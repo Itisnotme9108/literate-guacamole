@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="100%" height="100%">
+  <rect width="900" height="1200" fill="#F5F0EB"/>
+  
+  <g transform="translate(250, 360)">
+    <!-- Unbleached Bone Knit Shorts -->
+    <path d="M 60 40 L 340 40 L 320 280 L 210 280 L 200 160 L 190 280 L 80 280 Z" fill="#EAE2D8" stroke="#1A1615" stroke-width="2"/>
+    <!-- Drawstring Waistband -->
+    <line x1="60" y1="40" x2="340" y2="40" stroke="#1A1615" stroke-width="4"/>
+    <path d="M 200 40 Q 180 90 170 120 M 200 40 Q 220 90 230 120" stroke="#1A1615" stroke-width="3" fill="none"/>
+  </g>
+
+  <text x="450" y="1120" font-family="'Playfair Display', Georgia, serif" font-size="20" letter-spacing="4" fill="#1A1615" text-anchor="middle" opacity="0.4">BONE SHORTS — UNBLEACHED YARN</text>
+</svg>

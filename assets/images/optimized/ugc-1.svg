@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
+  <rect width="500" height="500" fill="#F5F0EB"/>
+  <circle cx="250" cy="250" r="140" fill="#FAF7F2"/>
+  <text x="250" y="255" font-family="Georgia, serif" font-size="20" fill="#1A1615" text-anchor="middle">TRY-ON 01</text>
+</svg>

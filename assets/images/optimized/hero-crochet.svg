@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FAF7F2"/>
+      <stop offset="50%" stop-color="#F5EFE9"/>
+      <stop offset="100%" stop-color="#E8DCD5"/>
+    </linearGradient>
+    <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E6B8AF"/>
+      <stop offset="100%" stop-color="#C88A7E"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle handmade yarn loop patterns -->
+  <g opacity="0.25" stroke="#C88A7E" stroke-width="3" fill="none">
+    <circle cx="1200" cy="450" r="280" stroke-dasharray="12 8"/>
+    <circle cx="1200" cy="450" r="220"/>
+    <circle cx="1200" cy="450" r="160" stroke-dasharray="8 6"/>
+    <circle cx="1200" cy="450" r="100"/>
+    
+    <path d="M 900 200 Q 1100 100 1300 300 T 1500 500" stroke-dasharray="10 10"/>
+    <path d="M 850 700 Q 1050 850 1350 700 T 1550 400"/>
+  </g>
+
+  <!-- Illustration of Bow & Yarn -->
+  <g transform="translate(1050, 300)">
+    <!-- Bow Loops -->
+    <path d="M 150 150 C 50 50, 20 200, 150 150 Z" fill="url(#pinkGrad)"/>
+    <path d="M 150 150 C 250 50, 280 200, 150 150 Z" fill="url(#pinkGrad)"/>
+    <!-- Ribbon Tails -->
+    <path d="M 140 160 Q 80 280 40 340 L 80 340 Q 145 220 150 160 Z" fill="#C88A7E"/>
+    <path d="M 160 160 Q 220 280 260 340 L 220 340 Q 155 220 150 160 Z" fill="#C88A7E"/>
+    <!-- Center Knot -->
+    <ellipse cx="150" cy="150" rx="25" ry="20" fill="#2C2523"/>
+  </g>
+</svg>

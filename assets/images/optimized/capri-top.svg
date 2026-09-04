@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="100%" height="100%">
+  <rect width="900" height="1200" fill="#FAF7F2"/>
+  
+  <g transform="translate(250, 320)">
+    <!-- Capri Underwire Top -->
+    <path d="M 60 120 C 130 80 180 200 200 200 C 220 200 270 80 340 120 L 320 260 L 80 260 Z" fill="#1A1615"/>
+    <path d="M 90 120 C 140 220 190 200 200 200 M 200 200 C 210 200 260 220 310 120" stroke="#D4AF37" stroke-width="3" fill="none"/>
+    <line x1="80" y1="260" x2="320" y2="260" stroke="#1A1615" stroke-width="4"/>
+  </g>
+
+  <text x="450" y="1120" font-family="'Playfair Display', Georgia, serif" font-size="20" letter-spacing="4" fill="#1A1615" text-anchor="middle" opacity="0.4">CAPRI TOP — UNDERWIRE CROCHET</text>
+</svg>
