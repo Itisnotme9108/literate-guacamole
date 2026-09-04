@@ -79,10 +79,15 @@ html, body {
   /* Hero Lookbook Mobile Adjustments */
   .hero-lookbook {
     min-height: 75vh;
+    padding-bottom: 4rem;
   }
 
   .hero-content-wrapper {
-    padding: 2.5rem 0;
+    padding: 2.5rem 0 0.5rem;
+  }
+
+  .hero-scroll-indicator {
+    bottom: 14px;
   }
 
   .hero-tagline {
@@ -280,6 +285,16 @@ html, body {
   .footer-grid {
     grid-template-columns: 1fr 1fr;
     gap: 3rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199.98px) {
+  .hero-lookbook {
+    min-height: 70vh;
+  }
+
+  .hero-content-wrapper {
+    max-width: 600px;
   }
 }
 
