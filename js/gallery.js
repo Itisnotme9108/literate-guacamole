@@ -229,7 +229,7 @@ function renderGallery(items) {
     card.innerHTML = `
       <div class="card-image-wrapper">
         <span class="type-badge ${product.type}">${typeBadgeLabel}</span>
-        <img src="${product.image}" alt="${product.name} - Handmade Crochet" loading="lazy">
+        ${createResponsivePictureHTML(product.image, `${product.name} - Handmade Crochet`, { sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw', width: 960, height: 960, loading: 'lazy' })}
       </div>
       <div class="card-body">
         <h3 class="card-title">${escapeHTML(product.name)}</h3>
@@ -296,7 +296,7 @@ function openQuickViewModal(product) {
   modalContent.innerHTML = `
     <div style="display: grid; grid-template-columns: 1fr 1.1fr; gap: 1.5rem; align-items: center;">
       <div style="background-color: var(--bg-alt); border-radius: var(--radius-md); overflow: hidden;">
-        <img src="${product.image}" alt="${escapeHTML(product.name)}" style="width: 100%; aspect-ratio: 1/1; object-fit: cover;">
+        ${createResponsivePictureHTML(product.image, product.name, { sizes: '(max-width: 768px) 90vw, 450px', style: 'width: 100%; aspect-ratio: 1/1; object-fit: cover;', width: 960, height: 960 })}
       </div>
       <div>
         <span class="type-badge ${product.type}" style="position: static; display: inline-block; margin-bottom: 0.5rem;">

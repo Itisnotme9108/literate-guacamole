@@ -150,7 +150,7 @@ function renderCartDrawer() {
 
     return `
       <div class="cart-item">
-        <img src="${item.image}" alt="${escapeHTML(item.name)}" class="cart-item-img">
+        ${createResponsivePictureHTML(item.image, item.name, { pictureClass: 'cart-item-img', imgClass: 'cart-item-img', sizes: '120px', width: 480, height: 480, loading: 'lazy' })}
         <div class="cart-item-info">
           <h4>${escapeHTML(item.name)}</h4>
           <div class="cart-item-sizes">${sizesLabel}</div>

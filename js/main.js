@@ -193,3 +193,73 @@ function updateYear() {
     yearEl.textContent = new Date().getFullYear();
   }
 }
+
+const CLOUDINARY_CLOUD_NAME = 'dl4xxbq4';
+
+function getCloudinaryUrl(src, width, format = null) {
+  if (!src) return '';
+
+  const formatOpt = format ? `f_${format},` : 'f_auto,';
+
+  // 1. Direct Cloudinary upload URL or public ID
+  if (src.includes('res.cloudinary.com')) {
+    const parts = src.split('/upload/');
+    if (parts.length > 1) {
+      let rest = parts[1].replace(/^(f_auto,q_auto,w_\d+\/|f_auto,q_auto\/|f_[a-z]+,q_auto,w_\d+\/)/, '');
+      return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${formatOpt}q_auto,w_${width}/${rest}`;
+    }
+  }
+
+  // 2. Specific public ID check for Mallorca dress
+  if (src.includes('aegean-crochet-dress')) {
+    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${formatOpt}q_auto,w_${width}/aegean-crochet-dress`;
+  }
+
+  // 3. SVG assets stay local / SVG
+  if (src.endsWith('.svg')) {
+    return src;
+  }
+
+  // 4. Fetch mode for all other images hosted on Vercel
+  const cleanPath = src.replace(/^\.\.\//, '').replace(/^\//, '');
+  const absoluteUrl = `https://literate-guacamole-rho.vercel.app/${cleanPath}`;
+  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/fetch/${formatOpt}q_auto,w_${width}/${absoluteUrl}`;
+}
+
+/**
+ * Generates responsive <picture> element HTML (AVIF -> WebP -> JPEG fallback) using Cloudinary delivery URLs.
+ * @param {string} imgSrc - Relative path or Cloudinary URL
+ * @param {string} altText - Accessible alt text
+ * @param {Object} options - Custom options: { pictureClass, imgClass, sizes, width, height, style, loading, fetchpriority }
+ * @returns {string} HTML string
+ */
+function createResponsivePictureHTML(imgSrc, altText, options = {}) {
+  if (!imgSrc) return '';
+
+  const alt = altText ? altText.replace(/"/g, '&quot;') : '';
+  const imgClassAttr = options.imgClass ? `class="${options.imgClass}"` : '';
+  const picClassAttr = options.pictureClass ? `class="${options.pictureClass}"` : '';
+  const styleAttr = options.style ? `style="${options.style}"` : '';
+  const widthAttr = options.width ? `width="${options.width}"` : '';
+  const heightAttr = options.height ? `height="${options.height}"` : '';
+  const loadingAttr = options.loading !== undefined ? (options.loading ? `loading="${options.loading}"` : '') : 'loading="lazy"';
+  const fetchPriorityAttr = options.fetchpriority ? `fetchpriority="${options.fetchpriority}"` : '';
+
+  if (imgSrc.toLowerCase().endsWith('.svg')) {
+    return `<img src="${imgSrc}" alt="${alt}" ${imgClassAttr} ${widthAttr} ${heightAttr} ${styleAttr} ${loadingAttr} ${fetchPriorityAttr}>`;
+  }
+
+  const sizes = options.sizes || '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw';
+
+  const avifSrcset = `${getCloudinaryUrl(imgSrc, 480, 'avif')} 480w, ${getCloudinaryUrl(imgSrc, 960, 'avif')} 960w, ${getCloudinaryUrl(imgSrc, 1600, 'avif')} 1600w`;
+  const webpSrcset = `${getCloudinaryUrl(imgSrc, 480, 'webp')} 480w, ${getCloudinaryUrl(imgSrc, 960, 'webp')} 960w, ${getCloudinaryUrl(imgSrc, 1600, 'webp')} 1600w`;
+  const jpegSrcset = `${getCloudinaryUrl(imgSrc, 480, 'jpg')} 480w, ${getCloudinaryUrl(imgSrc, 960, 'jpg')} 960w, ${getCloudinaryUrl(imgSrc, 1600, 'jpg')} 1600w`;
+  const fallbackSrc = getCloudinaryUrl(imgSrc, 960);
+
+  return `<picture ${picClassAttr}>
+    <source type="image/avif" srcset="${avifSrcset}" sizes="${sizes}">
+    <source type="image/webp" srcset="${webpSrcset}" sizes="${sizes}">
+    <source type="image/jpeg" srcset="${jpegSrcset}" sizes="${sizes}">
+    <img src="${fallbackSrc}" alt="${alt}" ${imgClassAttr} ${widthAttr} ${heightAttr} ${styleAttr} ${loadingAttr} ${fetchPriorityAttr}>
+  </picture>`.replace(/\s+/g, ' ').trim();
+}

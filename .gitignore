@@ -19,5 +19,8 @@ rad.json
 #License-files
 *.bclicense
 *.flf
-#Test results file
+# Test results file
 TestResults.xml
+
+node_modules/
+assets/images/optimized/

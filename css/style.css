@@ -81,12 +81,19 @@ body {
   flex-direction: column;
 }
 
-img, svg, video {
+img, picture, svg, video {
   max-width: 100%;
   height: auto;
 }
 
-img, video {
+img, picture, video {
+  display: block;
+}
+
+picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 
@@ -1005,6 +1012,7 @@ html.js-reveal-active .reveal-on-scroll:not(.is-revealed) {
   cursor: pointer;
 }
 
+.card-image-box picture.card-primary-img,
 .card-image-box img.card-primary-img {
   position: absolute;
   top: 0;
@@ -1017,6 +1025,7 @@ html.js-reveal-active .reveal-on-scroll:not(.is-revealed) {
   z-index: 1;
 }
 
+.card-image-box picture.card-secondary-img,
 .card-image-box img.card-secondary-img {
   position: absolute;
   top: 0;
@@ -1029,10 +1038,12 @@ html.js-reveal-active .reveal-on-scroll:not(.is-revealed) {
   z-index: 1;
 }
 
+.product-card:hover .card-image-box picture.card-primary-img,
 .product-card:hover .card-image-box img.card-primary-img {
   opacity: 0;
 }
 
+.product-card:hover .card-image-box picture.card-secondary-img,
 .product-card:hover .card-image-box img.card-secondary-img {
   opacity: 1;
   transform: scale(1.03);

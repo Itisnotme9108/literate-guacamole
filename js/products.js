@@ -350,8 +350,8 @@ function renderProducts(items, container) {
           ${isFav ? '♥' : '♡'}
         </button>
 
-        <img src="${product.image}" alt="${escapeHTML(product.name)}" class="card-primary-img" loading="lazy">
-        <img src="${secondaryImgSrc}" alt="${escapeHTML(product.name)} Hover View" class="card-secondary-img" loading="lazy">
+        ${createResponsivePictureHTML(product.image, product.name, { pictureClass: 'card-primary-img', imgClass: 'card-primary-img', sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', width: 960, height: 1280, loading: 'lazy' })}
+        ${createResponsivePictureHTML(secondaryImgSrc, `${product.name} Hover View`, { pictureClass: 'card-secondary-img', imgClass: 'card-secondary-img', sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', width: 960, height: 1280, loading: 'lazy' })}
       </div>
       <div class="card-content">
         <div class="card-rating">
@@ -466,7 +466,7 @@ function openProductQuickViewModal(product) {
 
   modalBody.innerHTML = `
     <div style="aspect-ratio: 3/4; background-color: var(--bg-sand); overflow: hidden; border-radius: var(--radius-strict);">
-      <img src="${product.image}" alt="${escapeHTML(product.name)}" style="width: 100%; height: 100%; object-fit: cover;">
+      ${createResponsivePictureHTML(product.image, product.name, { sizes: '(max-width: 768px) 90vw, 450px', style: 'width: 100%; height: 100%; object-fit: cover;', width: 960, height: 1280 })}
     </div>
     <div style="display: flex; flex-direction: column; justify-content: center;">
       <span class="micro-label">${escapeHTML(product.category)}</span>

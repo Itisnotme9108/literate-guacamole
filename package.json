@@ -1,0 +1,13 @@
+{
+  "name": "literate-guacamole",
+  "version": "1.0.0",
+  "description": "Artisanal resortwear static site with build-time sharp image optimization pipeline",
+  "main": "index.html",
+  "scripts": {
+    "build": "node scripts/optimize-images.js",
+    "optimize-images": "node scripts/optimize-images.js"
+  },
+  "dependencies": {
+    "sharp": "^0.33.5"
+  }
+}
