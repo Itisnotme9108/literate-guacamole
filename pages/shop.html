@@ -1,6 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    document.documentElement.classList.add('js-enabled');
+    setTimeout(function () {
+      if (!window.__curtainComplete && (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined')) {
+        document.documentElement.classList.remove('js-enabled');
+      }
+    }, 4000);
+  </script>
+  <noscript>
+    <style>
+      .js-enabled #navbar,
+      .js-enabled .hero-background-img,
+      .js-enabled .hero-eyebrow,
+      .js-enabled .hero-title,
+      .js-enabled .hero-tagline,
+      .js-enabled .hero-cta-group .btn,
+      .js-enabled #heroScrollIndicator {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    </style>
+  </noscript>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Readymade Swimwear &amp; Resortwear Catalog — EDITORIAL RESORT</title>
