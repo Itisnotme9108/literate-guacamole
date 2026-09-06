@@ -236,32 +236,44 @@
           <p>Five meticulous steps from unspun natural fibers to your finished resortwear piece.</p>
         </div>
 
-        <div class="process-steps-grid">
-          <div class="process-step-item">
+        <!-- Atelier Process Interactive Progress Track -->
+        <div class="process-progress-track" id="processProgressTrack" aria-hidden="true">
+          <div class="process-progress-bar" id="processProgressBar"></div>
+          <div class="process-progress-nodes">
+            <span class="process-node is-active" data-node="1">01</span>
+            <span class="process-node" data-node="2">02</span>
+            <span class="process-node" data-node="3">03</span>
+            <span class="process-node" data-node="4">04</span>
+            <span class="process-node" data-node="5">05</span>
+          </div>
+        </div>
+
+        <div class="process-steps-grid" id="processStepsGrid">
+          <div class="process-step-item is-active" data-step="1">
             <span class="process-step-num">01</span>
             <h4>Yarn Selection</h4>
             <p>Sourcing organic linen, fast-drying cotton, and hypoallergenic bamboo threads.</p>
           </div>
 
-          <div class="process-step-item">
+          <div class="process-step-item" data-step="2">
             <span class="process-step-num">02</span>
             <h4>Hand Knotting</h4>
             <p>Loop-by-loop hand stitching for structural tension and soft stretch memory.</p>
           </div>
 
-          <div class="process-step-item">
+          <div class="process-step-item" data-step="3">
             <span class="process-step-num">03</span>
             <h4>Silhouette Shaping</h4>
             <p>Sculpting halter lines, scalloped hems, and high-cut skimpy bottoms to proportion.</p>
           </div>
 
-          <div class="process-step-item">
+          <div class="process-step-item" data-step="4">
             <span class="process-step-num">04</span>
             <h4>Soft Elastic Lining</h4>
             <p>Reinforcing interior edges with subtle elastic bands to preserve shape in ocean water.</p>
           </div>
 
-          <div class="process-step-item">
+          <div class="process-step-item" data-step="5">
             <span class="process-step-num">05</span>
             <h4>Final Quality Inspection</h4>
             <p>Inspecting tension, hardware security, and finishing stitches before atelier dispatch.</p>
@@ -551,6 +563,11 @@
       </div>
     </div>
   </div>
+
+  <!-- GSAP & Motion Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="js/animations.js"></script>
 
   <!-- JavaScript Modules -->
   <script src="js/main.js"></script>

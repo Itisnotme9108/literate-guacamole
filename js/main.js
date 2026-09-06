@@ -131,41 +131,77 @@ if (document.readyState === 'interactive' || document.readyState === 'complete')
 }
 
 /**
- * Phase 4: Desktop Custom Cursor (>=1024px)
+ * Desktop Custom Cursor (>=1024px)
+ * Centered GPU-accelerated transform positioning for exact pointer alignment.
  */
 function initCustomCursor() {
   const cursor = document.getElementById('customCursor');
   if (!cursor || window.innerWidth < 1024) return;
 
-  let mouseX = 0, mouseY = 0;
-  let cursorX = 0, cursorY = 0;
+  const cursorSpan = cursor.querySelector('span');
+
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  let cursorX = mouseX;
+  let cursorY = mouseY;
+  let hasMoved = false;
 
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
+    if (!hasMoved) {
+      hasMoved = true;
+      cursor.style.opacity = '0.9';
+    }
   });
 
   function animateCursor() {
-    cursorX += (mouseX - cursorX) * 0.25;
-    cursorY += (mouseY - cursorY) * 0.25;
-    cursor.style.left = `${cursorX}px`;
-    cursor.style.top = `${cursorY}px`;
+    // Smooth lerp (0.32 factor for responsive yet silky-smooth motion)
+    cursorX += (mouseX - cursorX) * 0.32;
+    cursorY += (mouseY - cursorY) * 0.32;
+    
+    // translate3d(cursorX, cursorY, 0) + translate(-50%, -50%) centers cursor dot EXACTLY on pointer tip
+    cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
+    
     requestAnimationFrame(animateCursor);
   }
 
   requestAnimationFrame(animateCursor);
 
-  const hoverableSelector = 'a, button, .product-card, .category-tile, .gallery-item, .swatch-btn, .favorite-btn';
-
+  // Contextual Hover States & Labels
   document.addEventListener('mouseover', (e) => {
-    if (e.target.closest(hoverableSelector)) {
+    const galleryItem = e.target.closest('.gallery-item');
+    const categoryTile = e.target.closest('.category-tile');
+    const productCard = e.target.closest('.product-card, .swatch-btn, .btn-add-cart');
+    const fitCard = e.target.closest('.fit-step-card, a[href*="bespoke"]');
+    const generalClickable = e.target.closest('a, button, .icon-btn, .favorite-btn');
+
+    if (galleryItem) {
+      cursor.classList.add('hovering', 'cursor-large');
+      if (cursorSpan) cursorSpan.textContent = 'VIEW ✦';
+    } else if (categoryTile) {
       cursor.classList.add('hovering');
+      cursor.classList.remove('cursor-large');
+      if (cursorSpan) cursorSpan.textContent = 'EXPLORE';
+    } else if (productCard) {
+      cursor.classList.add('hovering');
+      cursor.classList.remove('cursor-large');
+      if (cursorSpan) cursorSpan.textContent = '+ ADD';
+    } else if (fitCard) {
+      cursor.classList.add('hovering');
+      cursor.classList.remove('cursor-large');
+      if (cursorSpan) cursorSpan.textContent = 'BESPOKE';
+    } else if (generalClickable) {
+      cursor.classList.add('hovering');
+      cursor.classList.remove('cursor-large');
+      if (cursorSpan) cursorSpan.textContent = 'SELECT';
     }
   });
 
   document.addEventListener('mouseout', (e) => {
-    if (e.target.closest(hoverableSelector)) {
-      cursor.classList.remove('hovering');
+    const hoverTarget = e.target.closest('.gallery-item, .category-tile, .product-card, .swatch-btn, .btn-add-cart, .fit-step-card, a, button, .icon-btn, .favorite-btn');
+    if (hoverTarget) {
+      cursor.classList.remove('hovering', 'cursor-large');
     }
   });
 }

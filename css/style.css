@@ -215,20 +215,28 @@ h4 { font-size: 1.2rem; }
   color: var(--text-muted);
   padding: 0.5rem 0;
   position: relative;
+  transition: color var(--transition-fast), transform 0.25s ease;
 }
 
-.nav-link:hover, .nav-link.active {
-  color: var(--text-main);
-}
-
-.nav-link.active::after {
+.nav-link::after {
   content: "";
   position: absolute;
-  bottom: -4px;
+  bottom: 0;
   left: 0;
+  width: 0%;
+  height: 1.5px;
+  background-color: var(--accent-terracotta);
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-link:hover {
+  color: var(--text-main);
+  transform: translateY(-1px);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
   width: 100%;
-  height: 1px;
-  background-color: var(--text-main);
 }
 
 .nav-actions {
@@ -440,29 +448,36 @@ h4 { font-size: 1.2rem; }
   z-index: 3;
   max-width: 720px;
   padding: 4rem 0;
-  color: var(--text-inverse);
+  color: #FFFFFF;
 }
 
 .hero-eyebrow {
-  color: rgba(250, 247, 242, 0.88) !important;
+  color: #FAF7F2 !important;
+  opacity: 1 !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 .hero-title {
   margin: 0.75rem 0 1.5rem;
-  color: var(--text-inverse);
+  color: #FFFFFF !important;
+  opacity: 1 !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
 .hero-title-sub {
   font-weight: 400;
   font-style: italic;
+  color: #FAF7F2 !important;
 }
 
 .hero-tagline {
   font-size: 1.15rem;
-  color: rgba(250, 247, 242, 0.9);
+  color: #FAF7F2 !important;
   margin-bottom: 2.5rem;
   line-height: 1.7;
   max-width: 560px;
+  opacity: 1 !important;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
 }
 
 .hero-cta-group {
@@ -661,8 +676,73 @@ html.js-reveal-active .reveal-on-scroll:not(.is-revealed) {
 }
 
 /* --------------------------------------------------------------------------
-   8A. ATELIER PROCESS STEP SEQUENCE (Phase 3a)
+   8A. ATELIER PROCESS STEP SEQUENCE (Phase 3 Interactive Upgrade)
    -------------------------------------------------------------------------- */
+.process-progress-track {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 3rem;
+  height: 2px;
+  background-color: var(--border-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.process-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background-color: var(--accent-terracotta);
+  transition: width 0.3s ease-out;
+  z-index: 1;
+}
+
+.process-progress-nodes {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.process-node {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--bg-bone);
+  border: 1.5px solid var(--border-hairline);
+  color: var(--text-muted);
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.process-node.is-active {
+  background-color: var(--accent-terracotta);
+  border-color: var(--accent-terracotta);
+  color: #FFFFFF;
+  transform: scale(1.15);
+  box-shadow: 0 0 12px rgba(184, 83, 56, 0.3);
+}
+
+.process-node.is-passed {
+  background-color: var(--text-main);
+  border-color: var(--text-main);
+  color: #FFFFFF;
+}
+
 .process-steps-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -677,12 +757,29 @@ html.js-reveal-active .reveal-on-scroll:not(.is-revealed) {
   display: flex;
   flex-direction: column;
   position: relative;
-  transition: transform var(--transition-fast);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .process-step-item:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   border-color: var(--text-main);
+}
+
+.process-step-item.is-active {
+  border-color: var(--accent-terracotta);
+  background-color: #FFFFFF;
+  box-shadow: 0 8px 24px rgba(184, 83, 56, 0.08);
+  transform: translateY(-6px);
+}
+
+.process-step-item.is-active .process-step-num {
+  color: var(--accent-terracotta);
+  transform: scale(1.12);
+}
+
+.process-step-item.is-passed {
+  border-color: var(--border-hairline);
+  opacity: 0.85;
 }
 
 .process-step-num {
@@ -692,6 +789,7 @@ html.js-reveal-active .reveal-on-scroll:not(.is-revealed) {
   color: var(--accent-terracotta);
   line-height: 1;
   margin-bottom: 0.75rem;
+  transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .process-step-item h4 {
@@ -1822,38 +1920,53 @@ html.js-reveal-active .reveal-on-scroll:not(.is-revealed) {
     position: fixed;
     top: 0;
     left: 0;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     background-color: var(--accent-terracotta);
     border-radius: 50%;
     pointer-events: none;
     z-index: 9990;
+    margin: 0;
+    padding: 0;
     transform: translate(-50%, -50%);
-    transition: transform 0.1s ease-out, width 0.25s ease-out, height 0.25s ease-out, background-color 0.25s ease-out;
+    transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), height 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, opacity 0.25s ease, border-color 0.25s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #FFFFFF;
-    font-size: 0.55rem;
+    font-size: 0.58rem;
     font-weight: 700;
-    letter-spacing: 1px;
-    opacity: 0.75;
+    letter-spacing: 1.5px;
+    opacity: 0.9;
+    will-change: transform;
   }
 
   .custom-cursor span {
     display: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    text-transform: uppercase;
+    white-space: nowrap;
   }
 
   .custom-cursor.hovering {
-    width: 44px;
-    height: 44px;
-    background-color: rgba(26, 22, 21, 0.85);
+    width: 52px;
+    height: 52px;
+    background-color: rgba(26, 22, 21, 0.92);
+    border: 1px solid rgba(250, 247, 242, 0.35);
     backdrop-filter: blur(4px);
-    opacity: 0.95;
+    opacity: 0.98;
   }
 
   .custom-cursor.hovering span {
-    display: inline;
+    display: inline-block;
+    opacity: 1;
+  }
+
+  .custom-cursor.cursor-large {
+    width: 64px;
+    height: 64px;
+    background-color: rgba(184, 83, 56, 0.94);
   }
 }
 
