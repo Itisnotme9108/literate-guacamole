@@ -499,9 +499,9 @@ h4 { font-size: 1.2rem; }
 }
 
 .hero-title-sub {
-  font-weight: 300;
+  font-weight: 400;
   font-style: italic;
-  color: var(--accent-terracotta);
+  color: #FAF7F2;
 }
 
 .hero-tagline {
