@@ -81,11 +81,15 @@ function initHeroAnimations() {
   });
 
   // Synchronize timeline with WebGL Woven Curtain Reveal
-  if (sessionStorage.getItem('editorial_curtain_shown') !== 'true') {
+  const isCurtainFinished = window.__curtainComplete || sessionStorage.getItem('editorial_curtain_shown') === 'true';
+  if (!isCurtainFinished) {
     entranceTl.pause();
     window.addEventListener('curtainComplete', () => {
+      window.__curtainComplete = true;
       entranceTl.play();
     }, { once: true });
+  } else {
+    window.__curtainComplete = true;
   }
 
   // Nav entrance
@@ -557,13 +561,19 @@ function initLookbookAnimations() {
     );
   }
 
-  // 3D Perspective Grid Tilt on Scroll
-  if (galleryGrid && window.innerWidth >= 768) {
+  // 3D Perspective Grid Tilt on Scroll (Runs on all viewports, scaled for mobile)
+  if (galleryGrid) {
+    const isMobile = window.innerWidth < 768;
+    const startX = isMobile ? 2.5 : 4;
+    const startY = isMobile ? -1.5 : -2;
+    const endX = isMobile ? -2 : -3;
+    const endY = isMobile ? 1.5 : 2;
+
     gsap.fromTo(galleryGrid,
-      { rotateX: 4, rotateY: -2 },
+      { rotateX: startX, rotateY: startY },
       {
-        rotateX: -3,
-        rotateY: 2,
+        rotateX: endX,
+        rotateY: endY,
         ease: 'none',
         scrollTrigger: {
           trigger: gallerySection,
@@ -576,18 +586,22 @@ function initLookbookAnimations() {
   }
 
   if (galleryItems.length > 0) {
+    const isSmallViewport = window.innerWidth < 1024;
+    const yDistance = isSmallViewport ? 24 : 40;
+    const staggerTime = isSmallViewport ? 0.08 : 0.12;
+
     gsap.fromTo(galleryItems,
-      { y: 40, opacity: 0, scale: 0.95 },
+      { y: yDistance, opacity: 0, scale: 0.96 },
       {
         y: 0,
         opacity: 1,
         scale: 1,
-        duration: 0.9,
-        stagger: 0.12,
+        duration: 0.85,
+        stagger: staggerTime,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: gallerySection,
-          start: 'top 75%',
+          start: 'top 80%',
           toggleActions: 'play none none none'
         }
       }
