@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initLookbookAnimations();
   initPhilosophyAnimations();
   initTestimonialsAnimations();
+  initProductSpotlightTilt();
 });
 
 /**
@@ -78,6 +79,14 @@ function initHeroAnimations() {
     defaults: { ease: 'power3.out' },
     delay: 0.1
   });
+
+  // Synchronize timeline with WebGL Woven Curtain Reveal
+  if (sessionStorage.getItem('editorial_curtain_shown') !== 'true') {
+    entranceTl.pause();
+    window.addEventListener('curtainComplete', () => {
+      entranceTl.play();
+    }, { once: true });
+  }
 
   // Nav entrance
   if (navbar) {
@@ -528,6 +537,7 @@ function initLookbookAnimations() {
   if (!gallerySection) return;
 
   const header = gallerySection.querySelector('.section-header');
+  const galleryGrid = gallerySection.querySelector('.atelier-gallery-grid');
   const galleryItems = gallerySection.querySelectorAll('.gallery-item');
 
   if (header) {
@@ -542,6 +552,24 @@ function initLookbookAnimations() {
           trigger: gallerySection,
           start: 'top 80%',
           toggleActions: 'play none none none'
+        }
+      }
+    );
+  }
+
+  // 3D Perspective Grid Tilt on Scroll
+  if (galleryGrid && window.innerWidth >= 768) {
+    gsap.fromTo(galleryGrid,
+      { rotateX: 4, rotateY: -2 },
+      {
+        rotateX: -3,
+        rotateY: 2,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: gallerySection,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true
         }
       }
     );
@@ -583,6 +611,11 @@ function initLookbookAnimations() {
         });
 
         item.addEventListener('mouseenter', () => {
+          gsap.to(item, {
+            borderColor: 'var(--accent-terracotta)',
+            boxShadow: 'inset 0 0 20px rgba(184, 83, 56, 0.15), 0 10px 24px rgba(26, 22, 21, 0.12)',
+            duration: 0.4
+          });
           gsap.to(img, {
             scale: 1.08,
             duration: 0.6,
@@ -600,6 +633,11 @@ function initLookbookAnimations() {
         });
 
         item.addEventListener('mouseleave', () => {
+          gsap.to(item, {
+            borderColor: 'var(--border-hairline)',
+            boxShadow: 'inset 0 0 16px rgba(26, 22, 21, 0.08)',
+            duration: 0.4
+          });
           gsap.to(img, {
             scale: 1,
             duration: 0.6,
@@ -766,4 +804,59 @@ function initTestimonialsAnimations() {
       });
     });
   }
+}
+
+/**
+ * Phase 3: Desktop Product Spotlight Card Mouse Tilt
+ */
+function initProductSpotlightTilt() {
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  if (window.innerWidth < 1024 || isTouchDevice) return;
+
+  let currentCard = null;
+
+  document.addEventListener('mousemove', (e) => {
+    const card = e.target.closest('.product-card');
+
+    if (card) {
+      if (currentCard && currentCard !== card) {
+        gsap.to(currentCard, {
+          rotateX: 0,
+          rotateY: 0,
+          translateZ: 0,
+          duration: 0.45,
+          ease: 'power2.out',
+          overwrite: 'auto'
+        });
+      }
+      currentCard = card;
+
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+      const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+
+      const maxTilt = 5.5; // Restrained 5.5deg amplitude
+      const rotateY = x * maxTilt;
+      const rotateX = -y * maxTilt;
+
+      gsap.to(card, {
+        rotateX: rotateX,
+        rotateY: rotateY,
+        translateZ: 10,
+        duration: 0.35,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    } else if (currentCard) {
+      gsap.to(currentCard, {
+        rotateX: 0,
+        rotateY: 0,
+        translateZ: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+      currentCard = null;
+    }
+  });
 }
