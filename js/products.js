@@ -465,25 +465,25 @@ function openProductQuickViewModal(product) {
   }
 
   modalBody.innerHTML = `
-    <div class="product-modal-image-col" style="aspect-ratio: 3/4; background-color: var(--bg-sand); overflow: hidden; border-radius: var(--radius-strict);">
-      ${createResponsivePictureHTML(product.image, product.name, { sizes: '(max-width: 768px) 100vw, 450px', style: 'width: 100%; height: 100%; object-fit: cover;', width: 960, height: 1280 })}
+    <div class="product-modal-image-col">
+      ${createResponsivePictureHTML(product.image, product.name, { sizes: '(max-width: 767px) 100vw, 450px', style: 'width: 100%; height: 100%; object-fit: cover;', width: 960, height: 1280 })}
     </div>
-    <div class="product-modal-details-col" style="display: flex; flex-direction: column; justify-content: center;">
+    <div class="product-modal-details-col">
       <span class="micro-label">${escapeHTML(product.category)}</span>
-      <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">${escapeHTML(product.name)}</h2>
+      <h2 class="product-modal-title">${escapeHTML(product.name)}</h2>
       
-      <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
-        <span style="font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600;">$${product.price.toFixed(2)}</span>
-        <div style="font-size: 0.88rem; font-weight: 600;">
-          <span style="color: var(--accent-terracotta);">★</span> ${ratingVal} <span style="color: var(--text-light);">(${revCount} reviews)</span>
+      <div class="product-modal-meta">
+        <span class="product-modal-price">$${product.price.toFixed(2)}</span>
+        <div class="product-modal-rating">
+          <span class="star-icon">★</span> ${ratingVal} <span class="reviews-count">(${revCount} reviews)</span>
         </div>
       </div>
 
-      <p class="product-modal-description" style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6;">
+      <p class="product-modal-description">
         ${escapeHTML(product.description)}
       </p>
 
-      <div class="variant-selection-box modal-cta-box" style="border-top: 1px solid var(--border-hairline); padding-top: 1.25rem;">
+      <div class="variant-selection-box modal-cta-box">
         ${swatchHTML}
 
         <div class="card-validation-hint" id="modalHint">* ${isSet ? 'Select Top & Bottom sizes' : 'Select a size'}</div>

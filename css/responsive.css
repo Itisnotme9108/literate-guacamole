@@ -237,7 +237,7 @@ html, body {
     scroll-snap-align: start;
   }
 
-  /* Product Quick View Modal Mobile Redesign */
+  /* Product Quick View Modal Mobile Redesign (max-width: 767.98px) */
   .product-modal-backdrop {
     padding: 0.75rem 0.5rem;
   }
@@ -246,19 +246,42 @@ html, body {
     display: flex;
     flex-direction: column;
     padding: 0;
-    max-height: 88vh;
+    max-height: 90vh;
     overflow: hidden;
     position: relative;
     border-radius: var(--radius-strict);
   }
 
+  .modal-close-btn {
+    top: 0.75rem;
+    right: 0.75rem;
+    min-width: 44px;
+    min-height: 44px;
+    background-color: rgba(250, 247, 242, 0.88);
+    backdrop-filter: blur(4px);
+    border-radius: 50%;
+    z-index: 25;
+    box-shadow: 0 2px 8px rgba(26, 22, 21, 0.12);
+  }
+
+  .product-modal-body {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex: 1;
+    position: relative;
+    grid-template-columns: none;
+    gap: 0;
+  }
+
   .product-modal-image-col {
     width: 100%;
-    aspect-ratio: 4 / 3 !important;
-    max-height: 220px;
+    aspect-ratio: 4 / 5 !important;
+    max-height: 280px;
     background-color: var(--bg-sand);
     overflow: hidden;
     flex-shrink: 0;
+    border-radius: 0;
   }
 
   .product-modal-image-col img,
@@ -271,14 +294,17 @@ html, body {
   .product-modal-details-col {
     display: flex;
     flex-direction: column;
-    padding: 1rem 1.25rem 0;
-    overflow-y: auto;
-    flex: 1;
+    padding: 1.25rem 1.25rem 0.5rem;
+    overflow-y: visible;
   }
 
-  .product-modal-details-col h2 {
+  .product-modal-title {
     font-size: 1.35rem !important;
     margin-bottom: 0.35rem !important;
+  }
+
+  .product-modal-meta {
+    margin-bottom: 0.75rem !important;
   }
 
   .product-modal-description {
@@ -287,14 +313,20 @@ html, body {
     margin-bottom: 0.75rem !important;
   }
 
+  .modal-swatch {
+    min-width: 40px !important;
+    height: 40px !important;
+    font-size: 0.85rem !important;
+  }
+
   .modal-cta-box {
     position: sticky;
     bottom: 0;
     background-color: var(--bg-bone);
     border-top: 1px solid var(--border-hairline);
-    padding: 0.85rem 1.25rem 1rem;
+    padding: 0.85rem 1.25rem 1.1rem;
     margin-top: auto;
-    z-index: 10;
+    z-index: 15;
     box-shadow: 0 -6px 20px rgba(26, 22, 21, 0.08);
   }
 

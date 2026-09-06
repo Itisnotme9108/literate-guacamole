@@ -1512,11 +1512,66 @@ html.js-reveal-active .reveal-on-scroll:not(.is-revealed) {
   overflow-y: auto;
   box-shadow: var(--shadow-modal);
   position: relative;
+  padding: 2.5rem;
+  border: 1px solid var(--border-hairline);
+}
+
+.product-modal-body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2.5rem;
-  padding: 2.5rem;
-  border: 1px solid var(--border-hairline);
+  width: 100%;
+}
+
+.product-modal-image-col {
+  aspect-ratio: 3 / 4;
+  background-color: var(--bg-sand);
+  overflow: hidden;
+  border-radius: var(--radius-strict);
+}
+
+.product-modal-details-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.product-modal-title {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.product-modal-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.product-modal-price {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.product-modal-rating {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.product-modal-rating .star-icon {
+  color: var(--accent-terracotta);
+}
+
+.product-modal-rating .reviews-count {
+  color: var(--text-light);
+}
+
+.product-modal-description {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
 }
 
 .modal-close-btn {
@@ -1529,6 +1584,12 @@ html.js-reveal-active .reveal-on-scroll:not(.is-revealed) {
   cursor: pointer;
   color: var(--text-main);
   z-index: 10;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
 .modal-trust-block {
