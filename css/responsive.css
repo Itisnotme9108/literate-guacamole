@@ -216,10 +216,86 @@ html, body {
     gap: 2.5rem;
   }
 
+  /* Bespoke Fit Journey Mobile Horizontal Scroll Carousel */
+  .fit-steps-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 1.25rem;
+    padding-bottom: 1.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .fit-steps-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .fit-steps-grid .fit-step-card {
+    min-width: 280px;
+    flex: 0 0 280px;
+    scroll-snap-align: start;
+  }
+
+  /* Product Quick View Modal Mobile Redesign */
+  .product-modal-backdrop {
+    padding: 0.75rem 0.5rem;
+  }
+
   .product-modal {
-    grid-template-columns: 1fr;
-    padding: 1.5rem;
-    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    max-height: 88vh;
+    overflow: hidden;
+    position: relative;
+    border-radius: var(--radius-strict);
+  }
+
+  .product-modal-image-col {
+    width: 100%;
+    aspect-ratio: 4 / 3 !important;
+    max-height: 220px;
+    background-color: var(--bg-sand);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .product-modal-image-col img,
+  .product-modal-image-col picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-modal-details-col {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.25rem 0;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .product-modal-details-col h2 {
+    font-size: 1.35rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .product-modal-description {
+    font-size: 0.88rem !important;
+    line-height: 1.45 !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .modal-cta-box {
+    position: sticky;
+    bottom: 0;
+    background-color: var(--bg-bone);
+    border-top: 1px solid var(--border-hairline);
+    padding: 0.85rem 1.25rem 1rem;
+    margin-top: auto;
+    z-index: 10;
+    box-shadow: 0 -6px 20px rgba(26, 22, 21, 0.08);
   }
 
   /* Filter Tabs */

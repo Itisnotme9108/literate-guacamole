@@ -96,49 +96,52 @@ function initHeroAnimations() {
   if (navbar) {
     entranceTl.fromTo(navbar, 
       { y: -20, opacity: 0 }, 
-      { y: 0, opacity: 1, duration: 0.7 }
+      { y: 0, opacity: 1, duration: 0.6 }
     );
   }
 
-  // Hero background image smooth reveal scale
+  // Hero background image smooth reveal scale (Starts as navbar completes)
   if (heroImg) {
     entranceTl.fromTo(heroImg,
       { scale: 1.08, opacity: 0.8 },
-      { scale: 1, opacity: 1, duration: 1.2, ease: 'power2.out' },
-      '-=0.5'
+      { scale: 1, opacity: 1, duration: 1.0, ease: 'power2.out' },
+      '-=0.15'
     );
   }
 
-  // Crisp Editorial Text Reveals (Ending in full crisp opacity 1)
+  // Eyebrow reveal (Starts when heroImg is 85% majority-complete)
   if (eyebrow) {
     entranceTl.fromTo(eyebrow,
       { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.7 },
-      '-=0.9'
+      { y: 0, opacity: 1, duration: 0.6 },
+      '-=0.15'
     );
   }
 
+  // Title reveal (Starts when eyebrow is 75% complete)
   if (title) {
     entranceTl.fromTo(title,
       { y: 25, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8 },
-      '-=0.5'
+      { y: 0, opacity: 1, duration: 0.7 },
+      '-=0.15'
     );
   }
 
+  // Tagline reveal (Starts when title is 83% complete)
   if (tagline) {
     entranceTl.fromTo(tagline,
       { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.7 },
-      '-=0.6'
+      { y: 0, opacity: 1, duration: 0.6 },
+      '-=0.12'
     );
   }
 
+  // CTA Buttons reveal (Starts when tagline is 80% complete)
   if (ctaBtns && ctaBtns.length > 0) {
     entranceTl.fromTo(ctaBtns,
       { y: 18, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.7, stagger: 0.12 },
-      '-=0.4'
+      { y: 0, opacity: 1, duration: 0.6, stagger: 0.1 },
+      '-=0.12'
     );
   }
 
@@ -149,7 +152,7 @@ function initHeroAnimations() {
       { 
         y: 0, 
         opacity: 1, 
-        duration: 0.8,
+        duration: 0.6,
         onComplete: () => {
           gsap.to(scrollIndicator, {
             y: 8,
@@ -160,7 +163,7 @@ function initHeroAnimations() {
           });
         }
       },
-      '-=0.4'
+      '-=0.12'
     );
   }
 
@@ -699,24 +702,24 @@ function initPhilosophyAnimations() {
   if (title) {
     philTl.fromTo(title, 
       { y: 35, opacity: 0 }, 
-      { y: 0, opacity: 1, duration: 1.0, ease: 'power3.out' },
-      '-=0.4'
+      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
+      '-=0.15'
     );
   }
 
   if (paragraph) {
     philTl.fromTo(paragraph, 
       { y: 25, opacity: 0 }, 
-      { y: 0, opacity: 1, duration: 0.8 },
-      '-=0.6'
+      { y: 0, opacity: 1, duration: 0.7 },
+      '-=0.15'
     );
   }
 
   if (stats.length > 0) {
     philTl.fromTo(stats,
       { y: 20, opacity: 0, scale: 0.95 },
-      { y: 0, opacity: 1, scale: 1, duration: 0.8, stagger: 0.15, ease: 'back.out(1.5)' },
-      '-=0.5'
+      { y: 0, opacity: 1, scale: 1, duration: 0.7, stagger: 0.12, ease: 'back.out(1.5)' },
+      '-=0.12'
     );
   }
 

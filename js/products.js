@@ -465,10 +465,10 @@ function openProductQuickViewModal(product) {
   }
 
   modalBody.innerHTML = `
-    <div style="aspect-ratio: 3/4; background-color: var(--bg-sand); overflow: hidden; border-radius: var(--radius-strict);">
-      ${createResponsivePictureHTML(product.image, product.name, { sizes: '(max-width: 768px) 90vw, 450px', style: 'width: 100%; height: 100%; object-fit: cover;', width: 960, height: 1280 })}
+    <div class="product-modal-image-col" style="aspect-ratio: 3/4; background-color: var(--bg-sand); overflow: hidden; border-radius: var(--radius-strict);">
+      ${createResponsivePictureHTML(product.image, product.name, { sizes: '(max-width: 768px) 100vw, 450px', style: 'width: 100%; height: 100%; object-fit: cover;', width: 960, height: 1280 })}
     </div>
-    <div style="display: flex; flex-direction: column; justify-content: center;">
+    <div class="product-modal-details-col" style="display: flex; flex-direction: column; justify-content: center;">
       <span class="micro-label">${escapeHTML(product.category)}</span>
       <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">${escapeHTML(product.name)}</h2>
       
@@ -479,11 +479,11 @@ function openProductQuickViewModal(product) {
         </div>
       </div>
 
-      <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6;">
+      <p class="product-modal-description" style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6;">
         ${escapeHTML(product.description)}
       </p>
 
-      <div class="variant-selection-box" style="border-top: 1px solid var(--border-hairline); padding-top: 1.25rem;">
+      <div class="variant-selection-box modal-cta-box" style="border-top: 1px solid var(--border-hairline); padding-top: 1.25rem;">
         ${swatchHTML}
 
         <div class="card-validation-hint" id="modalHint">* ${isSet ? 'Select Top & Bottom sizes' : 'Select a size'}</div>
