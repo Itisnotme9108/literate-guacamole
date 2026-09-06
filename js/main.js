@@ -12,11 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initGalleryLightbox();
   initCustomCursor();
+  initNewsletterForm();
+  initAccessibilityHelpers();
+  initPageTransitions();
   updateYear();
 });
 
 /**
- * Mobile Navigation Menu Toggle
+ * Mobile Navigation Menu Toggle with Inert Accessibility
  */
 function initMobileNav() {
   const menuBtn = document.getElementById('mobileMenuBtn');
@@ -24,16 +27,30 @@ function initMobileNav() {
 
   if (!menuBtn || !navLinks) return;
 
-  menuBtn.addEventListener('click', () => {
-    const isOpen = navLinks.classList.toggle('is-open');
+  const setNavState = (isOpen) => {
+    navLinks.classList.toggle('is-open', isOpen);
     menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    if (isOpen) {
+      navLinks.removeAttribute('aria-hidden');
+      navLinks.removeAttribute('inert');
+    } else {
+      navLinks.setAttribute('aria-hidden', 'true');
+      navLinks.setAttribute('inert', '');
+    }
+  };
+
+  // Set initial hidden state for closed menu
+  setNavState(false);
+
+  menuBtn.addEventListener('click', () => {
+    const isOpen = navLinks.classList.contains('is-open');
+    setNavState(!isOpen);
   });
 
   navLinks.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => {
       if (navLinks.classList.contains('is-open')) {
-        navLinks.classList.remove('is-open');
-        menuBtn.setAttribute('aria-expanded', 'false');
+        setNavState(false);
       }
     });
   });
@@ -283,4 +300,127 @@ function createResponsivePictureHTML(imgSrc, altText, options = {}) {
     <source type="image/jpeg" srcset="${jpegSrcset}" sizes="${sizes}">
     <img src="${fallbackSrc}" alt="${alt}" ${imgClassAttr} ${widthAttr} ${heightAttr} ${styleAttr} ${loadingAttr} ${fetchPriorityAttr}>
   </picture>`.replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Newsletter Form Submission Handler with Inline Feedback
+ */
+function initNewsletterForm() {
+  const form = document.getElementById('newsletterForm');
+  if (!form) return;
+
+  const emailInput = document.getElementById('newsletterEmail');
+  const feedback = document.getElementById('newsletterFeedback');
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!emailInput || !emailInput.value.trim()) return;
+
+    const email = emailInput.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (feedback) {
+        feedback.style.color = '#e74c3c';
+        feedback.style.fontSize = '0.8rem';
+        feedback.style.marginTop = '0.35rem';
+        feedback.textContent = 'Please enter a valid email address.';
+      }
+      return;
+    }
+
+    if (feedback) {
+      feedback.style.color = 'var(--accent-terracotta)';
+      feedback.style.fontSize = '0.82rem';
+      feedback.style.marginTop = '0.35rem';
+      feedback.textContent = '✦ Thank you for joining our Atelier Dispatch. Check your inbox for private lookbook access.';
+    }
+
+    emailInput.value = '';
+  });
+}
+
+/**
+ * Universal Accessibility Helpers: Escape Key & Focus Trap
+ */
+function initAccessibilityHelpers() {
+  // Global Escape key handler to close active overlays
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+
+    // Cart drawer
+    const cartDrawer = document.getElementById('cartDrawer');
+    if (cartDrawer && cartDrawer.classList.contains('is-open')) {
+      if (typeof closeCartDrawer === 'function') closeCartDrawer();
+      else cartDrawer.classList.remove('is-open');
+    }
+
+    // Product Quick View modal
+    const productModal = document.getElementById('productModal');
+    if (productModal && productModal.classList.contains('is-open')) {
+      if (typeof closeProductQuickViewModal === 'function') closeProductQuickViewModal();
+      else productModal.classList.remove('is-open');
+    }
+
+    // Gallery Lightbox modal
+    const galleryLightbox = document.getElementById('galleryLightbox');
+    if (galleryLightbox && galleryLightbox.classList.contains('is-open')) {
+      galleryLightbox.classList.remove('is-open');
+      galleryLightbox.setAttribute('aria-hidden', 'true');
+    }
+
+    // Mobile nav
+    const navLinks = document.getElementById('navLinks');
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    if (navLinks && navLinks.classList.contains('is-open')) {
+      navLinks.classList.remove('is-open');
+      navLinks.setAttribute('aria-hidden', 'true');
+      navLinks.setAttribute('inert', '');
+      if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Ensure interactive gallery items support keyboard navigation (Enter / Space)
+  const galleryItems = document.querySelectorAll('.gallery-item');
+  galleryItems.forEach(item => {
+    if (!item.hasAttribute('tabindex')) item.setAttribute('tabindex', '0');
+    if (!item.hasAttribute('role')) item.setAttribute('role', 'button');
+
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        item.click();
+      }
+    });
+  });
+}
+
+/**
+ * Shared Page Transition System
+ */
+function initPageTransitions() {
+  const links = document.querySelectorAll('a[href$=".html"]');
+  if (!links.length) return;
+
+  let overlay = document.querySelector('.page-transition-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'page-transition-overlay';
+    document.body.appendChild(overlay);
+  }
+
+  links.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const targetUrl = link.getAttribute('href');
+      if (!targetUrl || link.target === '_blank' || targetUrl.startsWith('#') || e.ctrlKey || e.metaKey) return;
+
+      const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+      const targetPath = targetUrl.split('/').pop();
+      if (currentPath === targetPath) return;
+
+      e.preventDefault();
+      overlay.classList.add('is-active');
+      setTimeout(() => {
+        window.location.href = targetUrl;
+      }, 220);
+    });
+  });
 }

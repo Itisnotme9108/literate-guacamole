@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Editorial Resort & Swimwear — Handmade Crochet Storefront
 
 An artisanal e-commerce storefront specializing in handmade crochet swimwear, bikinis, one-piece swimsuits, resort cover-ups, and beach accessories. Built using pure HTML5, CSS3, and vanilla JavaScript.
@@ -9,6 +8,3 @@ An artisanal e-commerce storefront specializing in handmade crochet swimwear, bi
 - **Seasonal Capsule Drops**: Filter products by seasonal collections (e.g. Amalfi Coast '26, Sienna Sunset).
 - **Custom Swim Fit Inquiry**: Bespoke measurement submission form collecting Bust, Underbust, Waist, and Hip dimensions in inches with structured `mailto:` fallback.
 - **Slide-Out Shopping Bag**: Persistent cart state via `localStorage` (`crochet_swim_cart_v1`) and Stripe Payment Link hooks.
-=======
-# bookish-invention
->>>>>>> cf4956b6f81dce030ef976772f8dea599e7f9db8

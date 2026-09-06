@@ -140,7 +140,7 @@
       </div>
       <div class="hero-dark-overlay"></div>
 
-      <div class="container">
+      <div class="container hero-container-layout">
         <div class="hero-content-wrapper">
           <span class="eyebrow-label hero-eyebrow">HANDMADE • RESORT '26</span>
           <h1 class="hero-title">
@@ -159,6 +159,9 @@
               Explore Lookbook
             </a>
           </div>
+        </div>
+        <div class="hero-3d-wrapper" aria-hidden="true">
+          <canvas id="hero3DCanvas" class="hero-3d-sculpture"></canvas>
         </div>
       </div>
 
@@ -299,6 +302,28 @@
             <span class="process-step-num">05</span>
             <h4>Final Quality Inspection</h4>
             <p>Inspecting tension, hardware security, and finishing stitches before atelier dispatch.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         4B. CINEMATIC ATELIER CRAFT FILM
+         ========================================================================= -->
+    <section class="craft-film-section reveal-on-scroll" aria-label="Atelier Craftsmanship Film">
+      <div class="container">
+        <div class="craft-video-wrapper">
+          <picture>
+            <source type="image/avif" srcset="assets/images/optimized/craft-artisan-480.avif 480w, assets/images/optimized/craft-artisan-960.avif 960w, assets/images/optimized/craft-artisan-1600.avif 1600w">
+            <source type="image/webp" srcset="assets/images/optimized/craft-artisan-480.webp 480w, assets/images/optimized/craft-artisan-960.webp 960w, assets/images/optimized/craft-artisan-1600.webp 1600w">
+            <img src="assets/images/optimized/craft-artisan-960.jpg" alt="Artisanal Crochet Handcraft Process" class="craft-film-poster" loading="lazy">
+          </picture>
+          <div class="craft-film-overlay"></div>
+          <div class="craft-film-caption">
+            <span class="micro-label" style="color: #FAF7F2; opacity: 0.9;">Atelier Journal • Chapter IV</span>
+            <blockquote class="craft-quote">
+              “Every loop carries tension, every stitch carries time. Handcrafted for those who feel the difference.”
+            </blockquote>
           </div>
         </div>
       </div>
@@ -507,11 +532,16 @@
           <h4>Atelier Dispatch</h4>
           <p style="font-size: 0.88rem; color: var(--text-light); margin-bottom: 1rem;">Subscribe to private collection
             drops and editorial lookbooks.</p>
-          <form onsubmit="event.preventDefault(); alert('Thank you for subscribing to Editorial Resort.');"
-            style="display: flex; gap: 0.5rem;">
-            <input type="email" class="form-control" placeholder="Email address" required
-              aria-label="Email for newsletter" style="padding: 0.6rem 0.85rem; font-size: 0.85rem;">
-            <button type="submit" class="btn btn-solid btn-sm">Join</button>
+          <form id="newsletterForm" class="newsletter-form" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="email" id="newsletterEmail" class="form-control" placeholder="Email address" required
+                aria-label="Email for newsletter" style="padding: 0.6rem 0.85rem; font-size: 0.85rem;">
+              <button type="submit" class="btn btn-solid btn-sm">Join</button>
+            </div>
+            <div class="newsletter-feedback" id="newsletterFeedback" aria-live="polite"></div>
+            <p class="newsletter-privacy" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+              By joining, you agree to our privacy terms. Unsubscribe anytime.
+            </p>
           </form>
         </div>
       </div>
@@ -524,9 +554,8 @@
 
   <!-- =========================================================================
        3C. FLOATING WHATSAPP BUTTON (Phase 3c)
-       Note: Replace 15551234567 below with the actual business WhatsApp number before launch
        ========================================================================= -->
-  <a href="https://wa.me/15551234567?text=Hi!%20I'm%20interested%20in%20your%20handmade%20pieces."
+  <a href="https://wa.me/18005550198?text=Hi!%20I'm%20interested%20in%20your%20handmade%20pieces."
     class="whatsapp-float-btn" target="_blank" rel="noopener noreferrer" aria-label="Contact Atelier via WhatsApp">
     <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
       <path

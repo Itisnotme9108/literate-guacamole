@@ -285,13 +285,15 @@ function renderProducts(items, container) {
     return;
   }
 
+  const isHomepageGrid = container.id === 'featuredProductsGrid' || Boolean(document.getElementById('heroSection'));
+
   items.forEach(product => {
     if (!activeCardSelections[product.id]) {
       activeCardSelections[product.id] = { top: null, bottom: null, size: null };
     }
 
     const card = document.createElement('article');
-    card.className = 'product-card';
+    card.className = `product-card ${isHomepageGrid ? 'minimal-editorial-card' : ''}`;
     card.id = `card-${product.id}`;
 
     const isSet = product.type === 'set';
@@ -343,43 +345,79 @@ function renderProducts(items, container) {
     const revCount = product.reviewsCount || 12;
     const descriptorText = product.descriptor || 'Handcrafted Resortware';
 
-    card.innerHTML = `
-      <div class="card-image-box">
-        <span class="card-category-tag">${escapeHTML(product.category)}</span>
-        <button class="favorite-btn ${isFav ? 'active' : ''}" data-id="${product.id}" aria-label="${isFav ? 'Remove from Wishlist' : 'Add to Wishlist'}">
-          ${isFav ? '♥' : '♡'}
-        </button>
+    if (isHomepageGrid) {
+      // Streamlined Editorial Luxury Card for Homepage Density
+      card.innerHTML = `
+        <div class="card-image-box">
+          <span class="card-category-tag">${escapeHTML(product.category)}</span>
+          <button class="favorite-btn ${isFav ? 'active' : ''}" data-id="${product.id}" aria-label="${isFav ? 'Remove from Wishlist' : 'Add to Wishlist'}">
+            ${isFav ? '♥' : '♡'}
+          </button>
 
-        ${createResponsivePictureHTML(product.image, product.name, { pictureClass: 'card-primary-img', imgClass: 'card-primary-img', sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', width: 960, height: 1280, loading: 'lazy' })}
-        ${createResponsivePictureHTML(secondaryImgSrc, `${product.name} Hover View`, { pictureClass: 'card-secondary-img', imgClass: 'card-secondary-img', sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', width: 960, height: 1280, loading: 'lazy' })}
-      </div>
-      <div class="card-content">
-        <div class="card-rating">
-          <span style="color: var(--accent-terracotta);">★</span>
-          <span>${ratingVal}</span>
-          <span style="color: var(--text-light); font-size: 0.76rem;">(${revCount})</span>
+          ${createResponsivePictureHTML(product.image, product.name, { pictureClass: 'card-primary-img', imgClass: 'card-primary-img', sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', width: 960, height: 1280, loading: 'lazy' })}
+          ${createResponsivePictureHTML(secondaryImgSrc, `${product.name} Hover View`, { pictureClass: 'card-secondary-img', imgClass: 'card-secondary-img', sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', width: 960, height: 1280, loading: 'lazy' })}
         </div>
-
-        <div class="card-header">
-          <h3 class="card-title">${escapeHTML(product.name)}</h3>
-          <span class="card-price">$${product.price.toFixed(2)}</span>
-        </div>
-
-        <p class="card-descriptor">${escapeHTML(descriptorText)}</p>
-
-        <div class="variant-selection-box">
-          ${swatchHTML}
-
-          <div class="card-validation-hint" id="hint-${product.id}">
-            * ${isSet ? 'Select Top & Bottom sizes' : 'Select a size'}
+        <div class="card-content">
+          <div class="card-rating">
+            <span style="color: var(--accent-terracotta);">★</span>
+            <span>${ratingVal}</span>
+            <span style="color: var(--text-light); font-size: 0.76rem;">(${revCount})</span>
           </div>
 
-          <button class="btn btn-solid btn-add-cart disabled" id="add-btn-${product.id}" data-id="${product.id}" disabled>
-            Add to Bag
-          </button>
+          <div class="card-header">
+            <h3 class="card-title">${escapeHTML(product.name)}</h3>
+            <span class="card-price">$${product.price.toFixed(2)}</span>
+          </div>
+
+          <p class="card-descriptor">${escapeHTML(descriptorText)}</p>
+
+          <div class="card-editorial-actions" style="margin-top: 1.25rem;">
+            <button class="btn btn-outline btn-block btn-quick-view-trigger" data-id="${product.id}" style="font-size: 0.82rem; padding: 0.65rem 1rem; letter-spacing: 0.08em; text-transform: uppercase;">
+              Quick View ✦
+            </button>
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    } else {
+      // Full Catalog Card for Shop Page
+      card.innerHTML = `
+        <div class="card-image-box">
+          <span class="card-category-tag">${escapeHTML(product.category)}</span>
+          <button class="favorite-btn ${isFav ? 'active' : ''}" data-id="${product.id}" aria-label="${isFav ? 'Remove from Wishlist' : 'Add to Wishlist'}">
+            ${isFav ? '♥' : '♡'}
+          </button>
+
+          ${createResponsivePictureHTML(product.image, product.name, { pictureClass: 'card-primary-img', imgClass: 'card-primary-img', sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', width: 960, height: 1280, loading: 'lazy' })}
+          ${createResponsivePictureHTML(secondaryImgSrc, `${product.name} Hover View`, { pictureClass: 'card-secondary-img', imgClass: 'card-secondary-img', sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', width: 960, height: 1280, loading: 'lazy' })}
+        </div>
+        <div class="card-content">
+          <div class="card-rating">
+            <span style="color: var(--accent-terracotta);">★</span>
+            <span>${ratingVal}</span>
+            <span style="color: var(--text-light); font-size: 0.76rem;">(${revCount})</span>
+          </div>
+
+          <div class="card-header">
+            <h3 class="card-title">${escapeHTML(product.name)}</h3>
+            <span class="card-price">$${product.price.toFixed(2)}</span>
+          </div>
+
+          <p class="card-descriptor">${escapeHTML(descriptorText)}</p>
+
+          <div class="variant-selection-box">
+            ${swatchHTML}
+
+            <div class="card-validation-hint" id="hint-${product.id}">
+              * ${isSet ? 'Select Top & Bottom sizes' : 'Select a size'}
+            </div>
+
+            <button class="btn btn-solid btn-add-cart disabled" id="add-btn-${product.id}" data-id="${product.id}" disabled>
+              Add to Bag
+            </button>
+          </div>
+        </div>
+      `;
+    }
 
     container.appendChild(card);
   });
@@ -395,11 +433,11 @@ function renderProducts(items, container) {
 const modalSelections = { top: null, bottom: null, size: null };
 
 function attachQuickViewModalListeners(container) {
-  container.querySelectorAll('.card-image-box').forEach(box => {
-    box.addEventListener('click', (e) => {
+  container.querySelectorAll('.card-image-box, .btn-quick-view-trigger').forEach(target => {
+    target.addEventListener('click', (e) => {
       if (e.target.classList.contains('favorite-btn')) return;
-      const card = box.closest('.product-card');
-      const prodId = card.id.replace('card-', '');
+      const card = target.closest('.product-card');
+      const prodId = card ? card.id.replace('card-', '') : target.getAttribute('data-id');
       const product = catalogProducts.find(p => p.id === prodId);
       if (product) openProductQuickViewModal(product);
     });

@@ -74,6 +74,9 @@ function initHeroAnimations() {
   const scrollIndicator = document.getElementById('heroScrollIndicator');
   const navbar = document.querySelector('.navbar');
 
+  // Enable initial pre-hide state only when GSAP timeline initializes
+  document.documentElement.classList.add('hero-anim-init');
+
   // Entrance Timeline
   const entranceTl = gsap.timeline({
     defaults: { ease: 'power3.out' },

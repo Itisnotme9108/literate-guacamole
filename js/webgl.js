@@ -183,4 +183,80 @@
       finishCurtainImmediate();
     }
   }
+
+  /**
+   * Persistent 3D Sculptural Hero Element (Artisanal Torus-Knot Sculpture)
+   */
+  function initPersistentHero3DObject() {
+    const canvas = document.getElementById('hero3DCanvas');
+    if (!canvas || window.innerWidth < 768 || prefersReducedMotion) return;
+
+    try {
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      const size = Math.min(window.innerWidth * 0.35, 420);
+      renderer.setSize(size, size);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+      camera.position.z = 4.8;
+
+      // Artisanal crochet loop / metallic ring sculpture geometry
+      const geometry = new THREE.TorusKnotGeometry(0.85, 0.26, 120, 16, 2, 3);
+      const material = new THREE.MeshStandardMaterial({
+        color: 0xEADCD0,
+        roughness: 0.3,
+        metalness: 0.35
+      });
+
+      const sculpture = new THREE.Mesh(geometry, material);
+      scene.add(sculpture);
+
+      // Soft warm editorial lighting
+      const ambientLight = new THREE.AmbientLight(0xFFFBF7, 0.85);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xE07A5F, 1.2);
+      dirLight.position.set(5, 5, 5);
+      scene.add(dirLight);
+
+      let mouseX = 0, mouseY = 0;
+      let targetX = 0, targetY = 0;
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 0.8;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 0.8;
+      });
+
+      function animate3D() {
+        requestAnimationFrame(animate3D);
+
+        targetX += (mouseX - targetX) * 0.05;
+        targetY += (mouseY - targetY) * 0.05;
+
+        sculpture.rotation.x += 0.004 + targetY * 0.02;
+        sculpture.rotation.y += 0.006 + targetX * 0.02;
+
+        const scrollY = window.scrollY || 0;
+        sculpture.position.y = -scrollY * 0.0008;
+
+        renderer.render(scene, camera);
+      }
+
+      animate3D();
+    } catch (e) {
+      console.warn('Persistent 3D hero object skipped:', e);
+    }
+  }
+
+  // Trigger persistent 3D sculpture initialization if Three.js is present
+  if (isHomepage && !prefersReducedMotion && window.innerWidth >= 768) {
+    if (typeof THREE !== 'undefined') {
+      initPersistentHero3DObject();
+    } else {
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js', () => {
+        if (typeof THREE !== 'undefined') initPersistentHero3DObject();
+      });
+    }
+  }
 })();
