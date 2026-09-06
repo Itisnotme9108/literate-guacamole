@@ -3,6 +3,8 @@
  * Modular animation engine for editorial luxury aesthetics.
  */
 
+let lenis = null;
+
 document.addEventListener('DOMContentLoaded', () => {
   // Check if GSAP and ScrollTrigger are loaded
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
@@ -10,15 +12,28 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  gsap.registerPlugin(ScrollTrigger);
+  if (typeof DrawSVGPlugin !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin);
+  } else {
+    gsap.registerPlugin(ScrollTrigger);
+  }
 
   // Check prefers-reduced-motion preference
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) {
     console.log('Prefers-reduced-motion detected: GSAP animations disabled for accessibility.');
+    const threadPath = document.getElementById('stitchThreadPath');
+    if (threadPath) {
+      if (typeof DrawSVGPlugin !== 'undefined') {
+        gsap.set(threadPath, { drawSVG: '100%' });
+      } else {
+        threadPath.style.strokeDashoffset = '0';
+      }
+    }
     return;
   }
 
+  initLenisSmoothScroll();
   initNavScrollAnimation();
   initHeroAnimations();
   initCollectionsAnimations();
@@ -29,6 +44,29 @@ document.addEventListener('DOMContentLoaded', () => {
   initTestimonialsAnimations();
   initProductSpotlightTilt();
 });
+
+/**
+ * Phase 1: Lenis Smooth Scroll Integration (GSAP ScrollTrigger Sync)
+ */
+function initLenisSmoothScroll() {
+  if (typeof Lenis === 'undefined') return;
+
+  lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    touchMultiplier: 1.5,
+  });
+
+  lenis.on('scroll', ScrollTrigger.update);
+
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+
+  gsap.ticker.lagSmoothing(0);
+  window.__lenis = lenis;
+}
 
 /**
  * Navigation Scroll Refinement & Elevation
@@ -353,11 +391,42 @@ function initProcessAnimations() {
     );
   }
 
+  const threadPath = document.getElementById('stitchThreadPath');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // DrawSVG Signature Narrative Thread Animation
+  let pathLength = 0;
+  if (threadPath) {
+    if (typeof DrawSVGPlugin !== 'undefined') {
+      gsap.fromTo(threadPath, 
+        { drawSVG: '0%' },
+        { 
+          drawSVG: '100%', 
+          ease: 'none',
+          scrollTrigger: {
+            trigger: processSection,
+            start: 'top 65%',
+            end: 'bottom 45%',
+            scrub: true
+          }
+        }
+      );
+    } else {
+      pathLength = threadPath.getTotalLength();
+      threadPath.style.strokeDasharray = pathLength;
+      threadPath.style.strokeDashoffset = pathLength;
+    }
+  }
+
   function setActiveStep(activeIndex) {
     stepItems.forEach((item, idx) => {
       item.classList.remove('is-active', 'is-passed');
       if (idx === activeIndex) {
         item.classList.add('is-active');
+        const num = item.querySelector('.process-step-num');
+        if (num && !prefersReducedMotion) {
+          gsap.fromTo(num, { scale: 1.05 }, { scale: 1.15, duration: 0.35, ease: 'back.out(1.7)', overwrite: 'auto' });
+        }
       } else if (idx < activeIndex) {
         item.classList.add('is-passed');
       }
@@ -389,6 +458,11 @@ function initProcessAnimations() {
       const rawStep = progress * (totalSteps - 0.001);
       const activeIdx = Math.min(Math.floor(rawStep), totalSteps - 1);
       setActiveStep(activeIdx);
+
+      // Fallback manual stroke-dashoffset if DrawSVGPlugin is not active
+      if (threadPath && typeof DrawSVGPlugin === 'undefined' && !prefersReducedMotion && pathLength > 0) {
+        threadPath.style.strokeDashoffset = pathLength * (1 - progress);
+      }
     }
   });
 
