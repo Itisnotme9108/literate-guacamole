@@ -3,8 +3,6 @@
  * Modular animation engine for editorial luxury aesthetics.
  */
 
-let lenis = null;
-
 document.addEventListener('DOMContentLoaded', () => {
   // Check if GSAP and ScrollTrigger are loaded
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
@@ -33,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  initLenisSmoothScroll();
   initNavScrollAnimation();
   initHeroAnimations();
   initCollectionsAnimations();
@@ -44,29 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initTestimonialsAnimations();
   initProductSpotlightTilt();
 });
-
-/**
- * Phase 1: Lenis Smooth Scroll Integration (GSAP ScrollTrigger Sync)
- */
-function initLenisSmoothScroll() {
-  if (typeof Lenis === 'undefined') return;
-
-  lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-    touchMultiplier: 1.5,
-  });
-
-  lenis.on('scroll', ScrollTrigger.update);
-
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000);
-  });
-
-  gsap.ticker.lagSmoothing(0);
-  window.__lenis = lenis;
-}
 
 /**
  * Navigation Scroll Refinement & Elevation

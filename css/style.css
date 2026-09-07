@@ -65,7 +65,6 @@
 }
 
 html {
-  scroll-behavior: smooth;
   font-size: 16px;
 }
 
@@ -443,44 +442,12 @@ h4 { font-size: 1.2rem; }
   z-index: 2;
 }
 
-.hero-container-layout {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  z-index: 3;
-  gap: 2.5rem;
-}
-
 .hero-content-wrapper {
   position: relative;
   z-index: 3;
-  max-width: 680px;
+  max-width: 720px;
   padding: 4rem 0;
   color: #FFFFFF;
-}
-
-.hero-3d-wrapper {
-  flex: 0 0 380px;
-  height: 380px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.hero-3d-sculpture {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.25));
-}
-
-@media (max-width: 991px) {
-  .hero-3d-wrapper {
-    display: none;
-  }
 }
 
 .hero-eyebrow {
