@@ -1,245 +1,50 @@
 [
   {
-    "id": "swim-001",
-    "name": "The Sienna Crochet Bikini Set",
-    "price": 185.00,
-    "category": "Bikini Sets",
-    "subCategory": "bikini-sets",
-    "type": "set",
-    "collection": "sienna-sunset",
-    "image": "assets/images/sienna-set.svg",
-    "secondaryImage": "assets/images/solis-set.svg",
-    "descriptor": "Hand-crocheted • Unbleached organic linen",
-    "description": "Hand-stitched from unbleached organic linen yarn. Features a minimal halter triangle top and high-cut skimpy bottoms with delicate hand-knotted ties.",
+    "id": "drs-bur-cro-001",
+    "name": "Burgundy Crochet Maxi Dress",
+    "price": null,
+    "category": "Dresses",
+    "subCategory": "dresses",
+    "type": "single",
+    "collection": ["Crochet Dresses", "Maxi Dresses", "Resort Wear", "New Arrivals"],
+    "image": "assets/images/burgundy-crochet-maxi-dress-01-hero-front.webp",
+    "secondaryImage": "assets/images/burgundy-crochet-maxi-dress-02-open-back.webp",
+    "gallery": [
+      { "role": "hero", "src": "assets/images/burgundy-crochet-maxi-dress-01-hero-front.webp", "alt": "Burgundy crochet maxi dress front view" },
+      { "role": "feature", "src": "assets/images/burgundy-crochet-maxi-dress-02-open-back.webp", "alt": "Burgundy crochet maxi dress with open back" },
+      { "role": "fit", "src": "assets/images/burgundy-crochet-maxi-dress-03-side-silhouette.webp", "alt": "Burgundy crochet maxi dress side silhouette" },
+      { "role": "craft", "src": "assets/images/burgundy-crochet-maxi-dress-04-crochet-detail.webp", "alt": "Close-up of intricate crochet detailing on a burgundy maxi dress" },
+      { "role": "editorial", "src": "assets/images/burgundy-crochet-maxi-dress-05-seated-editorial.webp", "alt": "Model wearing a burgundy crochet maxi dress seated indoors" },
+      { "role": "lifestyle", "src": "assets/images/burgundy-crochet-maxi-dress-06-window-lifestyle.webp", "alt": "Model wearing a burgundy crochet maxi dress beside a seaside window" }
+    ],
+    "descriptor": "Handcrafted crochet maxi dress with an open back and flowing full-length silhouette.",
+    "description": "The Burgundy Crochet Maxi Dress is a statement piece crafted for effortless, resort-inspired dressing. Featuring an open-back design, flowing full-length silhouette and intricate crochet detailing, it brings texture and movement to warm-weather occasions.",
+    "details": [
+      "Full-length maxi silhouette",
+      "Open-back design",
+      "Intricate crochet construction",
+      "Flowing, feminine silhouette",
+      "Burgundy colorway",
+      "Designed for resort and occasion styling"
+    ],
+    "color": "Burgundy",
+    "sku": "DRS-BUR-CRO-001",
+    "seoTitle": "Burgundy Crochet Maxi Dress | Editorial Resort",
+    "metaDescription": "Discover our Burgundy Crochet Maxi Dress with an open back, flowing silhouette and intricate crochet detailing, designed for effortless resort and summer dressing.",
+    "primaryKeyword": "burgundy crochet maxi dress",
+    "secondaryKeywords": ["crochet maxi dress", "burgundy crochet dress", "open back crochet dress", "crochet resort dress", "crochet summer dress", "crochet vacation dress"],
     "variants": {
-      "top": [
-        "XS",
-        "S",
-        "M",
-        "L"
-      ],
-      "bottom": [
-        "XS",
-        "S",
-        "M",
-        "L"
-      ]
+      "size": ["TBD"]
     },
+    "material": "TBD",
+    "fit": "TBD",
+    "care": "TBD",
+    "shipping": "TBD",
+    "stock": "TBD",
+    "measurements": "TBD",
     "inStock": true,
     "featured": true,
-    "rating": 5.0,
-    "reviewsCount": 24
-  },
-  {
-    "id": "swim-002",
-    "name": "The Amalfi Terracotta Halter Top",
-    "price": 95.00,
-    "category": "Tops",
-    "subCategory": "tops",
-    "type": "single",
-    "collection": "amalfi-26",
-    "image": "assets/images/amalfi-top.svg",
-    "secondaryImage": "assets/images/capri-top.svg",
-    "descriptor": "Hand-knitted • Terracotta rib",
-    "description": "Sculptural ribbed crochet halter top in warm terracotta. Designed for light support with self-tie back straps and scalloped edges.",
-    "variants": {
-      "size": [
-        "XS",
-        "S",
-        "M",
-        "L"
-      ]
-    },
-    "inStock": true,
-    "featured": true,
-    "rating": 4.9,
-    "reviewsCount": 18
-  },
-  {
-    "id": "swim-003",
-    "name": "The Dune Ribbed Cheeky Bottom",
-    "price": 85.00,
-    "category": "Bottoms",
-    "subCategory": "bottoms",
-    "type": "single",
-    "collection": "amalfi-26",
-    "image": "assets/images/dune-bottom.svg",
-    "secondaryImage": "assets/images/bone-shorts.svg",
-    "descriptor": "Minimalist high-leg • Dune beige cotton",
-    "description": "Minimalist high-leg crochet swim bottoms crafted in dune beige cotton yarn. Fast-drying weave with hidden elastic reinforcement.",
-    "variants": {
-      "size": [
-        "XS",
-        "S",
-        "M",
-        "L"
-      ]
-    },
-    "inStock": true,
-    "featured": false,
-    "rating": 4.8,
-    "reviewsCount": 14
-  },
-  {
-    "id": "swim-004",
-    "name": "The Paloma Resort Monokini Set",
-    "price": 220.00,
-    "category": "Bikini Sets",
-    "subCategory": "bikini-sets",
-    "type": "set",
-    "collection": "amalfi-26",
-    "image": "assets/images/paloma-set.svg",
-    "secondaryImage": "assets/images/sienna-set.svg",
-    "descriptor": "Resort Cutout • Sheer black lace",
-    "description": "Statement cutout crochet set featuring an adjustable bralette top and high-waist vintage-cut bottom connected by sheer lace detailing.",
-    "variants": {
-      "top": [
-        "XS",
-        "S",
-        "M",
-        "L"
-      ],
-      "bottom": [
-        "XS",
-        "S",
-        "M",
-        "L"
-      ]
-    },
-    "inStock": true,
-    "featured": true,
-    "rating": 5.0,
-    "reviewsCount": 31
-  },
-  {
-    "id": "swim-005",
-    "name": "The Olive Knit Bralette Intimate",
-    "price": 110.00,
-    "category": "Intimates",
-    "subCategory": "intimates",
-    "type": "single",
-    "collection": "sienna-sunset",
-    "image": "assets/images/olive-bralette.svg",
-    "secondaryImage": "assets/images/amalfi-top.svg",
-    "descriptor": "Fine bamboo thread • Soft unlined fit",
-    "description": "Ultra-soft intimate bralette crocheted in fine muted olive bamboo thread. Unlined silhouette designed for lounging and low-impact wear.",
-    "variants": {
-      "size": [
-        "XS",
-        "S",
-        "M",
-        "L"
-      ]
-    },
-    "inStock": true,
-    "featured": false,
-    "rating": 4.9,
-    "reviewsCount": 22
-  },
-  {
-    "id": "swim-006",
-    "name": "The Solis Terracotta Bikini Set",
-    "price": 195.00,
-    "category": "Bikini Sets",
-    "subCategory": "bikini-sets",
-    "type": "set",
-    "collection": "amalfi-26",
-    "image": "assets/images/solis-set.svg",
-    "secondaryImage": "assets/images/paloma-set.svg",
-    "descriptor": "Molded cup set • Brass hardware",
-    "description": "Earthy terracotta crochet bikini pairing a soft molded cup top with adjustable tie-side bottoms. Accented with brass bead hardware.",
-    "variants": {
-      "top": [
-        "XS",
-        "S",
-        "M",
-        "L"
-      ],
-      "bottom": [
-        "XS",
-        "S",
-        "M",
-        "L"
-      ]
-    },
-    "inStock": true,
-    "featured": true,
-    "rating": 5.0,
-    "reviewsCount": 19
-  },
-  {
-    "id": "swim-007",
-    "name": "The Bone Knit Lounge Short Intimate",
-    "price": 90.00,
-    "category": "Intimates",
-    "subCategory": "intimates",
-    "type": "single",
-    "collection": "sienna-sunset",
-    "image": "assets/images/bone-shorts.svg",
-    "secondaryImage": "assets/images/dune-bottom.svg",
-    "descriptor": "High-waist lounge • Unbleached bone",
-    "description": "Relaxed high-waist knit lounge shorts in unbleached bone yarn. Features a drawstring waist and fine scalloped hems.",
-    "variants": {
-      "size": [
-        "XS",
-        "S",
-        "M",
-        "L"
-      ]
-    },
-    "inStock": true,
-    "featured": false,
-    "rating": 4.8,
-    "reviewsCount": 16
-  },
-  {
-    "id": "swim-008",
-    "name": "The Capri Underwire Crochet Top",
-    "price": 115.00,
-    "category": "Tops",
-    "subCategory": "tops",
-    "type": "single",
-    "collection": "amalfi-26",
-    "image": "assets/images/capri-top.svg",
-    "secondaryImage": "assets/images/amalfi-top.svg",
-    "descriptor": "Underwire support • Gold clasp detail",
-    "description": "Structured crochet top featuring subtle underwire support, wide shoulder straps, and custom gold-toned back clasp.",
-    "variants": {
-      "size": [
-        "XS",
-        "S",
-        "M",
-        "L"
-      ]
-    },
-    "inStock": true,
-    "featured": false,
-    "rating": 4.9,
-    "reviewsCount": 27
-  },
-  {
-    "id": "resort-001",
-    "name": "The Mallorca Ring-Front Crochet Dress",
-    "price": 210.00,
-    "category": "Resortwear",
-    "subCategory": "resortwear",
-    "type": "single",
-    "collection": "amalfi-26",
-    "image": "assets/images/aegean-crochet-dress.jpg",
-    "secondaryImage": "assets/images/aegean-crochet-dress.jpg",
-    "descriptor": "Chunky crochet rib • Slate blue knit",
-    "description": "Sculpted from a breathable cotton-linen ribbed crochet in soft slate blue. Features a plunging neckline, tonal ring-bound waist cutouts, and bishop sleeves with handcrafted tassel ties.",
-    "variants": {
-      "size": [
-        "XS",
-        "S",
-        "M",
-        "L"
-      ]
-    },
-    "inStock": true,
-    "featured": true,
-    "rating": 5.0,
-    "reviewsCount": 18
+    "rating": null,
+    "reviewsCount": 0
   }
 ]

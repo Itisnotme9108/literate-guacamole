@@ -16,8 +16,7 @@
       .js-enabled .hero-eyebrow,
       .js-enabled .hero-title,
       .js-enabled .hero-tagline,
-      .js-enabled .hero-cta-group .btn,
-      .js-enabled #heroScrollIndicator {
+      .js-enabled .hero-cta-group .btn {
         opacity: 1 !important;
         transform: none !important;
       }
@@ -25,13 +24,13 @@
   </noscript>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Readymade Swimwear &amp; Resortwear Catalog — EDITORIAL RESORT</title>
-  <meta name="description" content="Browse our complete collection of artisanal crochet bikinis, swim tops, cheeky bottoms, and intimate wear. Independent top and bottom sizing.">
+  <title>Product Details — EDITORIAL RESORT</title>
+  <meta name="description" content="Explore handcrafted artisanal crochet swimwear, custom dual-sizing options, and editorial resort wear.">
   
   <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="Readymade Swim Catalog — EDITORIAL RESORT">
-  <meta property="og:description" content="Browse artisanal swim sets with tailored dual sizing options.">
-  <meta property="og:type" content="website">
+  <meta property="og:title" content="Product Details — EDITORIAL RESORT">
+  <meta property="og:description" content="Handcrafted crochet swimwear with independent top & bottom sizing.">
+  <meta property="og:type" content="product">
 
   <!-- Google Fonts Integration -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,6 +40,9 @@
   <!-- External Stylesheets (Relative to /pages/) -->
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  
+  <!-- JSON-LD Product Schema Placeholder -->
+  <script type="application/ld+json" id="jsonLdProductSchema"></script>
 </head>
 <body>
 
@@ -96,86 +98,142 @@
     </div>
   </header>
 
-  <main style="padding: 4rem 0 6rem;">
+  <!-- =========================================================================
+       MAIN PRODUCT DETAIL VIEW
+       ========================================================================= -->
+  <main style="padding: 2.5rem 0 6rem;" id="pdpMain">
     <div class="container">
-      <div class="section-header">
-        <span class="micro-label">ATELIER CATALOG</span>
-        <h2>Readymade Swim &amp; Resortwear</h2>
-        <p>Select your preferred top and bottom sizes independently before adding set products to your bag.</p>
+      <!-- Breadcrumbs -->
+      <nav class="pdp-breadcrumbs" aria-label="Breadcrumb" id="pdpBreadcrumbNav">
+        <a href="../index.html">Home</a>
+        <span class="sep">/</span>
+        <a href="shop.html">Shop</a>
+        <span class="sep">/</span>
+        <a href="shop.html" id="breadcrumbCategory">Category</a>
+        <span class="sep">/</span>
+        <span id="breadcrumbTitle" class="current">Product Title</span>
+      </nav>
+
+      <!-- Main PDP Grid Layout -->
+      <div class="pdp-layout" id="pdpLayout">
+        <!-- Gallery Column -->
+        <div class="pdp-gallery-col" id="pdpGalleryCol">
+          <div class="pdp-gallery-mobile-counter" id="pdpMobileCounter" style="display: none;">
+            <span id="pdpCounterText">1 / 1</span>
+          </div>
+          <div class="pdp-gallery-stack" id="pdpGalleryStack">
+            <!-- Gallery images injected client-side -->
+          </div>
+        </div>
+
+        <!-- Info Column (Sticky Desktop Panel) -->
+        <div class="pdp-info-col" id="pdpInfoCol">
+          <div class="pdp-sticky-box">
+            <div class="pdp-header">
+              <span class="micro-label" id="pdpCategoryLabel">Resortwear</span>
+              <h1 class="pdp-title" id="pdpTitle">Product Name</h1>
+              
+              <div class="pdp-meta-row">
+                <span class="pdp-price" id="pdpPrice">$0.00</span>
+                <div class="pdp-rating-badge">
+                  <span class="star">★</span>
+                  <span id="pdpRatingVal">5.0</span>
+                  <span class="count" id="pdpReviewsCount">(0 reviews)</span>
+                </div>
+              </div>
+
+              <p class="pdp-descriptor" id="pdpDescriptor"></p>
+            </div>
+
+            <!-- Variant Swatch Selector Box -->
+            <div class="pdp-variants-wrapper" id="pdpVariantsWrapper">
+              <!-- Swatches injected client-side -->
+            </div>
+
+            <div class="pdp-validation-hint" id="pdpValidationHint">
+              * Select a size to add to bag
+            </div>
+
+            <!-- Action Buttons Row -->
+            <div class="pdp-cta-row">
+              <button class="btn btn-solid pdp-add-cart-btn disabled" id="pdpAddToCartBtn" disabled>
+                Add to Bag
+              </button>
+              <button class="favorite-btn pdp-fav-btn" id="pdpWishlistBtn" aria-label="Add to Wishlist">
+                ♡
+              </button>
+            </div>
+
+            <!-- PDP Accordion Section -->
+            <div class="pdp-accordion" id="pdpAccordion">
+              <div class="accordion-item is-open">
+                <button class="accordion-header" aria-expanded="true">
+                  <h2 class="accordion-h2">Product Details</h2>
+                  <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                  <p id="pdpDescriptionText"></p>
+                  <ul class="pdp-details-list" id="pdpDetailsList" style="margin-top: 1rem; display: none;"></ul>
+                </div>
+              </div>
+
+              <div class="accordion-item" id="accordionSizeFit">
+                <button class="accordion-header" aria-expanded="false">
+                  <h2 class="accordion-h2">Size &amp; Fit Guide</h2>
+                  <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                  <p id="pdpFitText">Our pieces feature independent top &amp; bottom sizing to accommodate unique silhouettes.</p>
+                  <p id="pdpMeasurementsText" style="margin-top: 0.5rem;"><strong>XS:</strong> US 0–2 | <strong>S:</strong> US 4–6 | <strong>M:</strong> US 8–10 | <strong>L:</strong> US 12–14</p>
+                </div>
+              </div>
+
+              <div class="accordion-item" id="accordionShipping">
+                <button class="accordion-header" aria-expanded="false">
+                  <h2 class="accordion-h2">Shipping &amp; Returns</h2>
+                  <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                  <p id="pdpShippingText">Complimentary express shipping on all orders over $200. Made-to-order items ship within 5–7 business days. Returns accepted within 14 days of delivery in unworn condition with hygienic liners intact.</p>
+                </div>
+              </div>
+
+              <div class="accordion-item" id="accordionCare">
+                <button class="accordion-header" aria-expanded="false">
+                  <h2 class="accordion-h2">Care Instructions</h2>
+                  <span class="icon">+</span>
+                </button>
+                <div class="accordion-content">
+                  <p id="pdpCareText">Hand wash cold with mild eco-friendly detergent. Lay flat in shade to dry. Avoid wringing or tumble drying to preserve crochet fiber elasticity.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Category Filter Tabs -->
-      <div class="filter-tabs" role="tablist" aria-label="Category Filters">
-        <button class="filter-tab-btn active" data-category="all" role="tab" aria-selected="true">All Pieces</button>
-        <button class="filter-tab-btn" data-category="resortwear" role="tab" aria-selected="false">Resort Wear</button>
-        <button class="filter-tab-btn" data-category="dresses" role="tab" aria-selected="false">Dresses</button>
-        <button class="filter-tab-btn" data-category="bikini-sets" role="tab" aria-selected="false">Bikini Sets</button>
-        <button class="filter-tab-btn" data-category="tops" role="tab" aria-selected="false">Swim Tops</button>
-        <button class="filter-tab-btn" data-category="bottoms" role="tab" aria-selected="false">Swim Bottoms</button>
-        <button class="filter-tab-btn" data-category="intimates" role="tab" aria-selected="false">Resort Intimates</button>
-      </div>
-
-      <!-- Catalog Product Grid (Populated dynamically via js/products.js) -->
-      <div class="products-grid" id="catalogProductsGrid"></div>
+      <!-- Conditional Editorial Brand Story Section -->
+      <section class="pdp-brand-story-section" id="pdpBrandStorySection" style="display: none;">
+        <div class="story-section-header">
+          <span class="micro-label">Atelier Story &amp; Vision</span>
+          <h2 class="story-title" id="pdpBrandStoryTitle">Crafted for Sunlit Moments</h2>
+        </div>
+        <div class="story-grid" id="pdpBrandStoryGrid">
+          <!-- Story items injected client-side -->
+        </div>
+      </section>
     </div>
   </main>
 
-  <!-- =========================================================================
-       FOOTER
-       ========================================================================= -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <span class="brand-wordmark">Editorial Resort</span>
-          <p>A luxury resort-wear and intimate apparel studio. Handcrafted with unbleached organic linen, bamboo, and sustainable cotton threads.</p>
-        </div>
-        <div class="footer-column">
-          <h4>Navigation</h4>
-          <ul class="footer-links">
-            <li><a href="../index.html">Home</a></li>
-            <li><a href="shop.html">Shop Catalog</a></li>
-            <li><a href="collections.html">Collections</a></li>
-            <li><a href="bespoke.html">Custom Fit</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h4>Swim Categories</h4>
-          <ul class="footer-links">
-            <li><a href="shop.html?category=bikini-sets">Bikini Sets</a></li>
-            <li><a href="shop.html?category=tops">Swim Tops</a></li>
-            <li><a href="shop.html?category=bottoms">Swim Bottoms</a></li>
-            <li><a href="shop.html?category=intimates">Resort Intimates</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h4>Atelier Contact</h4>
-          <p style="font-size: 0.9rem; color: var(--text-light);">atelier@editorialresort.com</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; <span id="currentYear">2026</span> EDITORIAL RESORT ATELIER. ALL RIGHTS RESERVED.</p>
-      </div>
+  <!-- Mobile Sticky Bottom Bar -->
+  <div class="mobile-pdp-sticky-bar" id="mobilePdpStickyBar">
+    <div class="bar-price-box">
+      <span class="bar-label">Total</span>
+      <span class="bar-price" id="mobileBarPrice">$0.00</span>
     </div>
-  </footer>
-
-  <!-- Floating WhatsApp Action Button -->
-  <a href="https://wa.me/18005550198?text=Hi!%20I'm%20interested%20in%20your%20handmade%20pieces." 
-     class="whatsapp-float-btn" 
-     target="_blank" 
-     rel="noopener noreferrer" 
-     aria-label="Contact Atelier via WhatsApp">
-    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
-    </svg>
-  </a>
-
-  <!-- Product Quick-View Modal Container -->
-  <div class="product-modal-backdrop" id="productQuickViewBackdrop" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Product Quick View">
-    <div class="product-modal">
-      <button class="modal-close-btn" id="productModalCloseBtn" aria-label="Close product view">&times;</button>
-      <div id="productModalBody" class="product-modal-body"></div>
-    </div>
+    <button class="btn btn-solid mobile-bar-add-btn disabled" id="mobileBarAddToCartBtn" disabled>
+      Select a Size
+    </button>
   </div>
 
   <!-- Slide-Out Shopping Cart Drawer -->
@@ -185,9 +243,7 @@
         <h3>Shopping Bag</h3>
         <button class="drawer-close-btn" id="cartDrawerCloseBtn" aria-label="Close Shopping Bag">&times;</button>
       </div>
-
       <div class="drawer-body" id="cartDrawerItems"></div>
-
       <div class="drawer-footer">
         <div class="drawer-subtotal">
           <span>Subtotal</span>
@@ -214,11 +270,9 @@
         </div>
         <button class="search-close-btn" id="searchCloseBtn" aria-label="Close search overlay">Close &times;</button>
       </div>
-
       <div class="search-status-bar">
         <span id="searchResultCount">Start typing to search our atelier collection...</span>
       </div>
-
       <div class="search-results-wrapper" id="searchResultsWrapper">
         <div class="search-results-list" id="searchResultsList"></div>
       </div>
@@ -236,15 +290,22 @@
     </div>
   </div>
 
-  <!-- GSAP & DrawSVG Libraries -->
+  <!-- Quick-View Modal Backdrop (for fallback modal access) -->
+  <div class="product-modal-backdrop" id="productQuickViewBackdrop" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Product Quick View">
+    <div class="product-modal-container">
+      <button class="product-modal-close-btn" id="productModalCloseBtn" aria-label="Close modal">&times;</button>
+      <div class="product-modal-body" id="productModalBody"></div>
+    </div>
+  </div>
+
+  <!-- GSAP Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/DrawSVGPlugin.min.js"></script>
-  <script src="../js/animations.js"></script>
 
   <!-- JavaScript Modules -->
   <script src="../js/main.js"></script>
   <script src="../js/cart.js"></script>
   <script src="../js/products.js"></script>
+  <script src="../js/product-detail.js"></script>
 </body>
 </html>

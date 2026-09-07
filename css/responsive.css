@@ -395,9 +395,63 @@ html, body {
     gap: 2.5rem;
   }
 
-  .footer-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
+  /* Product Detail Page (PDP) Mobile Layout */
+  .pdp-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .pdp-sticky-box {
+    position: static;
+    gap: 1.25rem;
+  }
+
+  .pdp-gallery-col {
+    position: relative;
+  }
+
+  .pdp-gallery-stack {
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 0;
+    border-radius: var(--radius-strict);
+    scrollbar-width: none;
+  }
+
+  .pdp-gallery-stack::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp-gallery-item {
+    flex: 0 0 100%;
+    width: 100%;
+    scroll-snap-align: start;
+  }
+
+  .pdp-gallery-mobile-counter {
+    display: block !important;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(26, 22, 21, 0.75);
+    color: #FFFFFF;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    z-index: 5;
+    backdrop-filter: blur(4px);
+    letter-spacing: 1px;
+  }
+
+  .mobile-pdp-sticky-bar {
+    display: flex !important;
+  }
+
+  body:has(.mobile-pdp-sticky-bar) main {
+    padding-bottom: 7rem !important;
   }
 }
 

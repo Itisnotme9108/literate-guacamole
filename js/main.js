@@ -537,7 +537,7 @@ function initSearchOverlay() {
               <h4>${escapeHTML(item.name)}</h4>
               <p>${escapeHTML(item.category)} &nbsp;•&nbsp; ${escapeHTML(item.descriptor || 'Handcrafted Resortware')}</p>
             </div>
-            <div class="search-result-price">$${item.price.toFixed(2)}</div>
+            <div class="search-result-price">${(item.price !== null && item.price !== undefined && item.price !== 'TBD') ? '$' + Number(item.price).toFixed(2) : 'Price TBD'}</div>
           </div>
         `;
       }).join('');
@@ -548,12 +548,8 @@ function initSearchOverlay() {
           const prodId = el.getAttribute('data-id');
           const targetProduct = items.find(p => p.id === prodId);
           closeSearch();
-          if (targetProduct && typeof openProductQuickViewModal === 'function') {
-            openProductQuickViewModal(targetProduct);
-          } else {
-            const targetPage = isInsidePages ? 'shop.html' : 'pages/shop.html';
-            window.location.href = `${targetPage}?category=${targetProduct?.subCategory || 'all'}`;
-          }
+          const targetPage = isInsidePages ? `product.html?id=${prodId}` : `pages/product.html?id=${prodId}`;
+          window.location.href = targetPage;
         });
       });
     }
@@ -663,7 +659,7 @@ function initWishlistUI() {
           <div class="wishlist-item-info">
             <h4>${escapeHTML(item.name)}</h4>
             <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHTML(item.category)}</div>
-            <div style="font-weight: 600; color: var(--accent-espresso); margin-top: 0.2rem;">$${item.price.toFixed(2)}</div>
+            <div style="font-weight: 600; color: var(--accent-espresso); margin-top: 0.2rem;">${(item.price !== null && item.price !== undefined && item.price !== 'TBD') ? '$' + Number(item.price).toFixed(2) : 'Price TBD'}</div>
           </div>
           <div style="display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end;">
             <button class="btn btn-solid btn-sm" onclick="openWishlistItemQuickView('${item.id}')" style="font-size: 0.75rem; padding: 0.4rem 0.75rem;">View &amp; Bag</button>

@@ -235,7 +235,7 @@ function renderGallery(items) {
         <h3 class="card-title">${escapeHTML(product.name)}</h3>
         <p class="card-description">${escapeHTML(product.description)}</p>
         <div class="card-footer">
-          <span class="card-price">$${product.price.toFixed(2)}</span>
+          <span class="card-price">${(product.price !== null && product.price !== undefined && product.price !== 'TBD') ? '$' + Number(product.price).toFixed(2) : 'Price TBD'}</span>
           <button class="btn btn-secondary btn-sm quick-view-btn" data-id="${product.id}" aria-label="View details for ${escapeHTML(product.name)}">
             View Details ✦
           </button>
@@ -304,7 +304,7 @@ function openQuickViewModal(product) {
         </span>
         <h3 style="font-size: 1.6rem; margin-bottom: 0.5rem;">${escapeHTML(product.name)}</h3>
         <p style="font-family: var(--font-heading); font-size: 1.4rem; color: var(--pastel-terracotta-dark); font-weight: 700; margin-bottom: 1rem;">
-          $${product.price.toFixed(2)}
+          ${(product.price !== null && product.price !== undefined && product.price !== 'TBD') ? '$' + Number(product.price).toFixed(2) : 'Price TBD'}
         </p>
         <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6;">
           ${escapeHTML(product.description)}

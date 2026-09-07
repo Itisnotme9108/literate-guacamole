@@ -1,171 +1,57 @@
 /**
  * Editorial Resort & Intimates - Product Catalog & Independent Sizing Module (Vanilla JS)
- * Handles JSON fetching, rendering upgraded product cards (secondary image swap, ratings, favorites),
- * independent top/bottom variant swatches, Add-to-cart validation gating, and category tab filtering.
+ * Handles JSON fetching, upgraded catalog card rendering with soft crossfade, desktop hover Quick Add,
+ * inline size selection, wishlist persistence, and PDP navigation.
  */
 
 const LOCAL_PRODUCTS_FALLBACK = [
   {
-    "id": "resort-001",
-    "name": "The Mallorca Ring-Front Crochet Dress",
-    "price": 210.00,
-    "category": "Resortwear",
-    "subCategory": "resortwear",
+    "id": "drs-bur-cro-001",
+    "name": "Burgundy Crochet Maxi Dress",
+    "price": null,
+    "category": "Dresses",
+    "subCategory": "dresses",
     "type": "single",
-    "collection": "amalfi-26",
-    "image": "assets/images/aegean-crochet-dress.jpg",
-    "secondaryImage": "assets/images/aegean-crochet-dress.jpg",
-    "descriptor": "Chunky crochet rib • Slate blue knit",
-    "description": "Sculpted from a breathable cotton-linen ribbed crochet in soft slate blue. Features a plunging neckline, tonal ring-bound waist cutouts, and bishop sleeves with handcrafted tassel ties.",
-    "variants": { "size": ["XS", "S", "M", "L"] },
+    "collection": ["Crochet Dresses", "Maxi Dresses", "Resort Wear", "New Arrivals"],
+    "image": "assets/images/burgundy-crochet-maxi-dress-01-hero-front.webp",
+    "secondaryImage": "assets/images/burgundy-crochet-maxi-dress-02-open-back.webp",
+    "gallery": [
+      { "role": "hero", "src": "assets/images/burgundy-crochet-maxi-dress-01-hero-front.webp", "alt": "Burgundy crochet maxi dress front view" },
+      { "role": "feature", "src": "assets/images/burgundy-crochet-maxi-dress-02-open-back.webp", "alt": "Burgundy crochet maxi dress with open back" },
+      { "role": "fit", "src": "assets/images/burgundy-crochet-maxi-dress-03-side-silhouette.webp", "alt": "Burgundy crochet maxi dress side silhouette" },
+      { "role": "craft", "src": "assets/images/burgundy-crochet-maxi-dress-04-crochet-detail.webp", "alt": "Close-up of intricate crochet detailing on a burgundy maxi dress" },
+      { "role": "editorial", "src": "assets/images/burgundy-crochet-maxi-dress-05-seated-editorial.webp", "alt": "Model wearing a burgundy crochet maxi dress seated indoors" },
+      { "role": "lifestyle", "src": "assets/images/burgundy-crochet-maxi-dress-06-window-lifestyle.webp", "alt": "Model wearing a burgundy crochet maxi dress beside a seaside window" }
+    ],
+    "descriptor": "Handcrafted crochet maxi dress with an open back and flowing full-length silhouette.",
+    "description": "The Burgundy Crochet Maxi Dress is a statement piece crafted for effortless, resort-inspired dressing. Featuring an open-back design, flowing full-length silhouette and intricate crochet detailing, it brings texture and movement to warm-weather occasions.",
+    "details": [
+      "Full-length maxi silhouette",
+      "Open-back design",
+      "Intricate crochet construction",
+      "Flowing, feminine silhouette",
+      "Burgundy colorway",
+      "Designed for resort and occasion styling"
+    ],
+    "color": "Burgundy",
+    "sku": "DRS-BUR-CRO-001",
+    "seoTitle": "Burgundy Crochet Maxi Dress | Editorial Resort",
+    "metaDescription": "Discover our Burgundy Crochet Maxi Dress with an open back, flowing silhouette and intricate crochet detailing, designed for effortless resort and summer dressing.",
+    "primaryKeyword": "burgundy crochet maxi dress",
+    "secondaryKeywords": ["crochet maxi dress", "burgundy crochet dress", "open back crochet dress", "crochet resort dress", "crochet summer dress", "crochet vacation dress"],
+    "variants": {
+      "size": ["TBD"]
+    },
+    "material": "TBD",
+    "fit": "TBD",
+    "care": "TBD",
+    "shipping": "TBD",
+    "stock": "TBD",
+    "measurements": "TBD",
     "inStock": true,
     "featured": true,
-    "rating": 5.0,
-    "reviewsCount": 18
-  },
-  {
-    "id": "swim-001",
-    "name": "The Sienna Crochet Bikini Set",
-    "price": 185.00,
-    "category": "Bikini Sets",
-    "subCategory": "bikini-sets",
-    "type": "set",
-    "collection": "sienna-sunset",
-    "image": "assets/images/sienna-set.svg",
-    "secondaryImage": "assets/images/solis-set.svg",
-    "descriptor": "Hand-crocheted • Unbleached organic linen",
-    "description": "Hand-stitched from unbleached organic linen yarn. Features a minimal halter triangle top and high-cut skimpy bottoms with delicate hand-knotted ties.",
-    "variants": { "top": ["XS", "S", "M", "L"], "bottom": ["XS", "S", "M", "L"] },
-    "inStock": true,
-    "featured": true,
-    "rating": 5.0,
-    "reviewsCount": 24
-  },
-  {
-    "id": "swim-002",
-    "name": "The Amalfi Terracotta Halter Top",
-    "price": 95.00,
-    "category": "Tops",
-    "subCategory": "tops",
-    "type": "single",
-    "collection": "amalfi-26",
-    "image": "assets/images/amalfi-top.svg",
-    "secondaryImage": "assets/images/capri-top.svg",
-    "descriptor": "Hand-knitted • Terracotta rib",
-    "description": "Sculptural ribbed crochet halter top in warm terracotta. Designed for light support with self-tie back straps and scalloped edges.",
-    "variants": { "size": ["XS", "S", "M", "L"] },
-    "inStock": true,
-    "featured": true,
-    "rating": 4.9,
-    "reviewsCount": 18
-  },
-  {
-    "id": "swim-003",
-    "name": "The Dune Ribbed Cheeky Bottom",
-    "price": 85.00,
-    "category": "Bottoms",
-    "subCategory": "bottoms",
-    "type": "single",
-    "collection": "amalfi-26",
-    "image": "assets/images/dune-bottom.svg",
-    "secondaryImage": "assets/images/bone-shorts.svg",
-    "descriptor": "Minimalist high-leg • Dune beige cotton",
-    "description": "Minimalist high-leg crochet swim bottoms crafted in dune beige cotton yarn. Fast-drying weave with hidden elastic reinforcement.",
-    "variants": { "size": ["XS", "S", "M", "L"] },
-    "inStock": true,
-    "featured": false,
-    "rating": 4.8,
-    "reviewsCount": 14
-  },
-  {
-    "id": "swim-004",
-    "name": "The Paloma Resort Monokini Set",
-    "price": 220.00,
-    "category": "Bikini Sets",
-    "subCategory": "bikini-sets",
-    "type": "set",
-    "collection": "amalfi-26",
-    "image": "assets/images/paloma-set.svg",
-    "secondaryImage": "assets/images/sienna-set.svg",
-    "descriptor": "Resort Cutout • Sheer black lace",
-    "description": "Statement cutout crochet set featuring an adjustable bralette top and high-waist vintage-cut bottom connected by sheer lace detailing.",
-    "variants": { "top": ["XS", "S", "M", "L"], "bottom": ["XS", "S", "M", "L"] },
-    "inStock": true,
-    "featured": true,
-    "rating": 5.0,
-    "reviewsCount": 31
-  },
-  {
-    "id": "swim-005",
-    "name": "The Olive Knit Bralette Intimate",
-    "price": 110.00,
-    "category": "Intimates",
-    "subCategory": "intimates",
-    "type": "single",
-    "collection": "sienna-sunset",
-    "image": "assets/images/olive-bralette.svg",
-    "secondaryImage": "assets/images/amalfi-top.svg",
-    "descriptor": "Fine bamboo thread • Soft unlined fit",
-    "description": "Ultra-soft intimate bralette crocheted in fine muted olive bamboo thread. Unlined silhouette designed for lounging and low-impact wear.",
-    "variants": { "size": ["XS", "S", "M", "L"] },
-    "inStock": true,
-    "featured": false,
-    "rating": 4.9,
-    "reviewsCount": 22
-  },
-  {
-    "id": "swim-006",
-    "name": "The Solis Terracotta Bikini Set",
-    "price": 195.00,
-    "category": "Bikini Sets",
-    "subCategory": "bikini-sets",
-    "type": "set",
-    "collection": "amalfi-26",
-    "image": "assets/images/solis-set.svg",
-    "secondaryImage": "assets/images/paloma-set.svg",
-    "descriptor": "Molded cup set • Brass hardware",
-    "description": "Earthy terracotta crochet bikini pairing a soft molded cup top with adjustable tie-side bottoms. Accented with brass bead hardware.",
-    "variants": { "top": ["XS", "S", "M", "L"], "bottom": ["XS", "S", "M", "L"] },
-    "inStock": true,
-    "featured": true,
-    "rating": 5.0,
-    "reviewsCount": 19
-  },
-  {
-    "id": "swim-007",
-    "name": "The Bone Knit Lounge Short Intimate",
-    "price": 90.00,
-    "category": "Intimates",
-    "subCategory": "intimates",
-    "type": "single",
-    "collection": "sienna-sunset",
-    "image": "assets/images/bone-shorts.svg",
-    "secondaryImage": "assets/images/dune-bottom.svg",
-    "descriptor": "High-waist lounge • Unbleached bone",
-    "description": "Relaxed high-waist knit lounge shorts in unbleached bone yarn. Features a drawstring waist and fine scalloped hems.",
-    "variants": { "size": ["XS", "S", "M", "L"] },
-    "inStock": true,
-    "featured": false,
-    "rating": 4.8,
-    "reviewsCount": 16
-  },
-  {
-    "id": "swim-008",
-    "name": "The Capri Underwire Crochet Top",
-    "price": 115.00,
-    "category": "Tops",
-    "subCategory": "tops",
-    "type": "single",
-    "collection": "amalfi-26",
-    "image": "assets/images/capri-top.svg",
-    "secondaryImage": "assets/images/amalfi-top.svg",
-    "descriptor": "Underwire support • Gold clasp detail",
-    "description": "Structured crochet top featuring subtle underwire support, wide shoulder straps, and custom gold-toned back clasp.",
-    "variants": { "size": ["XS", "S", "M", "L"] },
-    "inStock": true,
-    "featured": false,
-    "rating": 4.9,
-    "reviewsCount": 27
+    "rating": null,
+    "reviewsCount": 0
   }
 ];
 
@@ -180,6 +66,18 @@ document.addEventListener('DOMContentLoaded', () => {
   loadFavorites();
   fetchCatalog();
 });
+
+function getProductGallery(product) {
+  if (product && Array.isArray(product.gallery) && product.gallery.length > 0) {
+    return product.gallery;
+  }
+  const hero = product.image || '';
+  const feature = product.secondaryImage || hero;
+  return [
+    { role: 'hero', src: hero },
+    { role: 'feature', src: feature }
+  ];
+}
 
 function loadFavorites() {
   try {
@@ -220,14 +118,16 @@ function updateFavoriteIcons() {
 }
 
 /**
- * Fetch product data with fallback
+ * Fetch product data with fallback and path normalization
  */
 async function fetchCatalog() {
   try {
     if (window.location.protocol === 'file:') {
       catalogProducts = LOCAL_PRODUCTS_FALLBACK;
     } else {
-      const res = await fetch('data/products.json?v=' + Date.now()).catch(() => fetch('../data/products.json?v=' + Date.now())).catch(() => null);
+      const res = await fetch('data/products.json?v=' + Date.now())
+        .catch(() => fetch('../data/products.json?v=' + Date.now()))
+        .catch(() => null);
       if (res && res.ok) {
         catalogProducts = await res.json();
       } else {
@@ -244,10 +144,12 @@ async function fetchCatalog() {
     catalogProducts = catalogProducts.map(p => ({
       ...p,
       image: p.image.startsWith('../') ? p.image : `../${p.image}`,
-      secondaryImage: p.secondaryImage ? (p.secondaryImage.startsWith('../') ? p.secondaryImage : `../${p.secondaryImage}`) : p.image
+      secondaryImage: p.secondaryImage ? (p.secondaryImage.startsWith('../') ? p.secondaryImage : `../${p.secondaryImage}`) : p.image,
+      gallery: p.gallery ? p.gallery.map(g => ({ ...g, src: g.src.startsWith('../') ? g.src : `../${g.src}` })) : undefined
     }));
   }
 
+  window.catalogProducts = catalogProducts;
   initCatalogRender();
   initCategoryTabs();
 }
@@ -270,7 +172,7 @@ function initCatalogRender() {
 }
 
 /**
- * Render Product Grid DOM with Upgraded Card System & Independent Swatches
+ * Render Product Grid DOM with Upgraded Card System & Inline Quick Add
  */
 function renderProducts(items, container) {
   container.innerHTML = '';
@@ -285,7 +187,7 @@ function renderProducts(items, container) {
     return;
   }
 
-  const isHomepageGrid = container.id === 'featuredProductsGrid' || Boolean(document.getElementById('heroSection'));
+  const isInsidePagesFolder = window.location.pathname.includes('/pages/');
 
   items.forEach(product => {
     if (!activeCardSelections[product.id]) {
@@ -293,20 +195,24 @@ function renderProducts(items, container) {
     }
 
     const card = document.createElement('article');
-    card.className = `product-card ${isHomepageGrid ? 'minimal-editorial-card' : ''}`;
+    card.className = 'product-card';
     card.id = `card-${product.id}`;
 
     const isSet = product.type === 'set';
     const isFav = favoritesList.includes(product.id);
-    const secondaryImgSrc = product.secondaryImage || product.image;
+    const gallery = getProductGallery(product);
+    const heroImgSrc = gallery[0] ? gallery[0].src : product.image;
+    const secondaryImgSrc = gallery[1] ? gallery[1].src : heroImgSrc;
+
+    const pdpUrl = isInsidePagesFolder ? `product.html?id=${product.id}` : `pages/product.html?id=${product.id}`;
 
     let swatchHTML = '';
     if (isSet) {
-      const topSizes = product.variants.top || ['XS', 'S', 'M', 'L'];
-      const bottomSizes = product.variants.bottom || ['XS', 'S', 'M', 'L'];
+      const topSizes = (product.variants && product.variants.top) || ['XS', 'S', 'M', 'L'];
+      const bottomSizes = (product.variants && product.variants.bottom) || ['XS', 'S', 'M', 'L'];
 
       swatchHTML = `
-        <div>
+        <div class="swatch-group">
           <div class="swatch-group-label">
             <span>Top Size</span>
             <span class="selected-value" id="top-val-${product.id}">Select Top</span>
@@ -316,7 +222,7 @@ function renderProducts(items, container) {
           </div>
         </div>
 
-        <div>
+        <div class="swatch-group">
           <div class="swatch-group-label">
             <span>Bottom Size</span>
             <span class="selected-value" id="bottom-val-${product.id}">Select Bottom</span>
@@ -327,9 +233,9 @@ function renderProducts(items, container) {
         </div>
       `;
     } else {
-      const singleSizes = product.variants.size || ['XS', 'S', 'M', 'L'];
+      const singleSizes = (product.variants && product.variants.size) || ['XS', 'S', 'M', 'L'];
       swatchHTML = `
-        <div>
+        <div class="swatch-group">
           <div class="swatch-group-label">
             <span>Size</span>
             <span class="selected-value" id="size-val-${product.id}">Select Size</span>
@@ -341,103 +247,140 @@ function renderProducts(items, container) {
       `;
     }
 
-    const ratingVal = (product.rating || 5.0).toFixed(1);
-    const revCount = product.reviewsCount || 12;
-    const descriptorText = product.descriptor || 'Handcrafted Resortware';
+    const descriptorText = product.descriptor || 'Handcrafted Resortwear';
 
-    if (isHomepageGrid) {
-      // Streamlined Editorial Luxury Card for Homepage Density
-      card.innerHTML = `
-        <div class="card-image-box">
-          <span class="card-category-tag">${escapeHTML(product.category)}</span>
-          <button class="favorite-btn ${isFav ? 'active' : ''}" data-id="${product.id}" aria-label="${isFav ? 'Remove from Wishlist' : 'Add to Wishlist'}">
-            ${isFav ? '♥' : '♡'}
+    const picOptionsHero = {
+      pictureClass: 'card-primary-img',
+      imgClass: 'card-primary-img',
+      sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
+      width: 960,
+      height: 1280,
+      loading: 'eager'
+    };
+
+    const picOptionsSecondary = {
+      pictureClass: 'card-secondary-img',
+      imgClass: 'card-secondary-img',
+      sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
+      width: 960,
+      height: 1280,
+      loading: 'lazy'
+    };
+
+    const heroPicHTML = typeof createResponsivePictureHTML === 'function'
+      ? createResponsivePictureHTML(heroImgSrc, product.name, picOptionsHero)
+      : `<img src="${heroImgSrc}" alt="${product.name}" class="card-primary-img" loading="eager">`;
+
+    const secPicHTML = (secondaryImgSrc && secondaryImgSrc !== heroImgSrc)
+      ? (typeof createResponsivePictureHTML === 'function'
+          ? createResponsivePictureHTML(secondaryImgSrc, `${product.name} Secondary`, picOptionsSecondary)
+          : `<img src="${secondaryImgSrc}" alt="${product.name} Hover" class="card-secondary-img" loading="lazy">`)
+      : '';
+
+    card.innerHTML = `
+      <div class="card-image-box" data-pdp="${pdpUrl}">
+        <span class="card-category-tag">${escapeHTML(product.category)}</span>
+        <button class="favorite-btn ${isFav ? 'active' : ''}" data-id="${product.id}" aria-label="${isFav ? 'Remove from Wishlist' : 'Add to Wishlist'}">
+          ${isFav ? '♥' : '♡'}
+        </button>
+
+        ${heroPicHTML}
+        ${secPicHTML}
+
+        <div class="card-quick-actions-overlay">
+          <button class="btn-quick-add-trigger" data-id="${product.id}">
+            Quick Add +
           </button>
-
-          ${createResponsivePictureHTML(product.image, product.name, { pictureClass: 'card-primary-img', imgClass: 'card-primary-img', sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', width: 960, height: 1280, loading: 'lazy' })}
-          ${createResponsivePictureHTML(secondaryImgSrc, `${product.name} Hover View`, { pictureClass: 'card-secondary-img', imgClass: 'card-secondary-img', sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', width: 960, height: 1280, loading: 'lazy' })}
-        </div>
-        <div class="card-content">
-          <div class="card-rating">
-            <span style="color: var(--accent-terracotta);">★</span>
-            <span>${ratingVal}</span>
-            <span style="color: var(--text-light); font-size: 0.76rem;">(${revCount})</span>
-          </div>
-
-          <div class="card-header">
-            <h3 class="card-title">${escapeHTML(product.name)}</h3>
-            <span class="card-price">$${product.price.toFixed(2)}</span>
-          </div>
-
-          <p class="card-descriptor">${escapeHTML(descriptorText)}</p>
-
-          <div class="card-editorial-actions" style="margin-top: 1.25rem;">
-            <button class="btn btn-outline btn-block btn-quick-view-trigger" data-id="${product.id}" style="font-size: 0.82rem; padding: 0.65rem 1rem; letter-spacing: 0.08em; text-transform: uppercase;">
-              Quick View ✦
-            </button>
-          </div>
-        </div>
-      `;
-    } else {
-      // Full Catalog Card for Shop Page
-      card.innerHTML = `
-        <div class="card-image-box">
-          <span class="card-category-tag">${escapeHTML(product.category)}</span>
-          <button class="favorite-btn ${isFav ? 'active' : ''}" data-id="${product.id}" aria-label="${isFav ? 'Remove from Wishlist' : 'Add to Wishlist'}">
-            ${isFav ? '♥' : '♡'}
+          <button class="btn-quick-view-trigger" data-id="${product.id}" title="Quick View">
+            ✦ Quick View
           </button>
-
-          ${createResponsivePictureHTML(product.image, product.name, { pictureClass: 'card-primary-img', imgClass: 'card-primary-img', sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', width: 960, height: 1280, loading: 'lazy' })}
-          ${createResponsivePictureHTML(secondaryImgSrc, `${product.name} Hover View`, { pictureClass: 'card-secondary-img', imgClass: 'card-secondary-img', sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw', width: 960, height: 1280, loading: 'lazy' })}
         </div>
-        <div class="card-content">
-          <div class="card-rating">
-            <span style="color: var(--accent-terracotta);">★</span>
-            <span>${ratingVal}</span>
-            <span style="color: var(--text-light); font-size: 0.76rem;">(${revCount})</span>
-          </div>
+      </div>
 
-          <div class="card-header">
-            <h3 class="card-title">${escapeHTML(product.name)}</h3>
-            <span class="card-price">$${product.price.toFixed(2)}</span>
-          </div>
-
-          <p class="card-descriptor">${escapeHTML(descriptorText)}</p>
-
-          <div class="variant-selection-box">
-            ${swatchHTML}
-
-            <div class="card-validation-hint" id="hint-${product.id}">
-              * ${isSet ? 'Select Top & Bottom sizes' : 'Select a size'}
-            </div>
-
-            <button class="btn btn-solid btn-add-cart disabled" id="add-btn-${product.id}" data-id="${product.id}" disabled>
-              Add to Bag
-            </button>
-          </div>
+      <div class="card-content">
+        <div class="card-header">
+          <h3 class="card-title">
+            <a href="${pdpUrl}" class="card-title-link">${escapeHTML(product.name)}</a>
+          </h3>
+          <span class="card-price">${(product.price !== null && product.price !== undefined && product.price !== 'TBD') ? '$' + Number(product.price).toFixed(2) : 'Price TBD'}</span>
         </div>
-      `;
-    }
+
+        <p class="card-descriptor">${escapeHTML(descriptorText)}</p>
+
+        <!-- Inline Quick Add Box (Revealed when Quick Add is clicked on card) -->
+        <div class="inline-quick-add-box" id="quick-add-box-${product.id}" style="display: none;">
+          ${swatchHTML}
+
+          <div class="card-validation-hint" id="hint-${product.id}">
+            * ${isSet ? 'Select Top & Bottom sizes' : 'Select a size'}
+          </div>
+
+          <button class="btn btn-solid btn-add-cart disabled" id="add-btn-${product.id}" data-id="${product.id}" disabled>
+            Add to Bag
+          </button>
+        </div>
+      </div>
+    `;
 
     container.appendChild(card);
   });
 
+  attachCardEvents(container);
   attachSwatchListeners(container);
   attachFavoriteListeners(container);
   attachQuickViewModalListeners(container);
 }
 
 /**
- * Phase 2c: Product Quick-View Modal Logic
+ * Handle Card Click Navigation (Desktop & Mobile) and Quick Add Toggle
+ */
+function attachCardEvents(container) {
+  container.querySelectorAll('.card-image-box').forEach(box => {
+    box.addEventListener('click', (e) => {
+      // Do not navigate if clicking favorite button, quick add trigger, or quick view trigger
+      if (
+        e.target.closest('.favorite-btn') ||
+        e.target.closest('.btn-quick-add-trigger') ||
+        e.target.closest('.btn-quick-view-trigger')
+      ) {
+        return;
+      }
+
+      const pdpUrl = box.getAttribute('data-pdp');
+      if (pdpUrl) {
+        window.location.href = pdpUrl;
+      }
+    });
+  });
+
+  container.querySelectorAll('.btn-quick-add-trigger').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const prodId = btn.getAttribute('data-id');
+      const box = document.getElementById(`quick-add-box-${prodId}`);
+      if (!box) return;
+
+      const isHidden = box.style.display === 'none' || !box.style.display;
+      document.querySelectorAll('.inline-quick-add-box').forEach(b => {
+        if (b !== box) b.style.display = 'none';
+      });
+
+      box.style.display = isHidden ? 'block' : 'none';
+      btn.textContent = isHidden ? 'Close Add -' : 'Quick Add +';
+    });
+  });
+}
+
+/**
+ * Quick-View Modal Logic (Maintained as quick view option)
  */
 const modalSelections = { top: null, bottom: null, size: null };
 
 function attachQuickViewModalListeners(container) {
-  container.querySelectorAll('.card-image-box, .btn-quick-view-trigger').forEach(target => {
+  container.querySelectorAll('.btn-quick-view-trigger').forEach(target => {
     target.addEventListener('click', (e) => {
-      if (e.target.classList.contains('favorite-btn')) return;
-      const card = target.closest('.product-card');
-      const prodId = card ? card.id.replace('card-', '') : target.getAttribute('data-id');
+      e.stopPropagation();
+      const prodId = target.getAttribute('data-id');
       const product = catalogProducts.find(p => p.id === prodId);
       if (product) openProductQuickViewModal(product);
     });
@@ -451,20 +394,18 @@ function openProductQuickViewModal(product) {
 
   if (!backdrop || !modalBody) return;
 
-  // Reset modal selections
   modalSelections.top = null;
   modalSelections.bottom = null;
   modalSelections.size = null;
 
   const isSet = product.type === 'set';
-  const secondaryImgSrc = product.secondaryImage || product.image;
   const ratingVal = (product.rating || 5.0).toFixed(1);
   const revCount = product.reviewsCount || 12;
 
   let swatchHTML = '';
   if (isSet) {
-    const topSizes = product.variants.top || ['XS', 'S', 'M', 'L'];
-    const bottomSizes = product.variants.bottom || ['XS', 'S', 'M', 'L'];
+    const topSizes = (product.variants && product.variants.top) || ['XS', 'S', 'M', 'L'];
+    const bottomSizes = (product.variants && product.variants.bottom) || ['XS', 'S', 'M', 'L'];
 
     swatchHTML = `
       <div>
@@ -488,7 +429,7 @@ function openProductQuickViewModal(product) {
       </div>
     `;
   } else {
-    const singleSizes = product.variants.size || ['XS', 'S', 'M', 'L'];
+    const singleSizes = (product.variants && product.variants.size) || ['XS', 'S', 'M', 'L'];
     swatchHTML = `
       <div>
         <div class="swatch-group-label">
@@ -502,16 +443,18 @@ function openProductQuickViewModal(product) {
     `;
   }
 
+  const mainImg = product.image.startsWith('../') ? product.image : (window.location.pathname.includes('/pages/') ? `../${product.image}` : product.image);
+
   modalBody.innerHTML = `
     <div class="product-modal-image-col">
-      ${createResponsivePictureHTML(product.image, product.name, { sizes: '(max-width: 767px) 100vw, 450px', style: 'width: 100%; height: 100%; object-fit: cover;', width: 960, height: 1280 })}
+      ${typeof createResponsivePictureHTML === 'function' ? createResponsivePictureHTML(mainImg, product.name, { sizes: '(max-width: 767px) 100vw, 450px', style: 'width: 100%; height: 100%; object-fit: cover;', width: 960, height: 1280 }) : `<img src="${mainImg}" alt="${product.name}">`}
     </div>
     <div class="product-modal-details-col">
       <span class="micro-label">${escapeHTML(product.category)}</span>
       <h2 class="product-modal-title">${escapeHTML(product.name)}</h2>
       
       <div class="product-modal-meta">
-        <span class="product-modal-price">$${product.price.toFixed(2)}</span>
+        <span class="product-modal-price">${(product.price !== null && product.price !== undefined && product.price !== 'TBD') ? '$' + Number(product.price).toFixed(2) : 'Price TBD'}</span>
         <div class="product-modal-rating">
           <span class="star-icon">★</span> ${ratingVal} <span class="reviews-count">(${revCount} reviews)</span>
         </div>
@@ -533,7 +476,6 @@ function openProductQuickViewModal(product) {
     </div>
   `;
 
-  // Attach modal swatch listeners
   modalBody.querySelectorAll('.modal-swatch').forEach(btn => {
     btn.addEventListener('click', () => {
       const group = btn.getAttribute('data-group');
@@ -546,20 +488,25 @@ function openProductQuickViewModal(product) {
       const label = document.getElementById(`modal-${group}-val`);
       if (label) label.textContent = size;
 
-      // Validate modal selections
       const modalBtn = document.getElementById('modalAddToCartBtn');
       const modalHint = document.getElementById('modalHint');
 
       const isValid = isSet ? (modalSelections.top && modalSelections.bottom) : Boolean(modalSelections.size);
 
       if (isValid) {
-        modalBtn.classList.remove('disabled');
-        modalBtn.removeAttribute('disabled');
-        modalHint.textContent = 'Ready to add to bag ✦';
-        modalHint.style.color = 'var(--accent-olive)';
+        if (modalBtn) {
+          modalBtn.classList.remove('disabled');
+          modalBtn.removeAttribute('disabled');
+        }
+        if (modalHint) {
+          modalHint.textContent = 'Ready to add to bag ✦';
+          modalHint.style.color = 'var(--accent-olive)';
+        }
       } else {
-        modalBtn.classList.add('disabled');
-        modalBtn.setAttribute('disabled', 'true');
+        if (modalBtn) {
+          modalBtn.classList.add('disabled');
+          modalBtn.setAttribute('disabled', 'true');
+        }
       }
     });
   });
@@ -576,10 +523,7 @@ function openProductQuickViewModal(product) {
   backdrop.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
 
-  if (closeBtn) {
-    closeBtn.onclick = closeProductQuickViewModal;
-  }
-
+  if (closeBtn) closeBtn.onclick = closeProductQuickViewModal;
   backdrop.onclick = (e) => {
     if (e.target === backdrop) closeProductQuickViewModal();
   };
@@ -594,9 +538,6 @@ function closeProductQuickViewModal() {
   }
 }
 
-/**
- * Favorite Toggle Click Listener
- */
 function attachFavoriteListeners(container) {
   container.querySelectorAll('.favorite-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -607,20 +548,17 @@ function attachFavoriteListeners(container) {
   });
 }
 
-/**
- * Handle Independent Swatch Clicking & Validation State Updates
- */
 function attachSwatchListeners(container) {
   container.querySelectorAll('.swatch-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       const prodId = btn.getAttribute('data-prod');
       const group = btn.getAttribute('data-group');
       const sizeVal = btn.getAttribute('data-size');
 
       const parentRow = btn.closest('.swatches-row');
       parentRow.querySelectorAll('.swatch-btn').forEach(b => b.classList.remove('selected'));
-
       btn.classList.add('selected');
 
       activeCardSelections[prodId][group] = sizeVal;
@@ -633,7 +571,8 @@ function attachSwatchListeners(container) {
   });
 
   container.querySelectorAll('.btn-add-cart').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
       const prodId = btn.getAttribute('data-id');
       const product = catalogProducts.find(p => p.id === prodId);
       const selections = activeCardSelections[prodId];
@@ -646,6 +585,8 @@ function attachSwatchListeners(container) {
 
       if (isValid) {
         addToCart(product, selections);
+        btn.textContent = 'Added to Bag ✦';
+        setTimeout(() => { btn.textContent = 'Add to Bag'; }, 2000);
       }
     });
   });
@@ -720,7 +661,6 @@ function initCategoryTabs() {
     });
   });
 
-  // Check URL query parameter (e.g. shop.html?category=bikini-sets)
   const urlCategory = new URLSearchParams(window.location.search).get('category');
   if (urlCategory) {
     filterByCategory(urlCategory);
