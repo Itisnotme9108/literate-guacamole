@@ -93,10 +93,11 @@
           </svg>
         </button>
 
-        <button class="icon-btn" id="accountBtn" aria-label="Customer Account">
+        <button class="icon-btn" id="wishlistBtn" aria-label="Open Wishlist Favorites" style="position: relative;">
           <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 00-7 7h14a7 7 0 00-7-7z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
+          <span class="wishlist-badge" id="wishlistHeaderBadge">0</span>
         </button>
 
         <button class="cart-trigger-btn" id="cartTriggerBtn" aria-label="Open Shopping Bag">
@@ -185,7 +186,7 @@
         </div>
 
         <div class="category-editorial-grid">
-          <a href="pages/shop.html" class="category-tile tile-hero">
+          <a href="pages/shop.html?category=bikini-sets" class="category-tile tile-hero">
             <img src="assets/images/optimized/sienna-set.svg" alt="Bikini Sets Collection" width="600" height="800" loading="lazy">
             <div class="category-tile-overlay"></div>
             <div class="category-tile-content">
@@ -194,7 +195,7 @@
             </div>
           </a>
 
-          <a href="pages/shop.html" class="category-tile tile-secondary-1">
+          <a href="pages/shop.html?category=tops" class="category-tile tile-secondary-1">
             <img src="assets/images/optimized/amalfi-top.svg" alt="Swim Tops Collection" width="400" height="500" loading="lazy">
             <div class="category-tile-overlay"></div>
             <div class="category-tile-content">
@@ -203,7 +204,7 @@
             </div>
           </a>
 
-          <a href="pages/shop.html" class="category-tile tile-secondary-2">
+          <a href="pages/shop.html?category=bottoms" class="category-tile tile-secondary-2">
             <img src="assets/images/optimized/dune-bottom.svg" alt="Swim Bottoms Collection" width="400" height="500" loading="lazy">
             <div class="category-tile-overlay"></div>
             <div class="category-tile-content">
@@ -212,7 +213,7 @@
             </div>
           </a>
 
-          <a href="pages/shop.html" class="category-tile tile-secondary-3">
+          <a href="pages/shop.html?category=intimates" class="category-tile tile-secondary-3">
             <img src="assets/images/optimized/olive-bralette.svg" alt="Resort Intimates Collection" width="400" height="500" loading="lazy">
             <div class="category-tile-overlay"></div>
             <div class="category-tile-content">
@@ -529,10 +530,10 @@
         <div class="footer-column">
           <h4>Collections</h4>
           <ul class="footer-links">
-            <li><a href="pages/shop.html">Bikini Sets</a></li>
-            <li><a href="pages/shop.html">Swim Tops</a></li>
-            <li><a href="pages/shop.html">Swim Bottoms</a></li>
-            <li><a href="pages/shop.html">Intimates</a></li>
+            <li><a href="pages/shop.html?category=bikini-sets">Bikini Sets</a></li>
+            <li><a href="pages/shop.html?category=tops">Swim Tops</a></li>
+            <li><a href="pages/shop.html?category=bottoms">Swim Bottoms</a></li>
+            <li><a href="pages/shop.html?category=intimates">Intimates</a></li>
           </ul>
         </div>
 
@@ -619,6 +620,45 @@
           Proceed to Checkout ✦
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       SEARCH OVERLAY MODAL
+       ========================================================================= -->
+  <div class="search-overlay-backdrop" id="searchOverlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Search Swimwear Catalog">
+    <div class="search-container">
+      <div class="search-header">
+        <div class="search-input-box">
+          <svg class="search-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search swimwear by name, category, or material..." aria-label="Search catalog" autocomplete="off">
+          <button class="search-clear-btn" id="searchClearBtn" aria-label="Clear search input" style="display: none;">&times;</button>
+        </div>
+        <button class="search-close-btn" id="searchCloseBtn" aria-label="Close search overlay">Close &times;</button>
+      </div>
+
+      <div class="search-status-bar">
+        <span id="searchResultCount">Start typing to search our atelier collection...</span>
+      </div>
+
+      <div class="search-results-wrapper" id="searchResultsWrapper">
+        <div class="search-results-list" id="searchResultsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       WISHLIST / FAVORITES DRAWER MODAL
+       ========================================================================= -->
+  <div class="wishlist-modal-backdrop" id="wishlistModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Saved Wishlist Favorites">
+    <div class="wishlist-drawer" id="wishlistDrawer">
+      <div class="drawer-header">
+        <h3>Saved Favorites ✦</h3>
+        <button class="drawer-close-btn" id="wishlistCloseBtn" aria-label="Close Wishlist Drawer">&times;</button>
+      </div>
+      <div class="drawer-body" id="wishlistBody"></div>
     </div>
   </div>
 

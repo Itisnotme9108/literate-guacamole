@@ -7,6 +7,16 @@
 const STORAGE_KEY = 'crochet_swim_cart_v1';
 let cartState = [];
 
+/**
+ * Production-ready Checkout Configuration Point
+ */
+const CHECKOUT_CONFIG = {
+  provider: 'stripe-payment-link',
+  stripePaymentUrl: '', // Drop-in live Stripe Payment Link URL (e.g., 'https://buy.stripe.com/...')
+  currency: 'USD',
+  sandboxMode: true
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   loadCartState();
   initCartDrawerUI();
@@ -14,17 +24,25 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Load persisted cart state from localStorage
+ * Load persisted cart state from localStorage with corruption recovery
  */
 function loadCartState() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      cartState = JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        cartState = parsed;
+      } else {
+        throw new Error('Cart state in localStorage is not an array');
+      }
     }
   } catch (e) {
-    console.warn('Unable to parse cart from localStorage:', e);
+    console.warn('Unable to parse cart from localStorage. Resetting storage:', e);
     cartState = [];
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (err) {}
   }
 }
 
@@ -202,14 +220,112 @@ function initCartDrawerUI() {
     checkoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
       if (cartState.length === 0) return;
-
-      const provider = checkoutBtn.getAttribute('data-checkout-provider');
-      const skus = checkoutBtn.getAttribute('data-checkout-skus');
-      
-      alert(`[Checkout Demo Hook]\nProvider: ${provider}\nSelected Line Item SKUs: ${skus}\n\nSee README.md for drop-in Stripe / Snipcart integration instructions!`);
+      processCheckout();
     });
   }
 }
+
+/**
+ * Clean Checkout Abstraction & Gateway Config
+ */
+function processCheckout() {
+  if (!cartState || cartState.length === 0) return;
+
+  const checkoutBtn = document.getElementById('checkoutCtaBtn');
+  if (!checkoutBtn) return;
+
+  const originalHTML = checkoutBtn.innerHTML;
+  checkoutBtn.disabled = true;
+  checkoutBtn.innerHTML = 'Connecting to Secure Checkout...';
+
+  const subtotal = cartState.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const itemCount = cartState.reduce((sum, item) => sum + item.quantity, 0);
+
+  setTimeout(() => {
+    if (CHECKOUT_CONFIG.stripePaymentUrl && CHECKOUT_CONFIG.stripePaymentUrl.startsWith('http')) {
+      window.location.href = CHECKOUT_CONFIG.stripePaymentUrl;
+    } else {
+      showCheckoutNoticeModal({
+        itemCount,
+        subtotal: subtotal.toFixed(2),
+        skus: cartState.map(i => `${i.name} (${i.isSet ? `Top: ${i.topSize}, Bottom: ${i.bottomSize}` : `Size: ${i.singleSize || 'Standard'}`}) × ${i.quantity}`)
+      });
+      checkoutBtn.disabled = false;
+      checkoutBtn.innerHTML = originalHTML;
+    }
+  }, 500);
+}
+
+function showCheckoutNoticeModal(details) {
+  let noticeModal = document.getElementById('checkoutNoticeModal');
+  if (!noticeModal) {
+    noticeModal = document.createElement('div');
+    noticeModal.id = 'checkoutNoticeModal';
+    noticeModal.className = 'product-modal-backdrop is-open';
+    noticeModal.setAttribute('role', 'dialog');
+    noticeModal.setAttribute('aria-modal', 'true');
+    noticeModal.setAttribute('aria-label', 'Checkout Sandbox Notice');
+    document.body.appendChild(noticeModal);
+  } else {
+    noticeModal.classList.add('is-open');
+  }
+
+  const skuListHTML = details.skus.map(s => `<li style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">• ${escapeHTML(s)}</li>`).join('');
+
+  noticeModal.innerHTML = `
+    <div class="product-modal" style="max-width: 520px; padding: 2.5rem; text-align: center;">
+      <button class="modal-close-btn" onclick="closeCheckoutNoticeModal()">&times;</button>
+      <span class="micro-label" style="color: var(--accent-terracotta);">CHECKOUT INTEGRATION READY</span>
+      <h3 style="font-family: var(--font-serif); font-size: 1.6rem; margin: 0.5rem 0 1rem;">Order Summary (${details.itemCount} ${details.itemCount === 1 ? 'Item' : 'Items'})</h3>
+      
+      <div style="background: var(--bg-sand); padding: 1rem; border-radius: 4px; text-align: left; margin-bottom: 1.25rem;">
+        <ul style="list-style: none; padding: 0; margin: 0 0 0.75rem;">
+          ${skuListHTML}
+        </ul>
+        <div style="font-size: 1rem; font-weight: 600; text-align: right; border-top: 1px solid var(--border-hairline); padding-top: 0.5rem; color: var(--accent-espresso);">
+          Total Amount: $${details.subtotal} USD
+        </div>
+      </div>
+
+      <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+        <strong>Checkout Sandbox Mode:</strong> To connect live credit card processing via Stripe Payment Links or Snipcart, insert your link into <code>CHECKOUT_CONFIG.stripePaymentUrl</code> in <code>js/cart.js</code>.
+      </p>
+
+      <div style="display: flex; gap: 0.75rem; flex-direction: column;">
+        <button class="btn btn-solid" onclick="simulateSuccessfulPurchase()">Simulate Successful Order ✦</button>
+        <button class="btn btn-outline" onclick="closeCheckoutNoticeModal()">Return to Shopping Bag</button>
+      </div>
+    </div>
+  `;
+}
+
+window.closeCheckoutNoticeModal = function() {
+  const modal = document.getElementById('checkoutNoticeModal');
+  if (modal) modal.classList.remove('is-open');
+};
+
+window.simulateSuccessfulPurchase = function() {
+  closeCheckoutNoticeModal();
+  cartState = [];
+  saveCartState();
+  renderCartDrawer();
+
+  let successModal = document.getElementById('checkoutNoticeModal');
+  if (!successModal) return;
+
+  successModal.classList.add('is-open');
+  successModal.innerHTML = `
+    <div class="product-modal" style="max-width: 480px; padding: 3rem 2rem; text-align: center;">
+      <button class="modal-close-btn" onclick="closeCheckoutNoticeModal()">&times;</button>
+      <span class="micro-label" style="color: var(--accent-olive);">✦ ORDER CONFIRMED</span>
+      <h3 style="font-family: var(--font-serif); font-size: 1.8rem; margin: 0.5rem 0 1rem;">Thank You for Your Order</h3>
+      <p style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.75rem;">
+        Your simulated order has been placed successfully. Our master knitter is preparing your handcrafted resortwear pieces for atelier dispatch.
+      </p>
+      <button class="btn btn-solid" onclick="closeCheckoutNoticeModal(); closeCartDrawer();">Continue Exploring ✦</button>
+    </div>
+  `;
+};
 
 function openCartDrawer() {
   const backdrop = document.getElementById('cartDrawerBackdrop');

@@ -25,8 +25,13 @@ html, body {
   }
 
   #searchBtn,
-  #accountBtn {
-    display: none !important;
+  #wishlistBtn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.5rem;
   }
 
   .nav-links {

@@ -695,22 +695,34 @@ function initCategoryTabs() {
   const tabs = document.querySelectorAll('.filter-tab-btn');
   if (!tabs || tabs.length === 0) return;
 
+  const filterByCategory = (category) => {
+    tabs.forEach(t => {
+      const isMatch = t.getAttribute('data-category') === category;
+      t.classList.toggle('active', isMatch);
+      t.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+    });
+
+    const catalogGrid = document.getElementById('catalogProductsGrid');
+    if (!catalogGrid) return;
+
+    if (!category || category === 'all') {
+      renderProducts(catalogProducts, catalogGrid);
+    } else {
+      const filtered = catalogProducts.filter(p => p.subCategory === category || p.category.toLowerCase().replace(/\s+/g, '-') === category);
+      renderProducts(filtered, catalogGrid);
+    }
+  };
+
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const category = tab.getAttribute('data-category');
-
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
-      const catalogGrid = document.getElementById('catalogProductsGrid');
-      if (!catalogGrid) return;
-
-      if (category === 'all') {
-        renderProducts(catalogProducts, catalogGrid);
-      } else {
-        const filtered = catalogProducts.filter(p => p.subCategory === category);
-        renderProducts(filtered, catalogGrid);
-      }
+      filterByCategory(category);
     });
   });
+
+  // Check URL query parameter (e.g. shop.html?category=bikini-sets)
+  const urlCategory = new URLSearchParams(window.location.search).get('category');
+  if (urlCategory) {
+    filterByCategory(urlCategory);
+  }
 }

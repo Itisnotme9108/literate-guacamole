@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initNewsletterForm();
   initAccessibilityHelpers();
   initPageTransitions();
+  initSearchOverlay();
+  initWishlistUI();
   updateYear();
 });
 
@@ -153,7 +155,11 @@ if (document.readyState === 'interactive' || document.readyState === 'complete')
  */
 function initCustomCursor() {
   const cursor = document.getElementById('customCursor');
-  if (!cursor || window.innerWidth < 1024) return;
+  const isTouchDevice = ('ontouchstart' in window) || window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  if (!cursor || window.innerWidth < 1024 || isTouchDevice) {
+    if (cursor) cursor.style.display = 'none';
+    return;
+  }
 
   const cursorSpan = cursor.querySelector('span');
 
@@ -423,4 +429,257 @@ function initPageTransitions() {
       }, 220);
     });
   });
+}
+
+/**
+ * Interactive Search Overlay Module
+ */
+function initSearchOverlay() {
+  const searchBtn = document.getElementById('searchBtn');
+  const backdrop = document.getElementById('searchOverlay');
+  const closeBtn = document.getElementById('searchCloseBtn');
+  const clearBtn = document.getElementById('searchClearBtn');
+  const input = document.getElementById('searchInput');
+  const resultCount = document.getElementById('searchResultCount');
+  const resultsList = document.getElementById('searchResultsList');
+
+  if (!searchBtn || !backdrop || !input) return;
+
+  let selectedIndex = -1;
+
+  const openSearch = () => {
+    backdrop.classList.add('is-open');
+    backdrop.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => input.focus(), 100);
+  };
+
+  const closeSearch = () => {
+    backdrop.classList.remove('is-open');
+    backdrop.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    input.value = '';
+    if (clearBtn) clearBtn.style.display = 'none';
+    if (resultsList) resultsList.innerHTML = '';
+    if (resultCount) resultCount.textContent = 'Start typing to search our atelier collection...';
+    selectedIndex = -1;
+  };
+
+  searchBtn.addEventListener('click', openSearch);
+  if (closeBtn) closeBtn.addEventListener('click', closeSearch);
+
+  backdrop.addEventListener('click', (e) => {
+    if (e.target === backdrop) closeSearch();
+  });
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      input.focus();
+      clearBtn.style.display = 'none';
+      if (resultsList) resultsList.innerHTML = '';
+      if (resultCount) resultCount.textContent = 'Start typing to search our atelier collection...';
+    });
+  }
+
+  input.addEventListener('input', () => {
+    const query = input.value.trim().toLowerCase();
+    if (clearBtn) clearBtn.style.display = query ? 'block' : 'none';
+
+    if (!query) {
+      if (resultsList) resultsList.innerHTML = '';
+      if (resultCount) resultCount.textContent = 'Start typing to search our atelier collection...';
+      selectedIndex = -1;
+      return;
+    }
+
+    const items = typeof catalogProducts !== 'undefined' && catalogProducts.length > 0
+      ? catalogProducts
+      : (typeof LOCAL_PRODUCTS_FALLBACK !== 'undefined' ? LOCAL_PRODUCTS_FALLBACK : []);
+
+    const matches = items.filter(p => {
+      const nameMatch = p.name && p.name.toLowerCase().includes(query);
+      const catMatch = (p.category && p.category.toLowerCase().includes(query)) || (p.subCategory && p.subCategory.toLowerCase().includes(query));
+      const descMatch = (p.descriptor && p.descriptor.toLowerCase().includes(query)) || (p.description && p.description.toLowerCase().includes(query));
+      return nameMatch || catMatch || descMatch;
+    });
+
+    selectedIndex = -1;
+
+    if (matches.length === 0) {
+      if (resultCount) resultCount.textContent = `No swimwear pieces found matching "${query}"`;
+      if (resultsList) {
+        resultsList.innerHTML = `
+          <div class="search-no-results">
+            <p style="font-family: var(--font-serif); font-size: 1.2rem; color: var(--text-main); margin-bottom: 0.5rem;">No Matching Atelier Pieces</p>
+            <p style="font-size: 0.9rem;">Try searching for "bikini", "linen", "top", "terracotta", or "shorts".</p>
+          </div>
+        `;
+      }
+      return;
+    }
+
+    if (resultCount) {
+      resultCount.textContent = `Found ${matches.length} ${matches.length === 1 ? 'piece' : 'pieces'} matching "${query}"`;
+    }
+
+    if (resultsList) {
+      const isInsidePages = window.location.pathname.includes('/pages/');
+      resultsList.innerHTML = matches.map((item, idx) => {
+        let imgPath = item.image || '';
+        if (isInsidePages && !imgPath.startsWith('../')) {
+          imgPath = `../${imgPath}`;
+        }
+        return `
+          <div class="search-result-item" data-id="${item.id}" data-idx="${idx}" tabindex="0">
+            <img src="${imgPath}" alt="${item.name}" class="search-result-img" onerror="this.src='assets/images/optimized/hero-960.jpg'">
+            <div class="search-result-info">
+              <h4>${escapeHTML(item.name)}</h4>
+              <p>${escapeHTML(item.category)} &nbsp;•&nbsp; ${escapeHTML(item.descriptor || 'Handcrafted Resortware')}</p>
+            </div>
+            <div class="search-result-price">$${item.price.toFixed(2)}</div>
+          </div>
+        `;
+      }).join('');
+
+      // Add click listener to result items
+      resultsList.querySelectorAll('.search-result-item').forEach(el => {
+        el.addEventListener('click', () => {
+          const prodId = el.getAttribute('data-id');
+          const targetProduct = items.find(p => p.id === prodId);
+          closeSearch();
+          if (targetProduct && typeof openProductQuickViewModal === 'function') {
+            openProductQuickViewModal(targetProduct);
+          } else {
+            const targetPage = isInsidePages ? 'shop.html' : 'pages/shop.html';
+            window.location.href = `${targetPage}?category=${targetProduct?.subCategory || 'all'}`;
+          }
+        });
+      });
+    }
+  });
+
+  // Keyboard navigation for search results (ArrowDown, ArrowUp, Enter)
+  input.addEventListener('keydown', (e) => {
+    if (!resultsList) return;
+    const items = resultsList.querySelectorAll('.search-result-item');
+    if (!items.length) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+      updateSelectedSearchItem(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectedIndex = Math.max(selectedIndex - 1, 0);
+      updateSelectedSearchItem(items);
+    } else if (e.key === 'Enter' && selectedIndex >= 0 && items[selectedIndex]) {
+      e.preventDefault();
+      items[selectedIndex].click();
+    }
+  });
+
+  function updateSelectedSearchItem(items) {
+    items.forEach((item, idx) => {
+      item.classList.toggle('is-selected', idx === selectedIndex);
+      if (idx === selectedIndex) {
+        item.scrollIntoView({ block: 'nearest' });
+      }
+    });
+  }
+}
+
+/**
+ * Interactive Wishlist / Saved Favorites Drawer Module
+ */
+function initWishlistUI() {
+  const wishlistBtn = document.getElementById('wishlistBtn');
+  const backdrop = document.getElementById('wishlistModal');
+  const closeBtn = document.getElementById('wishlistCloseBtn');
+  const body = document.getElementById('wishlistBody');
+
+  if (!wishlistBtn || !backdrop) return;
+
+  const updateWishlistBadges = () => {
+    const count = typeof favoritesList !== 'undefined' ? favoritesList.length : 0;
+    const badge = document.getElementById('wishlistHeaderBadge');
+    if (badge) badge.textContent = count;
+  };
+
+  updateWishlistBadges();
+
+  const openWishlist = () => {
+    renderWishlistDrawer();
+    backdrop.classList.add('is-open');
+    backdrop.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeWishlist = () => {
+    backdrop.classList.remove('is-open');
+    backdrop.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  };
+
+  wishlistBtn.addEventListener('click', openWishlist);
+  if (closeBtn) closeBtn.addEventListener('click', closeWishlist);
+
+  backdrop.addEventListener('click', (e) => {
+    if (e.target === backdrop) closeWishlist();
+  });
+
+  window.renderWishlistDrawer = function() {
+    updateWishlistBadges();
+    if (!body) return;
+
+    const savedIds = typeof favoritesList !== 'undefined' ? favoritesList : [];
+    const allProducts = typeof catalogProducts !== 'undefined' && catalogProducts.length > 0
+      ? catalogProducts
+      : (typeof LOCAL_PRODUCTS_FALLBACK !== 'undefined' ? LOCAL_PRODUCTS_FALLBACK : []);
+
+    const favProducts = allProducts.filter(p => savedIds.includes(p.id));
+
+    if (favProducts.length === 0) {
+      body.innerHTML = `
+        <div style="text-align: center; padding: 4rem 1rem; color: var(--text-muted);">
+          <p style="font-family: var(--font-serif); font-size: 1.4rem; margin-bottom: 0.5rem; color: var(--text-main);">No Favorites Saved</p>
+          <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">Click the ♡ icon on any swimsuit to save it to your wishlist.</p>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('wishlistModal').classList.remove('is-open'); document.body.style.overflow='';">Explore Catalog</button>
+        </div>
+      `;
+      return;
+    }
+
+    const isInsidePages = window.location.pathname.includes('/pages/');
+
+    body.innerHTML = favProducts.map(item => {
+      let imgPath = item.image || '';
+      if (isInsidePages && !imgPath.startsWith('../')) {
+        imgPath = `../${imgPath}`;
+      }
+      return `
+        <div class="wishlist-item">
+          <img src="${imgPath}" alt="${item.name}" class="wishlist-item-img" onerror="this.src='assets/images/optimized/hero-960.jpg'">
+          <div class="wishlist-item-info">
+            <h4>${escapeHTML(item.name)}</h4>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHTML(item.category)}</div>
+            <div style="font-weight: 600; color: var(--accent-espresso); margin-top: 0.2rem;">$${item.price.toFixed(2)}</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end;">
+            <button class="btn btn-solid btn-sm" onclick="openWishlistItemQuickView('${item.id}')" style="font-size: 0.75rem; padding: 0.4rem 0.75rem;">View &amp; Bag</button>
+            <button class="cart-item-remove" onclick="toggleFavorite('${item.id}'); renderWishlistDrawer();" style="font-size: 0.75rem;">Remove</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  };
+
+  window.openWishlistItemQuickView = function(prodId) {
+    closeWishlist();
+    const allProducts = typeof catalogProducts !== 'undefined' && catalogProducts.length > 0 ? catalogProducts : LOCAL_PRODUCTS_FALLBACK;
+    const prod = allProducts.find(p => p.id === prodId);
+    if (prod && typeof openProductQuickViewModal === 'function') {
+      openProductQuickViewModal(prod);
+    }
+  };
 }

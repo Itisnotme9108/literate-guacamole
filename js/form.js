@@ -47,14 +47,20 @@ function validateField(input) {
   } else if (input.type === 'email' && val) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(val)) valid = false;
+  } else if (input.id.includes('Measurement') || input.id.includes('Size')) {
+    // Basic measurement check (must contain at least one digit or valid unit)
+    if (val && !/\d/.test(val)) valid = false;
   }
 
+  const errEl = document.getElementById(`err-${input.id}`);
   if (!valid) {
     input.classList.add('error');
     input.setAttribute('aria-invalid', 'true');
+    if (errEl) errEl.style.display = 'block';
   } else {
     input.classList.remove('error');
     input.removeAttribute('aria-invalid');
+    if (errEl) errEl.style.display = 'none';
   }
 
   return valid;
@@ -96,13 +102,24 @@ Thank you!`;
 
   const successBox = document.getElementById('bespokeSuccessBox');
   if (successBox) {
+    successBox.style.display = 'block';
+    successBox.innerHTML = `
+      <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem; color: var(--text-main);">Opening Email Application... ✦</h3>
+      <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 1rem;">
+        Your custom measurements have been compiled. Your email client will launch automatically to send your inquiry directly to <strong>atelier@editorialresort.com</strong>.
+      </p>
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem;">
+        <a href="${mailtoUrl}" class="btn btn-solid btn-sm">Launch Mail Client Manual Link ✦</a>
+        <button class="btn btn-outline btn-sm" onclick="navigator.clipboard.writeText('atelier@editorialresort.com'); alert('Atelier email copied to clipboard!');">Copy Atelier Email</button>
+      </div>
+    `;
     successBox.classList.add('show');
     successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   setTimeout(() => {
     window.location.href = mailtoUrl;
-  }, 700);
+  }, 600);
 
   form.reset();
 }
