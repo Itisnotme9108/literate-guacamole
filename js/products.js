@@ -167,7 +167,17 @@ function initCatalogRender() {
   }
 
   if (catalogGrid) {
-    renderProducts(catalogProducts, catalogGrid);
+    const filterAttr = catalogGrid.getAttribute('data-filter');
+    if (filterAttr && filterAttr !== 'all') {
+      const filtered = catalogProducts.filter(p => 
+        p.subCategory === filterAttr || 
+        (p.category && p.category.toLowerCase().replace(/\s+/g, '-') === filterAttr) ||
+        (Array.isArray(p.collection) && p.collection.some(c => c.toLowerCase().replace(/\s+/g, '-') === filterAttr))
+      );
+      renderProducts(filtered, catalogGrid);
+    } else {
+      renderProducts(catalogProducts, catalogGrid);
+    }
   }
 }
 
@@ -204,7 +214,7 @@ function renderProducts(items, container) {
     const heroImgSrc = gallery[0] ? gallery[0].src : product.image;
     const secondaryImgSrc = gallery[1] ? gallery[1].src : heroImgSrc;
 
-    const pdpUrl = isInsidePagesFolder ? `product.html?id=${product.id}` : `pages/product.html?id=${product.id}`;
+    const pdpUrl = `/product?id=${product.id}`;
 
     let swatchHTML = '';
     if (isSet) {

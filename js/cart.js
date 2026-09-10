@@ -1,7 +1,7 @@
 /**
- * Editorial Resort & Swimwear - Cart Drawer Module (Vanilla JS)
- * State Management, localStorage persistence, Slide-Out Drawer DOM updates,
- * Independent Top & Bottom size line-item labeling, Checkout CTA attributes.
+ * Editorial Resort & Swimwear - Cart & Ecommerce Module (Vanilla JS - Phase 2)
+ * State Management, localStorage persistence, Drawer & Page UI Synchronization,
+ * Independent Top & Bottom size line-item labeling, Checkout Flow & Order Processing.
  */
 
 const STORAGE_KEY = 'crochet_swim_cart_v1';
@@ -12,7 +12,7 @@ let cartState = [];
  */
 const CHECKOUT_CONFIG = {
   provider: 'stripe-payment-link',
-  stripePaymentUrl: '', // Drop-in live Stripe Payment Link URL (e.g., 'https://buy.stripe.com/...')
+  stripePaymentUrl: '', // Live Stripe Payment Link URL (e.g., 'https://buy.stripe.com/...')
   currency: 'USD',
   sandboxMode: true
 };
@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
   loadCartState();
   initCartDrawerUI();
   renderCartDrawer();
+  renderCartPage();
+  renderCheckoutSummary();
+  initCheckoutForm();
 });
 
 /**
@@ -47,7 +50,7 @@ function loadCartState() {
 }
 
 /**
- * Save current cart state to localStorage
+ * Save current cart state to localStorage and update all subscriber UI views
  */
 function saveCartState() {
   try {
@@ -60,12 +63,13 @@ function saveCartState() {
 /**
  * Add product to cart with chosen top/bottom sizes
  */
-function addToCart(product, selections) {
-  const topSize = selections.top || selections.size || 'N/A';
-  const bottomSize = selections.bottom || 'N/A';
-  const isSet = product.type === 'set' || product.category === 'Bikini Set';
+function addToCart(product, selections = {}) {
+  const isSet = product.type === 'set' || product.category === 'Bikini Set' || product.category === 'Bikini Sets';
+  const topSize = selections.top || selections.size || (isSet ? 'S' : null);
+  const bottomSize = selections.bottom || (isSet ? 'M' : null);
+  const singleSize = selections.size || (!isSet ? 'Standard' : null);
   
-  const itemKey = `${product.id}_T-${topSize}_B-${bottomSize}`;
+  const itemKey = `${product.id}_T-${topSize || 'NA'}_B-${bottomSize || 'NA'}_S-${singleSize || 'NA'}`;
   const existingIndex = cartState.findIndex(item => item.key === itemKey);
 
   if (existingIndex > -1) {
@@ -75,18 +79,23 @@ function addToCart(product, selections) {
       key: itemKey,
       id: product.id,
       name: product.name,
-      price: product.price,
+      price: Number(product.price) || 0,
       image: product.image,
       isSet: isSet,
-      topSize: selections.top || null,
-      bottomSize: selections.bottom || null,
-      singleSize: selections.size || null,
+      topSize: topSize,
+      bottomSize: bottomSize,
+      singleSize: singleSize,
       quantity: 1
     });
   }
 
   saveCartState();
   renderCartDrawer();
+  renderCartPage();
+  renderCheckoutSummary();
+
+  const sizeDetail = isSet ? `(Top: ${topSize}, Bottom: ${bottomSize})` : `(Size: ${singleSize})`;
+  showToast(`Added ${product.name} ${sizeDetail} to your bag ✦`);
   openCartDrawer();
 }
 
@@ -105,6 +114,8 @@ function updateItemQuantity(itemKey, delta) {
 
   saveCartState();
   renderCartDrawer();
+  renderCartPage();
+  renderCheckoutSummary();
 }
 
 /**
@@ -114,10 +125,23 @@ function removeFromCart(itemKey) {
   cartState = cartState.filter(i => i.key !== itemKey);
   saveCartState();
   renderCartDrawer();
+  renderCartPage();
+  renderCheckoutSummary();
 }
 
 /**
- * Render Cart Drawer DOM & Line Items
+ * Clear all items from cart
+ */
+function clearCart() {
+  cartState = [];
+  saveCartState();
+  renderCartDrawer();
+  renderCartPage();
+  renderCheckoutSummary();
+}
+
+/**
+ * Render Slide-Out Cart Drawer DOM & Line Items
  */
 function renderCartDrawer() {
   const container = document.getElementById('cartDrawerItems');
@@ -143,7 +167,7 @@ function renderCartDrawer() {
       <div style="text-align: center; padding: 4rem 1rem; color: var(--text-muted);">
         <p style="font-family: var(--font-serif); font-size: 1.4rem; margin-bottom: 0.5rem; color: var(--text-main);">Your Bag is Empty</p>
         <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">Discover our handcrafted swimwear and resort collections.</p>
-        <button class="btn btn-outline btn-sm" onclick="closeCartDrawer()">Explore Catalog</button>
+        <a href="/shop" class="btn btn-outline btn-sm" onclick="closeCartDrawer()">Explore Catalog</a>
       </div>
     `;
     if (checkoutBtn) checkoutBtn.classList.add('disabled');
@@ -166,13 +190,15 @@ function renderCartDrawer() {
       sizesLabel = `Size: <strong>${item.singleSize || 'Standard'}</strong>`;
     }
 
+    const imgPath = resolveImagePath(item.image);
+
     return `
       <div class="cart-item">
-        ${createResponsivePictureHTML(item.image, item.name, { pictureClass: 'cart-item-img', imgClass: 'cart-item-img', sizes: '120px', width: 480, height: 480, loading: 'lazy' })}
+        <img src="${imgPath}" alt="${escapeHTML(item.name)}" class="cart-item-img" onerror="this.src='/assets/images/optimized/hero-960.jpg'">
         <div class="cart-item-info">
           <h4>${escapeHTML(item.name)}</h4>
           <div class="cart-item-sizes">${sizesLabel}</div>
-          <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+          <div class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</div>
         </div>
         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
           <div class="cart-item-quantity">
@@ -185,6 +211,290 @@ function renderCartDrawer() {
       </div>
     `;
   }).join('');
+}
+
+/**
+ * Render Dedicated Cart Page DOM (`/cart`)
+ */
+function renderCartPage() {
+  const container = document.getElementById('pageCartView');
+  if (!container) return;
+
+  const totalItemCount = cartState.reduce((sum, item) => sum + item.quantity, 0);
+  const subtotal = cartState.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const estimatedShipping = subtotal >= 250 || subtotal === 0 ? 0 : 15;
+  const estimatedTotal = subtotal + estimatedShipping;
+
+  if (cartState.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 4rem 1rem;">
+        <span class="micro-label" style="color: var(--accent-terracotta);">SHOPPING BAG</span>
+        <h2 style="font-family: var(--font-serif); font-size: 2rem; margin: 0.75rem 0 0.5rem; color: var(--text-main);">Your Shopping Bag is Empty</h2>
+        <p style="font-size: 1.05rem; color: var(--text-muted); margin-bottom: 2rem;">Explore our readymade swimwear catalog and bespoke fitting options.</p>
+        <a href="/shop" class="btn btn-solid">Explore Shop Catalog &rarr;</a>
+      </div>
+    `;
+    return;
+  }
+
+  const itemsHTML = cartState.map(item => {
+    let sizesLabel = '';
+    if (item.isSet) {
+      sizesLabel = `Top: <strong>${item.topSize}</strong> &nbsp;|&nbsp; Bottom: <strong>${item.bottomSize}</strong>`;
+    } else {
+      sizesLabel = `Size: <strong>${item.singleSize || 'Standard'}</strong>`;
+    }
+
+    const imgPath = resolveImagePath(item.image);
+
+    return `
+      <div style="display: flex; gap: 1.5rem; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid var(--border-hairline);">
+        <img src="${imgPath}" alt="${escapeHTML(item.name)}" style="width: 90px; height: 120px; object-fit: cover; border-radius: var(--radius-strict); background: var(--bg-sand);" onerror="this.src='/assets/images/optimized/hero-960.jpg'">
+        <div style="flex: 1;">
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.35rem; font-family: var(--font-heading);">${escapeHTML(item.name)}</h3>
+          <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">${sizesLabel}</div>
+          <div style="font-size: 1.05rem; font-weight: 600; color: var(--text-main);">$${item.price.toFixed(2)} USD</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div class="cart-item-quantity">
+            <button class="qty-btn" onclick="updateItemQuantity('${item.key}', -1)" aria-label="Decrease quantity">-</button>
+            <span class="qty-val">${item.quantity}</span>
+            <button class="qty-btn" onclick="updateItemQuantity('${item.key}', 1)" aria-label="Increase quantity">+</button>
+          </div>
+          <div style="font-size: 1.1rem; font-weight: 700; width: 90px; text-align: right;">$${(item.price * item.quantity).toFixed(2)}</div>
+          <button class="cart-item-remove" onclick="removeFromCart('${item.key}')" style="margin-left: 0.5rem;">Remove</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML = `
+    <div style="display: grid; grid-template-columns: 1fr 340px; gap: 3rem; align-items: start;">
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 2px solid var(--border-color);">
+          <h2 style="font-size: 1.25rem; font-family: var(--font-heading); font-weight: 600;">Items (${totalItemCount})</h2>
+          <button class="btn btn-outline btn-sm" onclick="clearCart()" style="font-size: 0.78rem;">Clear Bag</button>
+        </div>
+        ${itemsHTML}
+      </div>
+
+      <div style="background: var(--bg-sand); padding: 2rem; border-radius: var(--radius-strict); border: 1px solid var(--border-hairline);">
+        <h3 style="font-size: 1.2rem; font-family: var(--font-heading); margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-hairline); padding-bottom: 0.75rem;">Order Summary</h3>
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.95rem;">
+          <span style="color: var(--text-light);">Subtotal</span>
+          <span style="font-weight: 600;">$${subtotal.toFixed(2)} USD</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.95rem;">
+          <span style="color: var(--text-light);">Estimated Express Shipping</span>
+          <span style="font-weight: 600;">${estimatedShipping === 0 ? 'Complimentary' : `$${estimatedShipping.toFixed(2)} USD`}</span>
+        </div>
+
+        ${subtotal > 0 && subtotal < 250 ? `
+          <p style="font-size: 0.8rem; color: var(--accent-terracotta); margin-bottom: 1rem; line-height: 1.4;">
+            Add $${(250 - subtotal).toFixed(2)} more for complimentary express global shipping!
+          </p>
+        ` : ''}
+
+        <div style="display: flex; justify-content: space-between; border-top: 2px solid var(--border-color); padding-top: 1rem; margin-top: 1rem; margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: 700;">
+          <span>Estimated Total</span>
+          <span style="color: var(--accent-espresso);">$${estimatedTotal.toFixed(2)} USD</span>
+        </div>
+
+        <a href="/checkout" class="btn btn-solid" style="display: block; text-align: center; width: 100%; padding: 0.9rem;">
+          Proceed to Checkout ✦
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Render Dedicated Checkout Page Order Breakdown (`/checkout`)
+ */
+function renderCheckoutSummary() {
+  const container = document.getElementById('checkoutItemsList');
+  const subtotalEl = document.getElementById('checkoutSubtotal');
+  const shippingEl = document.getElementById('checkoutShipping');
+  const totalEl = document.getElementById('checkoutTotal');
+
+  const subtotal = cartState.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const shipping = subtotal >= 250 || subtotal === 0 ? 0 : 15;
+  const total = subtotal + shipping;
+
+  if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)} USD`;
+  if (shippingEl) shippingEl.textContent = shipping === 0 ? 'Complimentary' : `$${shipping.toFixed(2)} USD`;
+  if (totalEl) totalEl.textContent = `$${total.toFixed(2)} USD`;
+
+  if (!container) return;
+
+  if (cartState.length === 0) {
+    container.innerHTML = `
+      <p style="text-align: center; color: var(--text-muted); padding: 2rem 0; font-size: 0.9rem;">
+        Your bag is currently empty. <a href="/shop" style="color: var(--accent-terracotta);">Return to shop</a>.
+      </p>
+    `;
+    return;
+  }
+
+  container.innerHTML = cartState.map(item => {
+    let sizesLabel = '';
+    if (item.isSet) {
+      sizesLabel = `Top: ${item.topSize} | Bottom: ${item.bottomSize}`;
+    } else {
+      sizesLabel = `Size: ${item.singleSize || 'Standard'}`;
+    }
+
+    const imgPath = resolveImagePath(item.image);
+
+    return `
+      <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-hairline);">
+        <img src="${imgPath}" alt="${escapeHTML(item.name)}" style="width: 54px; height: 72px; object-fit: cover; border-radius: 4px; background: var(--bg-sand);" onerror="this.src='/assets/images/optimized/hero-960.jpg'">
+        <div style="flex: 1;">
+          <h4 style="font-size: 0.92rem; margin-bottom: 0.2rem; font-family: var(--font-heading);">${escapeHTML(item.name)}</h4>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">${sizesLabel} &nbsp;×&nbsp; ${item.quantity}</div>
+        </div>
+        <div style="font-size: 0.95rem; font-weight: 600;">$${(item.price * item.quantity).toFixed(2)}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+/**
+ * Handle Checkout Form Submit & Order Confirmation Generation
+ */
+function initCheckoutForm() {
+  const form = document.getElementById('checkoutForm');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (cartState.length === 0) {
+      alert('Your shopping bag is empty.');
+      return;
+    }
+
+    const email = document.getElementById('checkoutEmail')?.value.trim();
+    const fullName = document.getElementById('checkoutFullName')?.value.trim();
+    const address = document.getElementById('checkoutAddress')?.value.trim();
+    const city = document.getElementById('checkoutCity')?.value.trim();
+    const zip = document.getElementById('checkoutZip')?.value.trim();
+
+    if (!email || !fullName || !address || !city || !zip) {
+      alert('Please fill in all required shipping address fields.');
+      return;
+    }
+
+    processCheckoutOrder({ email, fullName, address, city, zip });
+  });
+}
+
+function processCheckoutOrder(customer) {
+  const orderRef = `ER-2026-${Math.floor(10000 + Math.random() * 90000)}`;
+  const subtotal = cartState.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const shipping = subtotal >= 250 || subtotal === 0 ? 0 : 15;
+  const total = subtotal + shipping;
+  const purchasedItems = [...cartState];
+
+  clearCart();
+
+  const checkoutFormBox = document.getElementById('checkoutFormBox');
+  const confirmationContainer = document.getElementById('orderConfirmationContainer');
+
+  if (checkoutFormBox && confirmationContainer) {
+    checkoutFormBox.style.display = 'none';
+    confirmationContainer.style.display = 'block';
+
+    const itemsSummaryHTML = purchasedItems.map(i => `
+      <li style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+        <span><strong>${escapeHTML(i.name)}</strong> (${i.isSet ? `Top: ${i.topSize}, Bottom: ${i.bottomSize}` : `Size: ${i.singleSize}`}) × ${i.quantity}</span>
+        <span style="font-weight: 600;">$${(i.price * i.quantity).toFixed(2)} USD</span>
+      </li>
+    `).join('');
+
+    confirmationContainer.innerHTML = `
+      <div style="background: var(--bg-sand); padding: 3.5rem 2.5rem; border-radius: var(--radius-strict); border: 1px solid var(--border-hairline); text-align: center; max-width: 680px; margin: 0 auto;">
+        <span class="micro-label" style="color: var(--accent-terracotta); letter-spacing: 3px;">ORDER CONFIRMED ✦</span>
+        <h2 style="font-size: 2.2rem; font-family: var(--font-heading); margin: 0.75rem 0 0.5rem; color: var(--text-main);">Thank You for Your Order</h2>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 2rem;">
+          Order Reference: <strong style="color: var(--accent-espresso); font-family: monospace; font-size: 1.1rem;">#${orderRef}</strong>
+        </p>
+
+        <div style="background: var(--bg-cream); padding: 1.75rem; border-radius: var(--radius-strict); text-align: left; margin-bottom: 2rem; border: 1px solid var(--border-hairline);">
+          <h3 style="font-size: 1.1rem; font-family: var(--font-heading); margin-bottom: 1rem; border-bottom: 1px solid var(--border-hairline); padding-bottom: 0.5rem;">Dispatch Details</h3>
+          <p style="font-size: 0.88rem; color: var(--text-light); margin-bottom: 0.35rem;"><strong>Recipient:</strong> ${escapeHTML(customer.fullName)} (${escapeHTML(customer.email)})</p>
+          <p style="font-size: 0.88rem; color: var(--text-light); margin-bottom: 1.25rem;"><strong>Shipping Address:</strong> ${escapeHTML(customer.address)}, ${escapeHTML(customer.city)} ${escapeHTML(customer.zip)}</p>
+
+          <h3 style="font-size: 1.1rem; font-family: var(--font-heading); margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-hairline); padding-bottom: 0.5rem;">Ordered Items</h3>
+          <ul style="list-style: none; padding: 0; margin: 0 0 1rem;">
+            ${itemsSummaryHTML}
+          </ul>
+          
+          <div style="display: flex; justify-content: space-between; border-top: 2px solid var(--border-color); padding-top: 0.75rem; font-size: 1.1rem; font-weight: 700; color: var(--accent-espresso);">
+            <span>Total Amount Paid</span>
+            <span>$${total.toFixed(2)} USD</span>
+          </div>
+        </div>
+
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 2rem; line-height: 1.6;">
+          A confirmation dispatch email has been sent to <strong>${escapeHTML(customer.email)}</strong>. Our master knitter is preparing your pieces for express courier delivery.
+        </p>
+
+        <a href="/shop" class="btn btn-solid" style="display: inline-block;">Continue Exploring Catalog ✦</a>
+      </div>
+    `;
+  }
+}
+
+/**
+ * Toast Notification Popup Banner
+ */
+function showToast(message) {
+  let toast = document.getElementById('editorialToastBanner');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'editorialToastBanner';
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--accent-espresso);
+      color: #FAF7F2;
+      padding: 0.85rem 1.75rem;
+      border-radius: 40px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      box-shadow: 0 8px 24px rgba(26,22,21,0.25);
+      z-index: 10000;
+      opacity: 0;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+      pointer-events: none;
+    `;
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = message;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+
+  clearTimeout(toast.__timer);
+  toast.__timer = setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(100px)';
+  }, 3200);
+}
+
+/**
+ * Helper to resolve image paths cleanly across nested routes
+ */
+function resolveImagePath(imgSrc) {
+  if (!imgSrc) return '/assets/images/optimized/hero-960.jpg';
+  if (imgSrc.startsWith('/')) return imgSrc;
+  if (imgSrc.startsWith('../')) return imgSrc.replace('../', '/');
+  return `/${imgSrc}`;
 }
 
 /**
@@ -220,112 +530,11 @@ function initCartDrawerUI() {
     checkoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
       if (cartState.length === 0) return;
-      processCheckout();
+      closeCartDrawer();
+      window.location.href = '/checkout';
     });
   }
 }
-
-/**
- * Clean Checkout Abstraction & Gateway Config
- */
-function processCheckout() {
-  if (!cartState || cartState.length === 0) return;
-
-  const checkoutBtn = document.getElementById('checkoutCtaBtn');
-  if (!checkoutBtn) return;
-
-  const originalHTML = checkoutBtn.innerHTML;
-  checkoutBtn.disabled = true;
-  checkoutBtn.innerHTML = 'Connecting to Secure Checkout...';
-
-  const subtotal = cartState.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const itemCount = cartState.reduce((sum, item) => sum + item.quantity, 0);
-
-  setTimeout(() => {
-    if (CHECKOUT_CONFIG.stripePaymentUrl && CHECKOUT_CONFIG.stripePaymentUrl.startsWith('http')) {
-      window.location.href = CHECKOUT_CONFIG.stripePaymentUrl;
-    } else {
-      showCheckoutNoticeModal({
-        itemCount,
-        subtotal: subtotal.toFixed(2),
-        skus: cartState.map(i => `${i.name} (${i.isSet ? `Top: ${i.topSize}, Bottom: ${i.bottomSize}` : `Size: ${i.singleSize || 'Standard'}`}) × ${i.quantity}`)
-      });
-      checkoutBtn.disabled = false;
-      checkoutBtn.innerHTML = originalHTML;
-    }
-  }, 500);
-}
-
-function showCheckoutNoticeModal(details) {
-  let noticeModal = document.getElementById('checkoutNoticeModal');
-  if (!noticeModal) {
-    noticeModal = document.createElement('div');
-    noticeModal.id = 'checkoutNoticeModal';
-    noticeModal.className = 'product-modal-backdrop is-open';
-    noticeModal.setAttribute('role', 'dialog');
-    noticeModal.setAttribute('aria-modal', 'true');
-    noticeModal.setAttribute('aria-label', 'Checkout Sandbox Notice');
-    document.body.appendChild(noticeModal);
-  } else {
-    noticeModal.classList.add('is-open');
-  }
-
-  const skuListHTML = details.skus.map(s => `<li style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">• ${escapeHTML(s)}</li>`).join('');
-
-  noticeModal.innerHTML = `
-    <div class="product-modal" style="max-width: 520px; padding: 2.5rem; text-align: center;">
-      <button class="modal-close-btn" onclick="closeCheckoutNoticeModal()">&times;</button>
-      <span class="micro-label" style="color: var(--accent-terracotta);">CHECKOUT INTEGRATION READY</span>
-      <h3 style="font-family: var(--font-serif); font-size: 1.6rem; margin: 0.5rem 0 1rem;">Order Summary (${details.itemCount} ${details.itemCount === 1 ? 'Item' : 'Items'})</h3>
-      
-      <div style="background: var(--bg-sand); padding: 1rem; border-radius: 4px; text-align: left; margin-bottom: 1.25rem;">
-        <ul style="list-style: none; padding: 0; margin: 0 0 0.75rem;">
-          ${skuListHTML}
-        </ul>
-        <div style="font-size: 1rem; font-weight: 600; text-align: right; border-top: 1px solid var(--border-hairline); padding-top: 0.5rem; color: var(--accent-espresso);">
-          Total Amount: $${details.subtotal} USD
-        </div>
-      </div>
-
-      <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
-        <strong>Checkout Sandbox Mode:</strong> To connect live credit card processing via Stripe Payment Links or Snipcart, insert your link into <code>CHECKOUT_CONFIG.stripePaymentUrl</code> in <code>js/cart.js</code>.
-      </p>
-
-      <div style="display: flex; gap: 0.75rem; flex-direction: column;">
-        <button class="btn btn-solid" onclick="simulateSuccessfulPurchase()">Simulate Successful Order ✦</button>
-        <button class="btn btn-outline" onclick="closeCheckoutNoticeModal()">Return to Shopping Bag</button>
-      </div>
-    </div>
-  `;
-}
-
-window.closeCheckoutNoticeModal = function() {
-  const modal = document.getElementById('checkoutNoticeModal');
-  if (modal) modal.classList.remove('is-open');
-};
-
-window.simulateSuccessfulPurchase = function() {
-  closeCheckoutNoticeModal();
-  cartState = [];
-  saveCartState();
-  renderCartDrawer();
-
-  let successModal = document.getElementById('checkoutNoticeModal');
-  if (!successModal) return;
-
-  successModal.classList.add('is-open');
-  successModal.innerHTML = `
-    <div class="product-modal" style="max-width: 480px; padding: 3rem 2rem; text-align: center;">
-      <button class="modal-close-btn" onclick="closeCheckoutNoticeModal()">&times;</button>
-      <span class="micro-label" style="color: var(--accent-olive);">✦ ORDER CONFIRMED</span>
-      <h3 style="font-family: var(--font-serif); font-size: 1.8rem; margin: 0.5rem 0 1rem;">Thank You for Your Order</h3>
-      <p style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.75rem;">
-        Your simulated order has been placed successfully. Our master knitter is preparing your handcrafted resortwear pieces for atelier dispatch.
-      </p>
-      <button class="btn btn-solid" onclick="closeCheckoutNoticeModal(); closeCartDrawer();">Continue Exploring ✦</button>
-    </div>
-  `;
-};
 
 function openCartDrawer() {
   const backdrop = document.getElementById('cartDrawerBackdrop');
@@ -346,7 +555,16 @@ function closeCartDrawer() {
 }
 
 function escapeHTML(str) {
-  return str.replace(/[&<>'"]/g, 
+  if (!str) return '';
+  return String(str).replace(/[&<>'"]/g, 
     tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
   );
 }
+
+window.addToCart = addToCart;
+window.updateItemQuantity = updateItemQuantity;
+window.removeFromCart = removeFromCart;
+window.clearCart = clearCart;
+window.openCartDrawer = openCartDrawer;
+window.closeCartDrawer = closeCartDrawer;
+window.showToast = showToast;

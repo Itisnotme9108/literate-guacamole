@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    document.documentElement.classList.add('js-enabled');
+    setTimeout(function () {
+      if (!window.__curtainComplete && (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined')) {
+        document.documentElement.classList.remove('js-enabled');
+      }
+    }, 4000);
+  </script>
+  <noscript>
+    <style>
+      .js-enabled #navbar {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    </style>
+  </noscript>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bikini Sets Collection — EDITORIAL RESORT</title>
+  <meta name="description" content="Discover hand-crocheted bikini sets designed with independent top and bottom sizing. Artisanal resortwear by EDITORIAL RESORT.">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Bikini Sets Collection — EDITORIAL RESORT">
+  <meta property="og:description" content="Handcrafted bikini sets featuring independent dual sizing for top and bottom.">
+  <meta property="og:type" content="website">
+
+  <!-- Google Fonts Integration -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- External Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+
+<body>
+
+  <!-- Branded Brief Loader -->
+  <div class="site-loader" id="siteLoader" aria-hidden="true">
+    <div class="site-loader-content">
+      <span class="brand-wordmark" style="font-size: 1.4rem; color: var(--text-main);">EDITORIAL RESORT</span>
+      <span class="micro-label" style="letter-spacing: 3px; margin-top: 0.4rem; color: var(--accent-terracotta);">ATELIER '26 ✦</span>
+    </div>
+  </div>
+
+  <!-- Noise Texture Overlay & Custom Cursor -->
+  <div class="noise-overlay" aria-hidden="true"></div>
+  <div class="custom-cursor" id="customCursor" aria-hidden="true"><span>VIEW</span></div>
+
+  <!-- =========================================================================
+       HEADER & NAVIGATION BAR
+       ========================================================================= -->
+  <header class="navbar" id="topHeader">
+    <div class="container nav-container">
+      <a href="/" class="brand-wordmark" aria-label="Editorial Resort Homepage">
+        Editorial Resort
+      </a>
+
+      <!-- Navigation Links -->
+      <nav>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="/shop" class="nav-link">SHOP</a></li>
+          <li><a href="/collections" class="nav-link active">COLLECTIONS</a></li>
+          <li><a href="/bespoke" class="nav-link">BESPOKE</a></li>
+          <li><a href="/process" class="nav-link">OUR PROCESS</a></li>
+          <li><a href="/about" class="nav-link">ABOUT</a></li>
+        </ul>
+      </nav>
+
+      <!-- Cart & Nav Actions -->
+      <div class="nav-actions">
+        <button class="icon-btn" id="searchBtn" aria-label="Search Catalog">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+
+        <button class="icon-btn" id="wishlistBtn" aria-label="Open Wishlist Favorites" style="position: relative;">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          <span class="wishlist-badge" id="wishlistHeaderBadge">0</span>
+        </button>
+
+        <button class="cart-trigger-btn" id="cartTriggerBtn" aria-label="Open Shopping Bag">
+          <span>Bag</span>
+          <span class="cart-badge" id="cartHeaderBadge">0</span>
+        </button>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main style="padding: 4rem 0 6rem;">
+    <div class="container">
+      <div class="section-header">
+        <span class="micro-label">COLLECTION // 01</span>
+        <h1 class="hero-title" style="font-size: 2.4rem; margin-top: 0.5rem;">Bikini Sets Collection</h1>
+        <p>Sculpted 2-piece swimwear sets featuring independent top and bottom sizing for a bespoke fit.</p>
+      </div>
+
+      <!-- Catalog Product Grid Filtered to Bikini Sets -->
+      <div class="products-grid" id="catalogProductsGrid" data-filter="bikini-sets"></div>
+
+      <div style="text-align: center; margin-top: 3.5rem;">
+        <a href="/shop" class="btn btn-outline">Explore Full Shop Catalog &rarr;</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- =========================================================================
+       FOOTER
+       ========================================================================= -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="brand-wordmark">Editorial Resort</span>
+          <p>A luxury resort-wear and intimate apparel studio. Handcrafted with unbleached organic linen, bamboo, and sustainable cotton threads.</p>
+        </div>
+
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="/collections">Collections</a></li>
+            <li><a href="/bespoke">Bespoke Fits</a></li>
+            <li><a href="/process">Our Process</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Collections</h4>
+          <ul class="footer-links">
+            <li><a href="/collections/bikini-sets">Bikini Sets</a></li>
+            <li><a href="/collections/swim-tops">Swim Tops</a></li>
+            <li><a href="/collections/swim-bottoms">Swim Bottoms</a></li>
+            <li><a href="/collections/resort-intimates">Resort Intimates</a></li>
+            <li><a href="/lookbook">Lookbook</a></li>
+            <li><a href="/size-guide">Size Guide</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Customer Care</h4>
+          <ul class="footer-links">
+            <li><a href="/faq">FAQ</a></li>
+            <li><a href="/shipping">Shipping &amp; Delivery</a></li>
+            <li><a href="/returns">Returns &amp; Exchanges</a></li>
+            <li><a href="/care-guide">Care Guide</a></li>
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+            <li><a href="/cookie-policy">Cookie Policy</a></li>
+            <li><a href="/accessibility">Accessibility</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Atelier Dispatch</h4>
+          <p style="font-size: 0.88rem; color: var(--text-light); margin-bottom: 1rem;">Subscribe to private collection drops and editorial lookbooks.</p>
+          <form id="newsletterForm" class="newsletter-form" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="email" id="newsletterEmail" class="form-control" placeholder="Email address" required aria-label="Email for newsletter" style="padding: 0.6rem 0.85rem; font-size: 0.85rem;">
+              <button type="submit" class="btn btn-solid btn-sm">Join</button>
+            </div>
+            <div class="newsletter-feedback" id="newsletterFeedback" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; <span id="currentYear">2026</span> EDITORIAL RESORT ATELIER. ALL RIGHTS RESERVED.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Drawer Modals & Search Overlay -->
+  <div class="product-modal-backdrop" id="productQuickViewBackdrop" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Product Quick View">
+    <div class="product-modal">
+      <button class="modal-close-btn" id="productModalCloseBtn" aria-label="Close product view">&times;</button>
+      <div id="productModalBody" class="product-modal-body"></div>
+    </div>
+  </div>
+
+  <div class="cart-drawer-backdrop" id="cartDrawerBackdrop" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Shopping Bag Drawer">
+    <div class="cart-drawer" id="cartDrawer">
+      <div class="drawer-header">
+        <h3>Shopping Bag</h3>
+        <button class="drawer-close-btn" id="cartDrawerCloseBtn" aria-label="Close Shopping Bag">&times;</button>
+      </div>
+      <div class="drawer-body" id="cartDrawerItems"></div>
+      <div class="drawer-footer">
+        <div class="drawer-subtotal">
+          <span>Subtotal</span>
+          <span class="amount" id="cartSubtotalAmount">$0.00</span>
+        </div>
+        <button class="btn btn-solid" id="checkoutCtaBtn" style="width: 100%;">Proceed to Checkout ✦</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-overlay-backdrop" id="searchOverlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Search Swimwear Catalog">
+    <div class="search-container">
+      <div class="search-header">
+        <div class="search-input-box">
+          <input type="text" id="searchInput" class="search-input" placeholder="Search swimwear by name, category, or material..." aria-label="Search catalog" autocomplete="off">
+          <button class="search-clear-btn" id="searchClearBtn" aria-label="Clear search input" style="display: none;">&times;</button>
+        </div>
+        <button class="search-close-btn" id="searchCloseBtn" aria-label="Close search overlay">Close &times;</button>
+      </div>
+      <div class="search-status-bar">
+        <span id="searchResultCount">Start typing to search our atelier collection...</span>
+      </div>
+      <div class="search-results-wrapper" id="searchResultsWrapper">
+        <div class="search-results-list" id="searchResultsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wishlist-modal-backdrop" id="wishlistModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Saved Wishlist Favorites">
+    <div class="wishlist-drawer" id="wishlistDrawer">
+      <div class="drawer-header">
+        <h3>Saved Favorites ✦</h3>
+        <button class="drawer-close-btn" id="wishlistCloseBtn" aria-label="Close Wishlist Drawer">&times;</button>
+      </div>
+      <div class="drawer-body" id="wishlistBody"></div>
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="/js/main.js"></script>
+  <script src="/js/cart.js"></script>
+  <script src="/js/products.js"></script>
+</body>
+</html>

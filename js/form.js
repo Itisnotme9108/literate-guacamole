@@ -4,10 +4,11 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('bespokeForm');
-  if (!form) return;
+  const bespokeForm = document.getElementById('bespokeForm');
+  if (bespokeForm) initBespokeForm(bespokeForm);
 
-  initBespokeForm(form);
+  const contactForm = document.getElementById('contactForm');
+  if (contactForm) initContactForm(contactForm);
 });
 
 function initBespokeForm(form) {
@@ -122,4 +123,34 @@ Thank you!`;
   }, 600);
 
   form.reset();
+}
+
+function initContactForm(form) {
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('contactName')?.value.trim();
+    const email = document.getElementById('contactEmail')?.value.trim();
+    const subject = document.getElementById('contactSubject')?.value;
+    const message = document.getElementById('contactMessage')?.value.trim();
+
+    if (!name || !email || !subject || !message) {
+      alert('Please fill out all required fields.');
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert('Please provide a valid email address.');
+      return;
+    }
+
+    const feedback = document.createElement('div');
+    feedback.className = 'form-success-banner';
+    feedback.style.cssText = 'background: var(--bg-sand); border: 1px solid var(--accent-olive); padding: 1.5rem; margin-top: 1rem; border-radius: var(--radius-strict); color: var(--accent-olive); text-align: center;';
+    feedback.innerHTML = `
+      <h3 style="font-family: var(--font-serif); font-size: 1.25rem; margin-bottom: 0.5rem;">Inquiry Dispatch Sent ✦</h3>
+      <p style="font-size: 0.9rem; color: var(--text-main);">Thank you, ${name}. Our atelier concierge has received your message regarding "${subject}" and will respond to ${email} within 24 hours.</p>
+    `;
+
+    form.parentNode.replaceChild(feedback, form);
+  });
 }

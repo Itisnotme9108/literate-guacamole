@@ -30,19 +30,43 @@ function initMobileNav() {
   if (!menuBtn || !navLinks) return;
 
   const setNavState = (isOpen) => {
+    const isMobile = window.innerWidth < 768;
     navLinks.classList.toggle('is-open', isOpen);
     menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    if (isOpen) {
+    
+    if (isMobile) {
+      if (isOpen) {
+        navLinks.removeAttribute('aria-hidden');
+        navLinks.removeAttribute('inert');
+      } else {
+        navLinks.setAttribute('aria-hidden', 'true');
+        navLinks.setAttribute('inert', '');
+      }
+    } else {
       navLinks.removeAttribute('aria-hidden');
       navLinks.removeAttribute('inert');
-    } else {
-      navLinks.setAttribute('aria-hidden', 'true');
-      navLinks.setAttribute('inert', '');
     }
   };
 
-  // Set initial hidden state for closed menu
-  setNavState(false);
+  // Initial state check
+  if (window.innerWidth < 768) {
+    setNavState(false);
+  } else {
+    navLinks.removeAttribute('aria-hidden');
+    navLinks.removeAttribute('inert');
+  }
+
+  // Handle screen resize
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) {
+      navLinks.classList.remove('is-open');
+      navLinks.removeAttribute('aria-hidden');
+      navLinks.removeAttribute('inert');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    } else if (!navLinks.classList.contains('is-open')) {
+      setNavState(false);
+    }
+  });
 
   menuBtn.addEventListener('click', () => {
     const isOpen = navLinks.classList.contains('is-open');
@@ -51,7 +75,7 @@ function initMobileNav() {
 
   navLinks.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => {
-      if (navLinks.classList.contains('is-open')) {
+      if (window.innerWidth < 768 && navLinks.classList.contains('is-open')) {
         setNavState(false);
       }
     });
@@ -548,7 +572,7 @@ function initSearchOverlay() {
           const prodId = el.getAttribute('data-id');
           const targetProduct = items.find(p => p.id === prodId);
           closeSearch();
-          const targetPage = isInsidePages ? `product.html?id=${prodId}` : `pages/product.html?id=${prodId}`;
+          const targetPage = `/product?id=${prodId}`;
           window.location.href = targetPage;
         });
       });
