@@ -114,18 +114,19 @@
       </nav>
 
       <!-- Single Product Layout -->
-      <div class="pdp-layout" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: start;">
+      <div class="pdp-layout">
         
         <!-- Left: Image Gallery Stack -->
-        <div class="pdp-gallery-container">
+        <div class="pdp-gallery-col">
           <div class="pdp-gallery-stack" id="pdpGalleryStack"></div>
-          <div class="pdp-mobile-counter" id="pdpMobileCounter" style="text-align: center; margin-top: 0.5rem; display: none;">
+          <div class="pdp-gallery-mobile-counter" id="pdpMobileCounter" style="display: none;">
             <span id="pdpCounterText">1 / 1</span>
           </div>
         </div>
 
         <!-- Right: Details & Purchase Controls -->
-        <div class="pdp-details-container">
+        <div class="pdp-info-col">
+          <div class="pdp-sticky-box">
           <div class="pdp-header">
             <span class="micro-label" id="pdpCategoryLabel" style="color: var(--accent-terracotta);">COLLECTION PIECE</span>
             <h1 class="pdp-title" id="pdpTitle" style="font-size: 2.2rem; margin: 0.5rem 0 0.75rem; font-family: var(--font-heading);">Product Name</h1>
@@ -195,6 +196,7 @@
             </div>
           </div>
 
+          </div>
         </div>
       </div>
     </div>
@@ -320,6 +322,15 @@
       </div>
       <div class="drawer-body" id="wishlistBody"></div>
     </div>
+  <!-- Mobile PDP Sticky Add to Bag Bar -->
+  <div class="mobile-pdp-sticky-bar">
+    <div class="bar-price-box">
+      <span class="bar-label">Total</span>
+      <span class="bar-price" id="mobileBarPrice">$0.00</span>
+    </div>
+    <button class="btn btn-solid mobile-bar-add-btn disabled" id="mobileBarAddToCartBtn" disabled>
+      Select a Size
+    </button>
   </div>
 
   <!-- JavaScript Modules -->

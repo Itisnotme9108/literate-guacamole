@@ -17,8 +17,23 @@ document.addEventListener('DOMContentLoaded', () => {
   initPageTransitions();
   initSearchOverlay();
   initWishlistUI();
+  syncActiveNavLinks();
   updateYear();
 });
+
+function syncActiveNavLinks() {
+  const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href) return;
+    const cleanHref = href.replace(/\/$/, '') || '/';
+    if (cleanHref === currentPath || (cleanHref !== '/' && currentPath.startsWith(cleanHref))) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+}
 
 /**
  * Mobile Navigation Menu Toggle with Inert Accessibility
@@ -548,12 +563,8 @@ function initSearchOverlay() {
     }
 
     if (resultsList) {
-      const isInsidePages = window.location.pathname.includes('/pages/');
       resultsList.innerHTML = matches.map((item, idx) => {
-        let imgPath = item.image || '';
-        if (isInsidePages && !imgPath.startsWith('../')) {
-          imgPath = `../${imgPath}`;
-        }
+        const imgPath = item.image || '';
         return `
           <div class="search-result-item" data-id="${item.id}" data-idx="${idx}" tabindex="0">
             <img src="${imgPath}" alt="${item.name}" class="search-result-img" onerror="this.src='assets/images/optimized/hero-960.jpg'">
@@ -670,13 +681,8 @@ function initWishlistUI() {
       return;
     }
 
-    const isInsidePages = window.location.pathname.includes('/pages/');
-
     body.innerHTML = favProducts.map(item => {
-      let imgPath = item.image || '';
-      if (isInsidePages && !imgPath.startsWith('../')) {
-        imgPath = `../${imgPath}`;
-      }
+      const imgPath = item.image || '';
       return `
         <div class="wishlist-item">
           <img src="${imgPath}" alt="${item.name}" class="wishlist-item-img" onerror="this.src='assets/images/optimized/hero-960.jpg'">

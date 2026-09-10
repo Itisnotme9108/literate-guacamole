@@ -4,77 +4,9 @@
  * accessibility keyboard controls, dynamic rendering, and product modal details.
  */
 
-// Fallback embedded dataset in case user opens index.html directly via file:// protocol without a web server
+/// Fallback embedded dataset in case user opens site directly via file:// protocol without a web server
 const FALLBACK_PRODUCTS = [
   {
-    "id": "prod-001",
-    "name": "Berry Bear Plushie",
-    "price": 38.00,
-    "category": "plushies",
-    "subCategory": "Plushies",
-    "type": "physical",
-    "image": "assets/images/berry-bear.svg",
-    "description": "Handcrafted with velvety chenille yarn in a soft dusty rose hue. Features embroidered eyes for safety and a squishy strawberry backpack.",
-    "tags": ["Best Seller", "Handmade"]
-  },
-  {
-    "id": "prod-002",
-    "name": "Sage Meadow Cardigan Pattern",
-    "price": 8.50,
-    "category": "patterns",
-    "subCategory": "Sweaters",
-    "type": "digital",
-    "image": "assets/images/sage-cardigan-pattern.svg",
-    "description": "Instant download PDF crochet pattern. Includes step-by-step photo tutorial, size instructions XS to 3XL, and stitch gauge checklist.",
-    "tags": ["Digital PDF", "Intermediate"]
-  },
-  {
-    "id": "prod-003",
-    "name": "Cozy Daisy Granny Square Blanket",
-    "price": 125.00,
-    "category": "home",
-    "subCategory": "Blankets",
-    "type": "physical",
-    "image": "assets/images/daisy-blanket.svg",
-    "description": "Warm lap blanket composed of 48 individual daisy granny squares stitched together with organic cream cotton yarn.",
-    "tags": ["One of a Kind", "Home Decor"]
-  },
-  {
-    "id": "prod-004",
-    "name": "Buttercup Bunny Amigurumi",
-    "price": 34.00,
-    "category": "plushies",
-    "subCategory": "Plushies",
-    "type": "physical",
-    "image": "assets/images/buttercup-bunny.svg",
-    "description": "Adorable floppy-eared bunny stuffed with eco-friendly hypoallergenic polyfill. Dressed in a tiny removable buttercup yellow overalls.",
-    "tags": ["Plushie", "Soft Toy"]
-  },
-  {
-    "id": "prod-005",
-    "name": "Chunky Mushroom Tote Bag Pattern",
-    "price": 6.00,
-    "category": "patterns",
-    "subCategory": "Accessories",
-    "type": "digital",
-    "image": "assets/images/mushroom-tote-pattern.svg",
-    "description": "Beginner-friendly PDF pattern for a sturdy, textured mushroom motif market tote bag. Uses heavy aran weight yarn.",
-    "tags": ["Digital PDF", "Beginner Friendly"]
-  },
-  {
-    "id": "prod-006",
-    "name": "Terracotta Sunset Bucket Hat",
-    "price": 28.00,
-    "category": "accessories",
-    "subCategory": "Accessories",
-    "type": "physical",
-    "image": "assets/images/terracotta-hat.svg",
-    "description": "Breathable 100% cotton yarn bucket hat in warm terracotta and cream stripes. Flexible brim keeps sunny rays at bay.",
-    "tags": ["Wearable", "Summer Favorite"]
-  },
-  {
-    "id": "prod-007",
-    "name": "Mini Bobble Tea Keychain Plushie",
     "price": 16.00,
     "category": "plushies",
     "subCategory": "Accessories",
@@ -115,13 +47,35 @@ async function fetchProducts() {
   const gridContainer = document.getElementById('productsGrid');
   
   try {
-    const response = await fetch('data/products.json');
-    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+    const response = await fetch('/data/products.json?v=' + Date.now())
+      .catch(() => fetch('data/products.json?v=' + Date.now()))
+      .catch(() => fetch('../data/products.json?v=' + Date.now()))
+      .catch(() => null);
+    if (!response || !response.ok) throw new Error(`HTTP error ${response ? response.status : 'failed'}`);
     allProducts = await response.json();
   } catch (error) {
     console.warn('Using local dataset fallback (file protocol or fetch restriction):', error);
-    allProducts = FALLBACK_PRODUCTS;
+    allProducts = typeof catalogProducts !== 'undefined' && catalogProducts.length > 0 ? catalogProducts : FALLBACK_PRODUCTS;
   }
+
+  const isFileProtocol = window.location.protocol === 'file:';
+  allProducts = allProducts.map(p => {
+    const normalizePath = (src) => {
+      if (!src) return src;
+      if (src.startsWith('http') || src.startsWith('data:')) return src;
+      if (isFileProtocol) return src.replace(/^\/+/, '');
+      let clean = src;
+      if (clean.startsWith('../')) clean = clean.replace(/^(\.\.\/)+/, '');
+      if (!clean.startsWith('/')) clean = '/' + clean;
+      return clean;
+    };
+    return {
+      ...p,
+      image: normalizePath(p.image),
+      secondaryImage: normalizePath(p.secondaryImage),
+      gallery: p.gallery ? p.gallery.map(g => ({ ...g, src: normalizePath(g.src) })) : undefined
+    };
+  });
 
   updateFilterBadges();
   renderGallery(allProducts);
@@ -220,29 +174,7 @@ function renderGallery(items) {
   }
 
   items.forEach(product => {
-    const card = document.createElement('article');
-    card.className = 'product-card';
-    card.setAttribute('aria-label', product.name);
-
-    const typeBadgeLabel = product.type === 'physical' ? 'Physical Item' : 'Digital PDF';
-    
-    card.innerHTML = `
-      <div class="card-image-wrapper">
-        <span class="type-badge ${product.type}">${typeBadgeLabel}</span>
-        ${createResponsivePictureHTML(product.image, `${product.name} - Handmade Crochet`, { sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw', width: 960, height: 960, loading: 'lazy' })}
-      </div>
-      <div class="card-body">
-        <h3 class="card-title">${escapeHTML(product.name)}</h3>
-        <p class="card-description">${escapeHTML(product.description)}</p>
-        <div class="card-footer">
-          <span class="card-price">${(product.price !== null && product.price !== undefined && product.price !== 'TBD') ? '$' + Number(product.price).toFixed(2) : 'Price TBD'}</span>
-          <button class="btn btn-secondary btn-sm quick-view-btn" data-id="${product.id}" aria-label="View details for ${escapeHTML(product.name)}">
-            View Details ✦
-          </button>
-        </div>
-      </div>
-    `;
-
+    const card = typeof createProductCardElement === 'function' ? createProductCardElement(product) : document.createElement('article');
     gridContainer.appendChild(card);
   });
 
@@ -291,7 +223,7 @@ function openQuickViewModal(product) {
 
   const isDigital = product.type === 'digital';
   const ctaText = isDigital ? 'Download PDF / Custom Request' : 'Order Custom Commission';
-  const commissionUrl = `pages/commission.html?item=${encodeURIComponent(product.name)}&type=${product.type}`;
+  const commissionUrl = `/bespoke?item=${encodeURIComponent(product.name)}&type=${product.type}`;
 
   modalContent.innerHTML = `
     <div style="display: grid; grid-template-columns: 1fr 1.1fr; gap: 1.5rem; align-items: center;">

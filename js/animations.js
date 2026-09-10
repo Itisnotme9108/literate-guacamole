@@ -878,53 +878,6 @@ function initTestimonialsAnimations() {
  * Phase 3: Desktop Product Spotlight Card Mouse Tilt
  */
 function initProductSpotlightTilt() {
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  if (window.innerWidth < 1024 || isTouchDevice) return;
-
-  let currentCard = null;
-
-  document.addEventListener('mousemove', (e) => {
-    const card = e.target.closest('.product-card');
-
-    if (card) {
-      if (currentCard && currentCard !== card) {
-        gsap.to(currentCard, {
-          rotateX: 0,
-          rotateY: 0,
-          translateZ: 0,
-          duration: 0.45,
-          ease: 'power2.out',
-          overwrite: 'auto'
-        });
-      }
-      currentCard = card;
-
-      const rect = card.getBoundingClientRect();
-      const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
-      const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-
-      const maxTilt = 5.5; // Restrained 5.5deg amplitude
-      const rotateY = x * maxTilt;
-      const rotateX = -y * maxTilt;
-
-      gsap.to(card, {
-        rotateX: rotateX,
-        rotateY: rotateY,
-        translateZ: 10,
-        duration: 0.35,
-        ease: 'power2.out',
-        overwrite: 'auto'
-      });
-    } else if (currentCard) {
-      gsap.to(currentCard, {
-        rotateX: 0,
-        rotateY: 0,
-        translateZ: 0,
-        duration: 0.5,
-        ease: 'power2.out',
-        overwrite: 'auto'
-      });
-      currentCard = null;
-    }
-  });
+  // Disabled per Step 5 specifications — no 3D tilt, zoom, or rotation on product cards.
+  return;
 }

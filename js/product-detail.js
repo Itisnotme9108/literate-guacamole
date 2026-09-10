@@ -17,7 +17,7 @@ async function initProductDetailPage() {
   // Wait for catalog products or fetch directly
   if (!window.catalogProducts || window.catalogProducts.length === 0) {
     try {
-      const res = await fetch('../data/products.json?v=' + Date.now()).catch(() => fetch('data/products.json?v=' + Date.now())).catch(() => null);
+      const res = await fetch('/data/products.json?v=' + Date.now()).catch(() => fetch('data/products.json?v=' + Date.now())).catch(() => null);
       if (res && res.ok) {
         window.catalogProducts = await res.json();
       } else if (typeof LOCAL_PRODUCTS_FALLBACK !== 'undefined') {
@@ -48,11 +48,11 @@ function getPdpGallery(product) {
   if (product && Array.isArray(product.gallery) && product.gallery.length > 0) {
     return product.gallery.map(item => ({
       role: item.role || 'feature',
-      src: item.src.startsWith('../') ? item.src : `../${item.src.replace(/^assets\//, 'assets/')}`
+      src: item.src.startsWith('/') ? item.src : `/${item.src.replace(/^(\.\.\/)+/, '')}`
     }));
   }
-  const hero = product.image ? (product.image.startsWith('../') ? product.image : `../${product.image}`) : '';
-  const feature = product.secondaryImage ? (product.secondaryImage.startsWith('../') ? product.secondaryImage : `../${product.secondaryImage}`) : hero;
+  const hero = product.image ? (product.image.startsWith('/') ? product.image : `/${product.image.replace(/^(\.\.\/)+/, '')}`) : '';
+  const feature = product.secondaryImage ? (product.secondaryImage.startsWith('/') ? product.secondaryImage : `/${product.secondaryImage.replace(/^(\.\.\/)+/, '')}`) : hero;
 
   return [
     { role: 'hero', src: hero },

@@ -5,7 +5,10 @@
  */
 
 const STORAGE_KEY = 'crochet_swim_cart_v1';
+const FAVORITES_KEY = 'editorial_resort_favorites';
+
 let cartState = [];
+let favoritesList = [];
 
 /**
  * Production-ready Checkout Configuration Point
@@ -19,11 +22,13 @@ const CHECKOUT_CONFIG = {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadCartState();
+  loadFavorites();
   initCartDrawerUI();
   renderCartDrawer();
   renderCartPage();
   renderCheckoutSummary();
   initCheckoutForm();
+  syncAllBadgesAndUI();
 });
 
 /**
@@ -50,6 +55,82 @@ function loadCartState() {
 }
 
 /**
+ * Load persisted wishlist state from localStorage
+ */
+function loadFavorites() {
+  try {
+    const saved = localStorage.getItem(FAVORITES_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) favoritesList = parsed;
+    }
+  } catch (e) {
+    favoritesList = [];
+  }
+}
+
+function saveFavorites() {
+  try {
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favoritesList));
+  } catch (e) {
+    console.error('Failed saving favorites:', e);
+  }
+  syncAllBadgesAndUI();
+}
+
+function isFavorite(productId) {
+  return favoritesList.includes(productId);
+}
+
+function toggleFavorite(productId) {
+  const index = favoritesList.indexOf(productId);
+  if (index > -1) {
+    favoritesList.splice(index, 1);
+  } else {
+    favoritesList.push(productId);
+  }
+  saveFavorites();
+  return isFavorite(productId);
+}
+
+function syncAllBadgesAndUI() {
+  const cartCount = cartState.reduce((sum, item) => sum + item.quantity, 0);
+  document.querySelectorAll('#cartHeaderBadge, .cart-badge').forEach(b => {
+    b.textContent = cartCount;
+  });
+
+  document.querySelectorAll('#wishlistHeaderBadge, .wishlist-badge').forEach(b => {
+    b.textContent = favoritesList.length;
+  });
+
+  document.querySelectorAll('.favorite-btn[data-id]').forEach(btn => {
+    const id = btn.getAttribute('data-id');
+    const active = favoritesList.includes(id);
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-label', active ? 'Remove from Wishlist' : 'Add to Wishlist');
+    btn.innerHTML = active ? '♥' : '♡';
+  });
+
+  if (typeof renderWishlistDrawer === 'function') {
+    renderWishlistDrawer();
+  }
+}
+
+window.addEventListener('storage', (e) => {
+  if (e.key === STORAGE_KEY) {
+    loadCartState();
+    renderCartDrawer();
+    renderCartPage();
+    renderCheckoutSummary();
+    syncAllBadgesAndUI();
+  }
+  if (e.key === FAVORITES_KEY) {
+    loadFavorites();
+    syncAllBadgesAndUI();
+  }
+});
+
+/**
  * Save current cart state to localStorage and update all subscriber UI views
  */
 function saveCartState() {
@@ -58,12 +139,13 @@ function saveCartState() {
   } catch (e) {
     console.error('Failed saving cart state:', e);
   }
+  syncAllBadgesAndUI();
 }
 
 /**
  * Add product to cart with chosen top/bottom sizes
  */
-function addToCart(product, selections = {}) {
+function addToCart(product, selections = {}, options = { autoOpen: true }) {
   const isSet = product.type === 'set' || product.category === 'Bikini Set' || product.category === 'Bikini Sets';
   const topSize = selections.top || selections.size || (isSet ? 'S' : null);
   const bottomSize = selections.bottom || (isSet ? 'M' : null);
@@ -96,7 +178,9 @@ function addToCart(product, selections = {}) {
 
   const sizeDetail = isSet ? `(Top: ${topSize}, Bottom: ${bottomSize})` : `(Size: ${singleSize})`;
   showToast(`Added ${product.name} ${sizeDetail} to your bag ✦`);
-  openCartDrawer();
+  if (!options || options.autoOpen !== false) {
+    openCartDrawer();
+  }
 }
 
 /**
@@ -568,3 +652,9 @@ window.clearCart = clearCart;
 window.openCartDrawer = openCartDrawer;
 window.closeCartDrawer = closeCartDrawer;
 window.showToast = showToast;
+window.isFavorite = isFavorite;
+window.toggleFavorite = toggleFavorite;
+window.syncAllBadgesAndUI = syncAllBadgesAndUI;
+window.loadFavorites = loadFavorites;
+window.saveFavorites = saveFavorites;
+

@@ -217,8 +217,8 @@ html, body {
   }
 
   .products-grid:not(.horizontal-scroll-mobile) {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem 0.85rem;
   }
 
   /* Bespoke Fit Journey Mobile Horizontal Scroll Carousel */
@@ -382,7 +382,8 @@ html, body {
   }
 
   .products-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem 1.25rem;
   }
 
   .confidence-grid {
@@ -470,13 +471,8 @@ html, body {
    -------------------------------------------------------------------------- */
 @media (min-width: 1024px) {
   .products-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (min-width: 1440px) {
-  .products-grid {
     grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem 1.5rem;
   }
 }
 
