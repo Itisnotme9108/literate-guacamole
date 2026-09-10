@@ -720,7 +720,6 @@ function renderProducts(items, container) {
     const card = createProductCardElement(product);
     container.appendChild(card);
   });
-}
 
   attachCardEvents(container);
   attachSwatchListeners(container);
