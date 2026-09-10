@@ -39,9 +39,12 @@ async function initProductDetailPage() {
   }
 
   renderPdpContent(currentPdpProduct);
+  renderPdpColorSwatches(currentPdpProduct);
   initPdpAccordion();
   initMobileGalleryScroll();
   updatePdpWishlistState();
+  initStickyBarObserver();
+  renderRelatedProducts(currentPdpProduct);
 }
 
 function getPdpGallery(product) {
@@ -88,7 +91,7 @@ function renderPdpContent(product) {
   const breadTitle = document.getElementById('breadcrumbTitle');
   if (breadCategory) {
     breadCategory.textContent = product.category;
-    breadCategory.href = `shop.html?category=${product.category.toLowerCase().replace(/\s+/g, '-')}`;
+    breadCategory.href = `/shop?category=${product.category.toLowerCase().replace(/\s+/g, '-')}`;
   }
   if (breadTitle) breadTitle.textContent = product.name;
 
@@ -105,16 +108,14 @@ function renderPdpContent(product) {
   if (catLabel) catLabel.textContent = product.category;
   if (titleEl) titleEl.textContent = product.name;
   
-  if (priceEl) {
-      priceEl.textContent = (product.price === null || product.price === 'TBD') ? 'Price: TBD' : `$${product.price.toFixed(2)}`;
-  }
-  if (mobileBarPrice) {
-      mobileBarPrice.textContent = (product.price === null || product.price === 'TBD') ? 'Price: TBD' : `$${product.price.toFixed(2)}`;
-  }
+  const formattedPrice = (product.price === null || product.price === 'TBD') ? 'Price: TBD' : `$${Number(product.price).toFixed(2)}`;
+  if (priceEl) priceEl.textContent = formattedPrice;
+  if (mobileBarPrice) mobileBarPrice.textContent = formattedPrice;
   
   if (ratingEl) {
       if (product.rating === null) {
-          document.querySelector('.pdp-rating-badge').style.display = 'none';
+          const badge = document.querySelector('.pdp-rating-badge');
+          if (badge) badge.style.display = 'none';
       } else {
           ratingEl.textContent = (product.rating || 5.0).toFixed(1);
       }
@@ -126,28 +127,36 @@ function renderPdpContent(product) {
   if (descripEl) descripEl.textContent = product.descriptor || 'Handcrafted Editorial Swimwear';
   if (descTextEl) descTextEl.textContent = product.description;
 
-  // TBD Fields Handling
+  // Accordions Content Fields
   const detailsList = document.getElementById('pdpDetailsList');
-  if (detailsList && product.details && product.details.length > 0) {
+  if (detailsList) {
+    if (product.details && product.details.length > 0) {
       detailsList.style.display = 'block';
       detailsList.innerHTML = product.details.map(d => `<li>${d}</li>`).join('');
+    } else {
+      detailsList.style.display = 'none';
+    }
   }
 
-  const handleTbd = (elId, val) => {
-      const el = document.getElementById(elId);
-      if (el && val === 'TBD') el.innerHTML = '<span style="color:var(--accent-terracotta); font-weight:600;">TBD</span>';
-      else if (el && val) el.innerHTML = val;
-  };
-  
-  handleTbd('pdpCareText', product.care);
-  handleTbd('pdpShippingText', product.shipping);
-  
+  const matEl = document.getElementById('pdpMaterialText');
+  if (matEl && product.material) matEl.textContent = product.material;
+
   const fitEl = document.getElementById('pdpFitText');
+  if (fitEl && product.fit) fitEl.textContent = product.fit;
+
   const msrEl = document.getElementById('pdpMeasurementsText');
-  if (product.fit === 'TBD' || product.measurements === 'TBD') {
-      if (fitEl) fitEl.innerHTML = '<span style="color:var(--accent-terracotta); font-weight:600;">TBD (Fit Info Pending)</span>';
-      if (msrEl) msrEl.style.display = 'none';
+  if (msrEl && product.measurements && product.measurements !== 'TBD') {
+    msrEl.style.display = 'block';
+    msrEl.textContent = product.measurements;
+  } else if (msrEl) {
+    msrEl.style.display = 'none';
   }
+
+  const careEl = document.getElementById('pdpCareText');
+  if (careEl && product.care) careEl.textContent = product.care;
+
+  const shipEl = document.getElementById('pdpShippingText');
+  if (shipEl && product.shipping) shipEl.textContent = product.shipping;
 
   // Render Gallery Column
   const galleryStack = document.getElementById('pdpGalleryStack');
@@ -179,49 +188,62 @@ function renderPdpContent(product) {
 
     const counterText = document.getElementById('pdpCounterText');
     if (counterText) counterText.textContent = `1 / ${gallery.length}`;
+
+    const dotsContainer = document.getElementById('pdpGalleryDots');
+    if (dotsContainer) {
+      dotsContainer.innerHTML = gallery.map((_, idx) => 
+        `<span class="pdp-dot ${idx === 0 ? 'active' : ''}" data-index="${idx}"></span>`
+      ).join('');
+    }
   }
 
   // Render Swatches
   renderPdpSwatches(product);
+}
 
-  // Render Conditional Editorial/Lifestyle Brand Story Section
-  renderBrandStorySection(product, gallery);
+function renderPdpColorSwatches(product) {
+  const section = document.getElementById('pdpColorSwatchesSection');
+  const row = document.getElementById('pdpColorSwatchesRow');
+  const nameLabel = document.getElementById('pdpSelectedColorName');
+  if (!section || !row) return;
 
-  // Inject JSON-LD Schema
-  const jsonLd = document.getElementById('jsonLdProductSchema');
-  if (jsonLd) {
-    const schema = {
-      "@context": "https://schema.org/",
-      "@type": "Product",
-      "name": product.name,
-      "image": gallery.map(g => window.location.origin + '/' + g.src.replace(/^(\.\.\/)+/, '')),
-      "description": product.description,
-      "sku": product.sku || product.id,
-      "brand": {
-        "@type": "Brand",
-        "name": "Editorial Resort"
-      },
-      "color": product.color
-    };
-    
-    if (product.price !== null && product.price !== 'TBD') {
-        schema.offers = {
-            "@type": "Offer",
-            "url": window.location.href,
-            "priceCurrency": "USD",
-            "price": product.price,
-            "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
-        };
-    }
-    jsonLd.textContent = JSON.stringify(schema, null, 2);
+  const colors = Array.isArray(product.colors) ? product.colors : (product.color ? [product.color] : []);
+  if (colors.length <= 1) {
+    section.style.display = 'none';
+    return;
   }
+
+  section.style.display = 'block';
+  if (nameLabel) nameLabel.textContent = colors[0];
+
+  row.innerHTML = colors.map((col, idx) => {
+    const slug = String(col).toLowerCase().trim();
+    const hex = (typeof COLOR_HEX_MAP !== 'undefined' && COLOR_HEX_MAP[slug]) || '#D4A373';
+    return `<button class="swatch-circle ${idx === 0 ? 'active' : ''}" data-color="${col}" style="background-color: ${hex};" aria-label="Color ${col}"></button>`;
+  }).join('');
+
+  row.querySelectorAll('.swatch-circle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      row.querySelectorAll('.swatch-circle').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const chosenCol = btn.getAttribute('data-color');
+      if (nameLabel) nameLabel.textContent = chosenCol;
+
+      if (product.colorImageMap && product.colorImageMap[chosenCol]) {
+        const newSrc = product.colorImageMap[chosenCol];
+        const heroImg = document.querySelector('#pdpGalleryStack .pdp-gallery-img');
+        if (heroImg) heroImg.src = newSrc;
+      }
+    });
+  });
 }
 
 function renderPdpSwatches(product) {
   const wrapper = document.getElementById('pdpVariantsWrapper');
   if (!wrapper) return;
 
-  const isSet = product.type === 'set';
+  const isSet = product.type === 'set' || product.category === 'Bikini Set' || product.category === 'Bikini Sets';
   let html = '';
 
   if (isSet) {
@@ -231,7 +253,7 @@ function renderPdpSwatches(product) {
     html = `
       <div class="pdp-swatch-group">
         <div class="swatch-group-label">
-          <span>Top Size</span>
+          <span>TOP SIZE</span>
           <span class="selected-value" id="pdp-top-val">Select Top</span>
         </div>
         <div class="swatches-row" id="pdpTopRow">
@@ -241,7 +263,7 @@ function renderPdpSwatches(product) {
 
       <div class="pdp-swatch-group">
         <div class="swatch-group-label">
-          <span>Bottom Size</span>
+          <span>BOTTOM SIZE</span>
           <span class="selected-value" id="pdp-bottom-val">Select Bottom</span>
         </div>
         <div class="swatches-row" id="pdpBottomRow">
@@ -255,7 +277,7 @@ function renderPdpSwatches(product) {
     html = `
       <div class="pdp-swatch-group">
         <div class="swatch-group-label">
-          <span>Select Size</span>
+          <span>SIZE</span>
           <span class="selected-value" id="pdp-size-val">Select Size</span>
         </div>
         <div class="swatches-row" id="pdpSizeRow">
@@ -267,7 +289,6 @@ function renderPdpSwatches(product) {
 
   wrapper.innerHTML = html;
 
-  // Swatch Listener Attachment
   wrapper.querySelectorAll('.pdp-swatch').forEach(btn => {
     btn.addEventListener('click', () => {
       const group = btn.getAttribute('data-group');
@@ -284,11 +305,14 @@ function renderPdpSwatches(product) {
     });
   });
 
-  // Action Button Listeners
   const addBtn = document.getElementById('pdpAddToCartBtn');
   const mobileBarBtn = document.getElementById('mobileBarAddToCartBtn');
 
-  const handleAdd = () => {
+  const handleAdd = (e) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
     if (typeof addToCart === 'function') {
       addToCart(product, pdpSelections);
       showPdpAddConfirmation();
@@ -300,7 +324,7 @@ function renderPdpSwatches(product) {
 }
 
 function validatePdpSelections(product) {
-  const isSet = product.type === 'set';
+  const isSet = product.type === 'set' || product.category === 'Bikini Set' || product.category === 'Bikini Sets';
   const hint = document.getElementById('pdpValidationHint');
   const addBtn = document.getElementById('pdpAddToCartBtn');
   const mobileBarBtn = document.getElementById('mobileBarAddToCartBtn');
@@ -337,7 +361,7 @@ function validatePdpSelections(product) {
     if (mobileBarBtn) {
       mobileBarBtn.classList.remove('disabled');
       mobileBarBtn.removeAttribute('disabled');
-      mobileBarBtn.textContent = 'Add to Bag';
+      mobileBarBtn.textContent = 'ADD TO BAG ✦';
     }
   } else {
     if (hint) hint.style.color = 'var(--accent-terracotta)';
@@ -348,7 +372,7 @@ function validatePdpSelections(product) {
     if (mobileBarBtn) {
       mobileBarBtn.classList.add('disabled');
       mobileBarBtn.setAttribute('disabled', 'true');
-      mobileBarBtn.textContent = 'Select a Size';
+      mobileBarBtn.textContent = 'SELECT A SIZE';
     }
   }
 }
@@ -358,91 +382,41 @@ function showPdpAddConfirmation() {
   const mobileBarBtn = document.getElementById('mobileBarAddToCartBtn');
   const prevText = addBtn ? addBtn.textContent : 'Add to Bag';
 
-  if (addBtn) addBtn.textContent = 'Added to Bag ✦';
-  if (mobileBarBtn) mobileBarBtn.textContent = 'Added to Bag ✦';
+  if (addBtn) addBtn.textContent = 'ADDED TO BAG ✦';
+  if (mobileBarBtn) mobileBarBtn.textContent = 'ADDED TO BAG ✦';
 
   setTimeout(() => {
     if (addBtn) addBtn.textContent = prevText;
-    if (mobileBarBtn) mobileBarBtn.textContent = prevText;
+    if (mobileBarBtn) mobileBarBtn.textContent = 'ADD TO BAG ✦';
   }, 2500);
 }
 
 function updatePdpWishlistState() {
   const wishBtn = document.getElementById('pdpWishlistBtn');
-  if (!wishBtn || !currentPdpProduct) return;
+  const mobileOverlayWishBtn = document.getElementById('pdpMobileWishlistBtn');
+  if (!currentPdpProduct) return;
 
-  const isFav = typeof favoritesList !== 'undefined' && favoritesList.includes(currentPdpProduct.id);
-  wishBtn.classList.toggle('active', isFav);
-  wishBtn.innerHTML = isFav ? '♥' : '♡';
+  const isFav = typeof isFavorite === 'function' ? isFavorite(currentPdpProduct.id) : (typeof favoritesList !== 'undefined' && favoritesList.includes(currentPdpProduct.id));
 
-  wishBtn.onclick = () => {
-    if (typeof toggleFavorite === 'function') {
-      toggleFavorite(currentPdpProduct.id);
-      const newFav = favoritesList.includes(currentPdpProduct.id);
-      wishBtn.classList.toggle('active', newFav);
-      wishBtn.innerHTML = newFav ? '♥' : '♡';
-    }
-  };
-}
+  [wishBtn, mobileOverlayWishBtn].forEach(btn => {
+    if (!btn) return;
+    btn.classList.toggle('active', isFav);
+    btn.innerHTML = isFav ? '♥' : '♡';
 
-function renderBrandStorySection(product, gallery) {
-  const section = document.getElementById('pdpBrandStorySection');
-  const grid = document.getElementById('pdpBrandStoryGrid');
-  if (!section || !grid) return;
-
-  const storyImages = gallery.filter(img => img.role === 'editorial' || img.role === 'lifestyle');
-
-  if (!storyImages || storyImages.length === 0) {
-    section.style.display = 'none';
-    return;
-  }
-
-  section.style.display = 'block';
-  grid.innerHTML = '';
-  
-  const titleEl = document.getElementById('pdpBrandStoryTitle');
-  if (titleEl && product.id === 'drs-bur-cro-001') {
-      titleEl.textContent = 'The Art of Crochet';
-  }
-
-  const copyMap = {
-    editorial: {
-      headline: "Artisanal Grace",
-      body: "Sculpted with organic tactile ribbing designed to move fluidly in high summer sun."
-    },
-    lifestyle: {
-      headline: "Resort Living",
-      body: "Breathable unbleached fibers handcrafted for effortless poolside lounging and coastal escapes."
-    }
-  };
-
-  storyImages.forEach(imgObj => {
-    const card = document.createElement('div');
-    card.className = `story-card story-role-${imgObj.role}`;
-
-    const copy = copyMap[imgObj.role] || { headline: "Tactile Luxury", body: "Woven by hand in limited atelier quantities." };
-
-    const pictureHTML = typeof createResponsivePictureHTML === 'function'
-      ? createResponsivePictureHTML(imgObj.src, `${product.name} ${imgObj.role}`, {
-          pictureClass: 'story-card-img',
-          imgClass: 'story-card-img',
-          sizes: '(max-width: 768px) 100vw, 50vw',
-          loading: 'lazy'
-        })
-      : `<img src="${imgObj.src}" alt="${product.name}" class="story-card-img" loading="lazy">`;
-
-    card.innerHTML = `
-      <div class="story-card-media">
-        ${pictureHTML}
-      </div>
-      <div class="story-card-content">
-        <span class="micro-label">${imgObj.role.toUpperCase()} ATELIER</span>
-        <h3 class="story-card-headline">${copy.headline}</h3>
-        <p class="story-card-body">${copy.body}</p>
-      </div>
-    `;
-
-    grid.appendChild(card);
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (typeof toggleFavorite === 'function') {
+        toggleFavorite(currentPdpProduct.id);
+        const newFav = typeof isFavorite === 'function' ? isFavorite(currentPdpProduct.id) : favoritesList.includes(currentPdpProduct.id);
+        [wishBtn, mobileOverlayWishBtn].forEach(b => {
+          if (b) {
+            b.classList.toggle('active', newFav);
+            b.innerHTML = newFav ? '♥' : '♡';
+          }
+        });
+      }
+    };
   });
 }
 
@@ -452,18 +426,14 @@ function initPdpAccordion() {
     const header = item.querySelector('.accordion-header');
     if (!header) return;
 
+    // Collapsed by default on mobile
+    item.classList.remove('is-open');
+    header.setAttribute('aria-expanded', 'false');
+
     header.addEventListener('click', () => {
       const isOpen = item.classList.contains('is-open');
-      items.forEach(i => {
-        i.classList.remove('is-open');
-        const h = i.querySelector('.accordion-header');
-        if (h) h.setAttribute('aria-expanded', 'false');
-      });
-
-      if (!isOpen) {
-        item.classList.add('is-open');
-        header.setAttribute('aria-expanded', 'true');
-      }
+      item.classList.toggle('is-open', !isOpen);
+      header.setAttribute('aria-expanded', String(!isOpen));
     });
   });
 }
@@ -471,7 +441,8 @@ function initPdpAccordion() {
 function initMobileGalleryScroll() {
   const galleryStack = document.getElementById('pdpGalleryStack');
   const counterText = document.getElementById('pdpCounterText');
-  if (!galleryStack || !counterText) return;
+  const dotsContainer = document.getElementById('pdpGalleryDots');
+  if (!galleryStack) return;
 
   const items = galleryStack.querySelectorAll('.pdp-gallery-item');
   if (items.length <= 1) return;
@@ -480,9 +451,70 @@ function initMobileGalleryScroll() {
     const width = galleryStack.clientWidth;
     if (width === 0) return;
     const scrollLeft = galleryStack.scrollLeft;
-    const currentIndex = Math.min(Math.floor((scrollLeft + width / 2) / width) + 1, items.length);
-    counterText.textContent = `${currentIndex} / ${items.length}`;
+    const currentIndex = Math.min(Math.floor((scrollLeft + width / 2) / width), items.length - 1);
+    
+    if (counterText) counterText.textContent = `${currentIndex + 1} / ${items.length}`;
+
+    if (dotsContainer) {
+      const dots = dotsContainer.querySelectorAll('.pdp-dot');
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === currentIndex);
+      });
+    }
   }, { passive: true });
+}
+
+function initStickyBarObserver() {
+  const stickyBar = document.querySelector('.mobile-pdp-sticky-bar');
+  const variantsWrapper = document.getElementById('pdpVariantsWrapper');
+  const ctaBtn = document.getElementById('pdpAddToCartBtn');
+  if (!stickyBar || (!variantsWrapper && !ctaBtn)) return;
+
+  const target = ctaBtn || variantsWrapper;
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          stickyBar.classList.remove('is-visible');
+        } else {
+          if (entry.boundingClientRect.top < 0) {
+            stickyBar.classList.add('is-visible');
+          } else {
+            stickyBar.classList.remove('is-visible');
+          }
+        }
+      });
+    }, { threshold: 0.1 });
+
+    observer.observe(target);
+  } else {
+    window.addEventListener('scroll', () => {
+      const rect = target.getBoundingClientRect();
+      if (rect.bottom < 0) {
+        stickyBar.classList.add('is-visible');
+      } else {
+        stickyBar.classList.remove('is-visible');
+      }
+    }, { passive: true });
+  }
+}
+
+function renderRelatedProducts(currentProduct) {
+  const container = document.getElementById('pdpRelatedRow');
+  if (!container || !window.catalogProducts || window.catalogProducts.length === 0) return;
+
+  container.innerHTML = '';
+  const related = window.catalogProducts
+    .filter(p => p.id !== currentProduct.id)
+    .slice(0, 6);
+
+  related.forEach(p => {
+    if (typeof window.createProductCardElement === 'function') {
+      const card = window.createProductCardElement(p);
+      container.appendChild(card);
+    }
+  });
 }
 
 function showPdpError() {

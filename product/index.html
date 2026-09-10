@@ -118,7 +118,21 @@
         
         <!-- Left: Image Gallery Stack -->
         <div class="pdp-gallery-col">
+          <!-- Transparent Overlay Buttons for Mobile Gallery -->
+          <button class="pdp-mobile-back-btn" onclick="if (history.length > 1) history.back(); else window.location.href='/shop';" aria-label="Go Back to Catalog">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          
+          <button class="favorite-btn pdp-mobile-fav-overlay" id="pdpMobileWishlistBtn" aria-label="Add to Wishlist">
+            ♡
+          </button>
+
           <div class="pdp-gallery-stack" id="pdpGalleryStack"></div>
+          
+          <div class="pdp-gallery-dots" id="pdpGalleryDots"></div>
+
           <div class="pdp-gallery-mobile-counter" id="pdpMobileCounter" style="display: none;">
             <span id="pdpCounterText">1 / 1</span>
           </div>
@@ -129,23 +143,32 @@
           <div class="pdp-sticky-box">
           <div class="pdp-header">
             <span class="micro-label" id="pdpCategoryLabel" style="color: var(--accent-terracotta);">COLLECTION PIECE</span>
-            <h1 class="pdp-title" id="pdpTitle" style="font-size: 2.2rem; margin: 0.5rem 0 0.75rem; font-family: var(--font-heading);">Product Name</h1>
+            <h1 class="pdp-title" id="pdpTitle">Product Name</h1>
             
-            <div class="pdp-meta-row" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
-              <span class="pdp-price" id="pdpPrice" style="font-size: 1.5rem; font-weight: 600; color: var(--text-main);">$0.00</span>
-              <div class="pdp-rating-badge" style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.85rem; color: #D4A373;">
+            <div class="pdp-meta-row">
+              <span class="pdp-price" id="pdpPrice">$0.00</span>
+              <div class="pdp-rating-badge">
                 <span class="star">★</span>
                 <span id="pdpRatingVal">5.0</span>
                 <span class="count" id="pdpReviewsCount">(0 reviews)</span>
               </div>
             </div>
 
-            <p class="pdp-descriptor" id="pdpDescriptor" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;"></p>
+            <p class="pdp-descriptor" id="pdpDescriptor"></p>
           </div>
 
-          <!-- Variant Swatch Selector Box -->
+          <!-- Color Swatch Circle Row -->
+          <div class="pdp-color-swatches-section" id="pdpColorSwatchesSection" style="margin-bottom: 1.5rem; display: none;">
+            <div class="swatch-group-label" style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.5rem;">
+              <span>COLOR:</span>
+              <span id="pdpSelectedColorName" style="color: var(--text-main); font-weight: 700; margin-left: 0.3rem;"></span>
+            </div>
+            <div class="pdp-color-swatches-row" id="pdpColorSwatchesRow" style="display: flex; gap: 0.6rem; align-items: center;"></div>
+          </div>
+
+          <!-- Variant Swatch Selector Box (Size Pill Rows) -->
           <div class="pdp-variants-wrapper" id="pdpVariantsWrapper">
-            <!-- Swatches injected client-side by js/product-detail.js -->
+            <!-- Size pills injected client-side by js/product-detail.js -->
           </div>
 
           <div class="pdp-validation-hint" id="pdpValidationHint" style="font-size: 0.82rem; color: var(--accent-terracotta); margin-bottom: 1rem;">
@@ -153,45 +176,81 @@
           </div>
 
           <!-- Action Buttons Row -->
-          <div class="pdp-cta-row" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+          <div class="pdp-cta-row">
             <button class="btn btn-solid pdp-add-cart-btn disabled" id="pdpAddToCartBtn" disabled style="flex: 1; padding: 1rem;">
               Add to Bag ✦
             </button>
-            <button class="favorite-btn pdp-fav-btn" id="pdpWishlistBtn" aria-label="Add to Wishlist" style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <button class="favorite-btn pdp-fav-btn" id="pdpWishlistBtn" aria-label="Add to Wishlist">
               ♡
             </button>
           </div>
 
-          <!-- PDP Accordion Section -->
+          <!-- PDP Accordion Section (Collapsible details on mobile & desktop) -->
           <div class="pdp-accordion" id="pdpAccordion">
-            <div class="accordion-item is-open">
-              <button class="accordion-header" aria-expanded="true" style="width: 100%; display: flex; justify-content: space-between; border: none; background: transparent; padding: 1rem 0; font-family: var(--font-heading); font-size: 1.1rem; cursor: pointer; border-top: 1px solid var(--border-hairline);">
-                <h2 class="accordion-h2" style="font-size: 1.1rem; margin: 0;">Product Details</h2>
-                <span class="icon">–</span>
+            <!-- 1. Details -->
+            <div class="accordion-item">
+              <button class="accordion-header" aria-expanded="false">
+                <h2 class="accordion-h2">Details</h2>
+                <svg class="accordion-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
-              <div class="accordion-content" style="padding-bottom: 1rem;">
-                <p id="pdpDescriptionText" style="color: var(--text-light); line-height: 1.7;"></p>
-                <ul class="pdp-details-list" id="pdpDetailsList" style="margin-top: 1rem; display: none; padding-left: 1.25rem;"></ul>
+              <div class="accordion-content">
+                <p id="pdpDescriptionText"></p>
+                <ul class="pdp-details-list" id="pdpDetailsList"></ul>
               </div>
             </div>
 
+            <!-- 2. Materials -->
             <div class="accordion-item">
-              <button class="accordion-header" aria-expanded="false" style="width: 100%; display: flex; justify-content: space-between; border: none; background: transparent; padding: 1rem 0; font-family: var(--font-heading); font-size: 1.1rem; cursor: pointer; border-top: 1px solid var(--border-hairline);">
-                <h2 class="accordion-h2" style="font-size: 1.1rem; margin: 0;">Fabric &amp; Care</h2>
-                <span class="icon">+</span>
+              <button class="accordion-header" aria-expanded="false">
+                <h2 class="accordion-h2">Materials</h2>
+                <svg class="accordion-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
-              <div class="accordion-content" style="display: none; padding-bottom: 1rem;">
-                <p id="pdpCareText" style="color: var(--text-light); line-height: 1.7;">Hand wash cold with delicate soap. Lay flat to dry out of direct sunlight.</p>
+              <div class="accordion-content">
+                <p id="pdpMaterialText">Handcrafted with sustainable organic fibers and quick-drying lining.</p>
               </div>
             </div>
 
+            <!-- 3. Fit & Sizing -->
             <div class="accordion-item">
-              <button class="accordion-header" aria-expanded="false" style="width: 100%; display: flex; justify-content: space-between; border: none; background: transparent; padding: 1rem 0; font-family: var(--font-heading); font-size: 1.1rem; cursor: pointer; border-top: 1px solid var(--border-hairline); border-bottom: 1px solid var(--border-hairline);">
-                <h2 class="accordion-h2" style="font-size: 1.1rem; margin: 0;">Shipping &amp; Returns</h2>
-                <span class="icon">+</span>
+              <button class="accordion-header" aria-expanded="false">
+                <h2 class="accordion-h2">Fit &amp; Sizing</h2>
+                <svg class="accordion-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
-              <div class="accordion-content" style="display: none; padding-bottom: 1rem;">
-                <p id="pdpShippingText" style="color: var(--text-light); line-height: 1.7;">Dispatched in 24-48 hours. 14-day return policy for unworn catalog pieces.</p>
+              <div class="accordion-content">
+                <p id="pdpFitText">True to size with gentle natural stretch. Independent top and bottom sizing support.</p>
+                <p id="pdpMeasurementsText" style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);"></p>
+              </div>
+            </div>
+
+            <!-- 4. Care -->
+            <div class="accordion-item">
+              <button class="accordion-header" aria-expanded="false">
+                <h2 class="accordion-h2">Care</h2>
+                <svg class="accordion-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="accordion-content">
+                <p id="pdpCareText">Rinse in fresh cold water after use. Lay flat to dry out of direct sunlight.</p>
+              </div>
+            </div>
+
+            <!-- 5. Shipping & Returns -->
+            <div class="accordion-item">
+              <button class="accordion-header" aria-expanded="false">
+                <h2 class="accordion-h2">Shipping &amp; Returns</h2>
+                <svg class="accordion-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="accordion-content">
+                <p id="pdpShippingText">Complimentary worldwide dispatch within 24-48 hours. 14-day returns for unworn pieces.</p>
               </div>
             </div>
           </div>
@@ -200,6 +259,14 @@
         </div>
       </div>
     </div>
+
+    <!-- Related Products Section (You May Also Like) -->
+    <section class="pdp-related-section" id="pdpRelatedSection" style="margin-top: 4rem; padding-top: 3rem; border-top: 1px solid var(--border-hairline);">
+      <div class="container">
+        <h2 class="pdp-related-heading" style="font-family: var(--font-heading); font-size: 1.4rem; letter-spacing: 1px; margin-bottom: 1.5rem; text-transform: uppercase;">You May Also Like</h2>
+        <div class="pdp-related-row" id="pdpRelatedRow"></div>
+      </div>
+    </section>
   </main>
 
   <!-- =========================================================================

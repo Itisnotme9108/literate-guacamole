@@ -396,28 +396,32 @@ html, body {
     gap: 2.5rem;
   }
 
-  /* Product Detail Page (PDP) Mobile Layout */
+  /* Product Detail Page (PDP) Mobile Redesign Layout (<768px ONLY) */
   .pdp-layout {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
-  .pdp-sticky-box {
-    position: static;
-    gap: 1.25rem;
-  }
-
+  /* 1. Full-bleed image gallery at top */
   .pdp-gallery-col {
     position: relative;
+    width: 100vw;
+    margin-left: calc(-1 * (100vw - 100%) / 2);
+    margin-right: calc(-1 * (100vw - 100%) / 2);
+    margin-top: -3rem;
+    overflow: hidden;
+    background-color: var(--bg-sand);
   }
 
   .pdp-gallery-stack {
+    display: flex;
     flex-direction: row;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     gap: 0;
-    border-radius: var(--radius-strict);
+    width: 100%;
+    aspect-ratio: 4 / 5;
     scrollbar-width: none;
   }
 
@@ -428,31 +432,334 @@ html, body {
   .pdp-gallery-item {
     flex: 0 0 100%;
     width: 100%;
+    height: 100%;
     scroll-snap-align: start;
+    position: relative;
+  }
+
+  .pdp-gallery-item img,
+  .pdp-gallery-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Overlay Back Button (Top-Left) & Wishlist Heart (Top-Right) */
+  .pdp-mobile-back-btn {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .pdp-mobile-fav-overlay {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .pdp-mobile-fav-overlay.active {
+    background-color: var(--accent-terracotta);
+    color: #FFFFFF;
+    border-color: var(--accent-terracotta);
   }
 
   .pdp-gallery-mobile-counter {
     display: block !important;
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(26, 22, 21, 0.75);
+    bottom: 14px;
+    right: 14px;
+    background: rgba(26, 22, 21, 0.7);
     color: #FFFFFF;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    padding: 0.3rem 0.75rem;
-    border-radius: 20px;
+    padding: 0.25rem 0.65rem;
+    border-radius: 12px;
     z-index: 5;
     backdrop-filter: blur(4px);
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
   }
 
+  .pdp-gallery-dots {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .pdp-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .pdp-dot.active {
+    background: #FFFFFF;
+    transform: scale(1.2);
+  }
+
+  /* 2. Below Gallery: Name, Price, Descriptor */
+  .pdp-info-col {
+    padding-top: 0.5rem;
+  }
+
+  .pdp-title {
+    font-size: 1.75rem !important;
+    font-family: var(--font-heading);
+    margin: 0.25rem 0 0.5rem !important;
+    text-align: left;
+  }
+
+  .pdp-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 0.85rem !important;
+  }
+
+  .pdp-price {
+    font-size: 1.35rem !important;
+    font-weight: 600;
+  }
+
+  .pdp-descriptor {
+    font-size: 0.9rem !important;
+    line-height: 1.5;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem !important;
+    text-align: left;
+  }
+
+  /* 3. Color Swatches */
+  .pdp-color-swatches-row .swatch-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .pdp-color-swatches-row .swatch-circle.active {
+    border-color: var(--text-main);
+    transform: scale(1.1);
+  }
+
+  /* 4. Size Selection Pill Rows ("TOP" and "BOTTOM") */
+  .pdp-swatch-group {
+    margin-bottom: 1rem;
+  }
+
+  .swatch-group-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .swatch-group-label .selected-value {
+    color: var(--text-main);
+    font-weight: 700;
+  }
+
+  .swatches-row {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+  }
+
+  .swatches-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp-swatch {
+    flex: 1;
+    min-width: 48px;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--border-hairline);
+    background-color: var(--bg-bone);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: var(--radius-strict);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    text-align: center;
+  }
+
+  .pdp-swatch.selected {
+    background-color: var(--text-main);
+    color: var(--text-inverse);
+    border-color: var(--text-main);
+  }
+
+  /* 5. Sticky Bottom Bar */
   .mobile-pdp-sticky-bar {
     display: flex !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: rgba(250, 247, 242, 0.98);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border-hairline);
+    padding: 0.85rem 1.25rem;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 -4px 20px rgba(26, 22, 21, 0.08);
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
   }
 
-  body:has(.mobile-pdp-sticky-bar) main {
-    padding-bottom: 7rem !important;
+  .mobile-pdp-sticky-bar.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .mobile-pdp-sticky-bar .bar-price-box {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-pdp-sticky-bar .bar-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+
+  .mobile-pdp-sticky-bar .bar-price {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .mobile-pdp-sticky-bar .mobile-bar-add-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    border-radius: var(--radius-strict);
+  }
+
+  /* 6. Accordions (~200ms height transition) */
+  .pdp-accordion {
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--border-hairline);
+  }
+
+  .pdp-accordion .accordion-item {
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  .pdp-accordion .accordion-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .pdp-accordion .accordion-h2 {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    margin: 0;
+    color: var(--text-main);
+    font-weight: 500;
+  }
+
+  .pdp-accordion .accordion-chevron {
+    transition: transform 200ms ease;
+    color: var(--text-main);
+  }
+
+  .pdp-accordion .accordion-item.is-open .accordion-chevron {
+    transform: rotate(180deg);
+  }
+
+  .pdp-accordion .accordion-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 200ms ease, opacity 200ms ease, padding 200ms ease;
+    padding: 0;
+  }
+
+  .pdp-accordion .accordion-item.is-open .accordion-content {
+    max-height: 500px;
+    opacity: 1;
+    padding-bottom: 1rem;
+  }
+
+  /* 7. Horizontally Swipeable "You May Also Like" Row */
+  .pdp-related-section {
+    margin-top: 2.5rem !important;
+    padding-top: 2rem !important;
+  }
+
+  .pdp-related-row {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .pdp-related-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp-related-row .product-card {
+    flex: 0 0 75%;
+    width: 75%;
+    scroll-snap-align: start;
   }
 }
 
