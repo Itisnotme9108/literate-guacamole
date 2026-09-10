@@ -116,7 +116,7 @@
       <!-- Single Product Layout -->
       <div class="pdp-layout">
         
-        <!-- Left: Image Gallery Stack -->
+        <!-- Left: Image Gallery Stack & Thumbnails -->
         <div class="pdp-gallery-col">
           <!-- Transparent Overlay Buttons for Mobile Gallery -->
           <button class="pdp-mobile-back-btn" onclick="if (history.length > 1) history.back(); else window.location.href='/shop';" aria-label="Go Back to Catalog">
@@ -129,141 +129,142 @@
             ♡
           </button>
 
-          <div class="pdp-gallery-stack" id="pdpGalleryStack"></div>
+          <div class="pdp-gallery-main-wrapper">
+            <div class="pdp-gallery-thumbs-strip" id="pdpGalleryThumbsStrip"></div>
+            <div class="pdp-gallery-stack" id="pdpGalleryStack"></div>
+          </div>
           
           <div class="pdp-gallery-dots" id="pdpGalleryDots"></div>
 
-          <div class="pdp-gallery-mobile-counter" id="pdpMobileCounter" style="display: none;">
-            <span id="pdpCounterText">1 / 1</span>
+          <div class="pdp-gallery-mobile-counter" id="pdpMobileCounter">
+            <span id="pdpCounterText">01 / 01</span>
           </div>
         </div>
 
-        <!-- Right: Details & Purchase Controls -->
+        <!-- Right: Details & Purchase Controls (Sticky) -->
         <div class="pdp-info-col">
           <div class="pdp-sticky-box">
           <div class="pdp-header">
-            <span class="micro-label" id="pdpCategoryLabel" style="color: var(--accent-terracotta);">COLLECTION PIECE</span>
+            <!-- 1. Brand Name (Small, Muted) -->
+            <span class="pdp-brand-name">EDITORIAL RESORT ATELIER</span>
+            
+            <!-- 2. Product Title -->
             <h1 class="pdp-title" id="pdpTitle">Product Name</h1>
             
-            <div class="pdp-meta-row">
-              <span class="pdp-price" id="pdpPrice">$0.00</span>
-              <div class="pdp-rating-badge">
-                <span class="star">★</span>
-                <span id="pdpRatingVal">5.0</span>
-                <span class="count" id="pdpReviewsCount">(0 reviews)</span>
-              </div>
+            <!-- 3. Star Rating (Only shown if real review data exists) -->
+            <div class="pdp-rating-badge" id="pdpRatingContainer" style="display: none;">
+              <span class="star">★</span>
+              <span id="pdpRatingVal">5.0</span>
+              <span class="count" id="pdpReviewsCount">(0 reviews)</span>
             </div>
+
+            <!-- 4. Price (Bold 700) -->
+            <div class="pdp-price-row">
+              <span class="pdp-price" id="pdpPrice">$0.00</span>
+            </div>
+
+            <!-- 5. Material / Technique Line -->
+            <p class="pdp-material-line" id="pdpMaterialLine">Handcrafted Crochet</p>
+
+            <!-- 6. Lead Time / Made to Order Line (Conditional) -->
+            <p class="pdp-lead-time-line" id="pdpLeadTimeLine" style="display: none;"></p>
 
             <p class="pdp-descriptor" id="pdpDescriptor"></p>
           </div>
 
           <!-- Color Swatch Circle Row -->
-          <div class="pdp-color-swatches-section" id="pdpColorSwatchesSection" style="margin-bottom: 1.5rem; display: none;">
-            <div class="swatch-group-label" style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.5rem;">
+          <div class="pdp-color-swatches-section" id="pdpColorSwatchesSection" style="display: none;">
+            <div class="swatch-group-label">
               <span>COLOR:</span>
               <span id="pdpSelectedColorName" style="color: var(--text-main); font-weight: 700; margin-left: 0.3rem;"></span>
             </div>
-            <div class="pdp-color-swatches-row" id="pdpColorSwatchesRow" style="display: flex; gap: 0.6rem; align-items: center;"></div>
+            <div class="pdp-color-swatches-row" id="pdpColorSwatchesRow"></div>
           </div>
 
-          <!-- Variant Swatch Selector Box (Size Pill Rows) -->
+          <!-- 7 & 8. TOP & BOTTOM Size Selectors -->
           <div class="pdp-variants-wrapper" id="pdpVariantsWrapper">
-            <!-- Size pills injected client-side by js/product-detail.js -->
+            <!-- Size pills injected client-side -->
           </div>
 
-          <div class="pdp-validation-hint" id="pdpValidationHint" style="font-size: 0.82rem; color: var(--accent-terracotta); margin-bottom: 1rem;">
+          <!-- 9. Microcopy under size selectors -->
+          <p class="pdp-independent-microcopy" id="pdpIndependentMicrocopy" style="display: none;">
+            Need a different top and bottom? That's exactly why we built Independent Sizing.
+          </p>
+
+          <div class="pdp-validation-hint" id="pdpValidationHint">
             * Select a size to add to bag
           </div>
 
-          <!-- Action Buttons Row -->
-          <div class="pdp-cta-row">
-            <button class="btn btn-solid pdp-add-cart-btn disabled" id="pdpAddToCartBtn" disabled style="flex: 1; padding: 1rem;">
-              Add to Bag ✦
-            </button>
-            <button class="favorite-btn pdp-fav-btn" id="pdpWishlistBtn" aria-label="Add to Wishlist">
-              ♡
-            </button>
+          <!-- 10 & 11. CTAs: ADD TO BAG (Primary 52px Black) & CUSTOM FIT (Secondary 52px Outline) -->
+          <div class="pdp-cta-block">
+            <div class="pdp-cta-row">
+              <button class="btn btn-solid pdp-add-cart-btn disabled" id="pdpAddToCartBtn" disabled>
+                ADD TO BAG ✦
+              </button>
+              <button class="favorite-btn pdp-fav-btn" id="pdpWishlistBtn" aria-label="Add to Wishlist">
+                ♡
+              </button>
+            </div>
+            <a href="/bespoke" class="btn pdp-custom-fit-btn" id="pdpCustomFitBtn">
+              CUSTOM FIT
+            </a>
           </div>
 
-          <!-- PDP Accordion Section (Collapsible details on mobile & desktop) -->
-          <div class="pdp-accordion" id="pdpAccordion">
-            <!-- 1. Details -->
-            <div class="accordion-item">
-              <button class="accordion-header" aria-expanded="false">
-                <h2 class="accordion-h2">Details</h2>
-                <svg class="accordion-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="accordion-content">
-                <p id="pdpDescriptionText"></p>
-                <ul class="pdp-details-list" id="pdpDetailsList"></ul>
-              </div>
-            </div>
-
-            <!-- 2. Materials -->
-            <div class="accordion-item">
-              <button class="accordion-header" aria-expanded="false">
-                <h2 class="accordion-h2">Materials</h2>
-                <svg class="accordion-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="accordion-content">
-                <p id="pdpMaterialText">Handcrafted with sustainable organic fibers and quick-drying lining.</p>
-              </div>
-            </div>
-
-            <!-- 3. Fit & Sizing -->
-            <div class="accordion-item">
-              <button class="accordion-header" aria-expanded="false">
-                <h2 class="accordion-h2">Fit &amp; Sizing</h2>
-                <svg class="accordion-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="accordion-content">
-                <p id="pdpFitText">True to size with gentle natural stretch. Independent top and bottom sizing support.</p>
-                <p id="pdpMeasurementsText" style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);"></p>
-              </div>
-            </div>
-
-            <!-- 4. Care -->
-            <div class="accordion-item">
-              <button class="accordion-header" aria-expanded="false">
-                <h2 class="accordion-h2">Care</h2>
-                <svg class="accordion-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="accordion-content">
-                <p id="pdpCareText">Rinse in fresh cold water after use. Lay flat to dry out of direct sunlight.</p>
-              </div>
-            </div>
-
-            <!-- 5. Shipping & Returns -->
-            <div class="accordion-item">
-              <button class="accordion-header" aria-expanded="false">
-                <h2 class="accordion-h2">Shipping &amp; Returns</h2>
-                <svg class="accordion-chevron" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div class="accordion-content">
-                <p id="pdpShippingText">Complimentary worldwide dispatch within 24-48 hours. 14-day returns for unworn pieces.</p>
-              </div>
-            </div>
+          <!-- 12. Fit Confidence Trust Strip -->
+          <div class="pdp-trust-strip">
+            <span class="trust-item">✦ Handcrafted to Order</span>
+            <span class="trust-item">✦ Independent Sizing</span>
+            <span class="trust-item">✦ Sustainable Natural Fibers</span>
           </div>
+
+          <!-- PDP Accordion Section (Overview / Materials / Care / Shipping / Returns) -->
+          <div class="pdp-accordion" id="pdpAccordion"></div>
 
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Related Products Section (You May Also Like) -->
-    <section class="pdp-related-section" id="pdpRelatedSection" style="margin-top: 4rem; padding-top: 3rem; border-top: 1px solid var(--border-hairline);">
+    <!-- Editorial Storytelling Section -->
+    <section class="pdp-brand-story-section" id="pdpStorySection">
       <div class="container">
-        <h2 class="pdp-related-heading" style="font-family: var(--font-heading); font-size: 1.4rem; letter-spacing: 1px; margin-bottom: 1.5rem; text-transform: uppercase;">You May Also Like</h2>
+        <div class="story-section-header">
+          <span class="micro-label">ATELIER CRAFT &amp; PHILOSOPHY</span>
+          <h2 class="story-title">Slow Resort Living</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem; line-height: 1.6;">Each piece is handcrafted individually, allowing subtle variations in texture and knotting that make every creation unique.</p>
+        </div>
+        <div class="story-grid" id="pdpStoryGrid"></div>
+      </div>
+    </section>
+
+    <!-- Craft & Material Technical Breakdown -->
+    <section class="pdp-craft-breakdown-section" id="pdpCraftSection" style="margin-top: 4rem; padding-top: 4rem; border-top: 1px solid var(--border-hairline);">
+      <div class="container">
+        <h3 style="font-family: var(--font-serif); font-size: 1.6rem; text-align: center; margin-bottom: 2rem; color: var(--text-main);">CRAFT &amp; CONSTRUCTION</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;" id="pdpCraftGrid">
+          <div class="craft-block" style="background: var(--bg-bone); padding: 1.75rem; border-radius: var(--radius-strict); border: 1px solid var(--border-hairline);">
+            <span style="font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-terracotta); font-weight: 600;">01 / MATERIAL</span>
+            <h4 style="font-family: var(--font-heading); font-size: 1.1rem; margin: 0.5rem 0 0.4rem; color: var(--text-main);">Organic Fiber Yarns</h4>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">Spun from unbleached organic linen, bamboo, and sustainable cotton threads treated for saltwater and sun resilience.</p>
+          </div>
+          <div class="craft-block" style="background: var(--bg-bone); padding: 1.75rem; border-radius: var(--radius-strict); border: 1px solid var(--border-hairline);">
+            <span style="font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-terracotta); font-weight: 600;">02 / TECHNIQUE</span>
+            <h4 style="font-family: var(--font-heading); font-size: 1.1rem; margin: 0.5rem 0 0.4rem; color: var(--text-main);">Artisanal Crochet</h4>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">Intricately hand-hooked by master artisans using traditional open-knit tensioning designed for breathable flexibility.</p>
+          </div>
+          <div class="craft-block" style="background: var(--bg-bone); padding: 1.75rem; border-radius: var(--radius-strict); border: 1px solid var(--border-hairline);">
+            <span style="font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-terracotta); font-weight: 600;">03 / FIT ENGINEERING</span>
+            <h4 style="font-family: var(--font-heading); font-size: 1.1rem; margin: 0.5rem 0 0.4rem; color: var(--text-main);">Independent Sizing</h4>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">Designed with independent top and bottom sizing to provide a precise, custom fit tailored to every silhouette.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Products Section (Complete the Look) -->
+    <section class="pdp-related-section" id="pdpRelatedSection">
+      <div class="container">
+        <h2 class="pdp-related-heading">COMPLETE THE LOOK</h2>
         <div class="pdp-related-row" id="pdpRelatedRow"></div>
       </div>
     </section>
@@ -389,6 +390,62 @@
       </div>
       <div class="drawer-body" id="wishlistBody"></div>
     </div>
+  </div>
+
+  <!-- Size Guide Modal Drawer -->
+  <div class="size-guide-backdrop" id="pdpSizeGuideModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Atelier Size Guide">
+    <div class="size-guide-modal">
+      <div class="size-guide-header">
+        <div>
+          <span class="micro-label" style="letter-spacing: 2px; color: var(--accent-terracotta);">ATELIER FITS</span>
+          <h3 style="font-family: var(--font-serif); font-size: 1.5rem; margin-top: 0.2rem; color: var(--text-main);">Size Guide &amp; Measurements</h3>
+        </div>
+        <button class="modal-close-btn" id="sizeGuideCloseBtn" aria-label="Close Size Guide">&times;</button>
+      </div>
+      
+      <div class="size-guide-body">
+        <div class="unit-toggle-row">
+          <button class="unit-btn active" id="unitInchesBtn" data-unit="in">Inches (in)</button>
+          <button class="unit-btn" id="unitCmBtn" data-unit="cm">Centimeters (cm)</button>
+        </div>
+
+        <div class="size-table-wrapper">
+          <table class="size-table" id="pdpSizeTable">
+            <thead>
+              <tr>
+                <th>SIZE</th>
+                <th>BUST</th>
+                <th>UNDERBUST</th>
+                <th>WAIST</th>
+                <th>HIP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Populated dynamically based on selected unit -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="size-guide-note">
+          <p><strong>Independent Sizing Note:</strong> If your top and bottom sizes fall into different categories, our independent size selector allows you to customize each piece individually for your ideal fit.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Image Lightbox Modal -->
+  <div class="pdp-lightbox-backdrop" id="pdpLightboxModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Full Screen Image View">
+    <div class="pdp-lightbox-container">
+      <button class="lightbox-close-btn" id="lightboxCloseBtn" aria-label="Close Fullscreen Image">&times;</button>
+      <button class="lightbox-nav-btn prev" id="lightboxPrevBtn" aria-label="Previous Image">&larr;</button>
+      <div class="pdp-lightbox-stage">
+        <img src="" id="lightboxImg" alt="Enlarged view" class="pdp-lightbox-img">
+      </div>
+      <button class="lightbox-nav-btn next" id="lightboxNextBtn" aria-label="Next Image">&rarr;</button>
+      <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
+    </div>
+  </div>
+
   <!-- Mobile PDP Sticky Add to Bag Bar -->
   <div class="mobile-pdp-sticky-bar">
     <div class="bar-price-box">

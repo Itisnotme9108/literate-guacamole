@@ -2947,11 +2947,16 @@ html.js-reveal-active .reveal-on-scroll:not(.is-revealed) {
 /* ==========================================================================
    NEW DEDICATED PRODUCT DETAIL PAGE (PDP) STYLES
    ========================================================================== */
+body.page-product,
+.pdp-page-container {
+  background-color: #F9F8F5; /* Warm Ivory PDP Background Token */
+}
+
 .pdp-breadcrumbs {
   font-family: var(--font-sans);
   font-size: 0.8rem;
   color: var(--text-muted);
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -2977,132 +2982,182 @@ html.js-reveal-active .reveal-on-scroll:not(.is-revealed) {
   font-weight: 500;
 }
 
+/* STEP 1: Desktop Two-Column Layout (65% / 35%) */
 .pdp-layout {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+  grid-template-columns: 65% 35%;
   gap: 3.5rem;
   align-items: start;
 }
 
-/* PDP Gallery Column */
+/* STEP 2: Desktop Gallery Upgrade with Vertical Thumbnails & Crossfade */
 .pdp-gallery-col {
   width: 100%;
 }
 
-.pdp-gallery-stack {
+.pdp-gallery-main-wrapper {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  gap: 1.25rem;
+  width: 100%;
+  position: relative;
 }
 
-.pdp-gallery-item {
+.pdp-gallery-thumbs-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 76px;
+  flex-shrink: 0;
+}
+
+.pdp-thumb-btn {
+  width: 76px;
+  height: 95px;
+  border-radius: var(--radius-strict);
+  border: 1px solid var(--border-hairline);
+  background: var(--bg-sand);
+  overflow: hidden;
+  opacity: 0.5;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.25s ease, border-color 0.25s ease;
+}
+
+.pdp-thumb-btn img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pdp-thumb-btn.active,
+.pdp-thumb-btn:hover {
+  opacity: 1;
+  border-color: var(--text-main);
+}
+
+.pdp-gallery-stack {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  aspect-ratio: 4 / 5;
   background-color: var(--bg-sand);
   border-radius: var(--radius-strict);
   overflow: hidden;
+}
+
+.pdp-gallery-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 280ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pdp-gallery-item.active {
+  opacity: 1;
   position: relative;
+  pointer-events: auto;
+  z-index: 2;
 }
 
 .pdp-gallery-picture,
 .pdp-gallery-img {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
-  object-fit: contain; /* Preserve full uncropped photography */
+  object-fit: cover;
   border-radius: var(--radius-strict);
 }
 
-/* PDP Info Column (Sticky Panel) */
+/* STEP 1: Sticky Right Column (Position Sticky) */
 .pdp-info-col {
   width: 100%;
 }
 
 .pdp-sticky-box {
   position: sticky;
-  top: 6rem;
+  top: calc(var(--header-height) + 1.5rem);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
+  align-self: start;
 }
 
-.pdp-header .micro-label {
+/* Right Column Typography */
+.pdp-brand-name {
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--accent-terracotta);
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+  display: block;
 }
 
 .pdp-title {
   font-family: var(--font-serif);
-  font-size: 2.25rem;
-  font-weight: 400;
+  font-size: 2.2rem;
+  font-weight: 500;
   line-height: 1.25;
   color: var(--text-main);
-  margin: 0.35rem 0 0.75rem;
+  margin: 0.25rem 0 0.6rem;
 }
 
-.pdp-meta-row {
+.pdp-price-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: baseline;
   gap: 1rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.25rem;
 }
 
 .pdp-price {
   font-family: var(--font-sans);
   font-size: 1.4rem;
+  font-weight: 700; /* Bold price font weight */
+  color: var(--text-main);
+}
+
+.pdp-material-line {
+  font-size: 0.82rem;
   font-weight: 600;
-  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
 }
 
-.pdp-rating-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.85rem;
-  color: var(--text-main);
-}
-
-.pdp-rating-badge .star {
+.pdp-lead-time-line {
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--accent-terracotta);
-}
-
-.pdp-rating-badge .count {
-  color: var(--text-light);
-  font-size: 0.8rem;
+  margin-top: 0.25rem;
 }
 
 .pdp-descriptor {
   font-size: 0.9rem;
   color: var(--text-muted);
-  border-bottom: 1px solid var(--border-hairline);
-  padding-bottom: 1.25rem;
+  line-height: 1.5;
+  margin-top: 0.5rem;
 }
 
-/* Swatches & Validation */
-.pdp-variants-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.pdp-swatch-group .swatch-group-label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 0.5rem;
-}
-
-.pdp-validation-hint {
+.pdp-independent-microcopy {
   font-size: 0.8rem;
   font-style: italic;
-  color: var(--accent-terracotta);
-  min-height: 1.2rem;
+  color: var(--text-muted);
+  margin: 0.4rem 0 0.85rem;
+  line-height: 1.4;
+}
+
+/* CTAs Block */
+.pdp-cta-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
 }
 
 .pdp-cta-row {
@@ -3112,72 +3167,141 @@ html.js-reveal-active .reveal-on-scroll:not(.is-revealed) {
 }
 
 .pdp-add-cart-btn {
-  flex: 1;
-  padding: 1rem 1.5rem;
-  font-size: 0.9rem;
+  height: 52px;
+  min-height: 52px;
+  background-color: var(--text-main);
+  color: var(--text-inverse);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-}
-
-.pdp-fav-btn {
-  position: static !important;
-  width: 48px;
-  height: 48px;
-  font-size: 1.2rem;
   border-radius: var(--radius-strict);
-  flex-shrink: 0;
+  flex: 1;
+  border: none;
+  cursor: pointer;
+  transition: opacity 200ms ease, background-color 200ms ease;
 }
 
-/* PDP Accordion */
-.pdp-accordion {
+.pdp-add-cart-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.pdp-custom-fit-btn {
+  height: 52px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--text-main);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-radius: var(--radius-strict);
+  text-decoration: none;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.pdp-custom-fit-btn:hover {
+  background-color: var(--text-main);
+  color: var(--text-inverse);
+}
+
+/* Fit Confidence Trust Strip */
+.pdp-trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 1.25rem 0;
+  padding: 0.85rem 0;
   border-top: 1px solid var(--border-hairline);
-  margin-top: 1.5rem;
+  border-bottom: 1px solid var(--border-hairline);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
 }
 
-.accordion-item {
+/* STEP 3: Accordions (~200ms height transition) */
+.pdp-accordion {
+  margin-top: 1rem;
+}
+
+.pdp-accordion .accordion-item {
   border-bottom: 1px solid var(--border-hairline);
 }
 
-.accordion-header {
+.pdp-accordion .accordion-header {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.15rem 0;
-  background: none;
+  padding: 1.1rem 0;
+  background: transparent;
   border: none;
-  font-family: var(--font-sans);
-  font-size: 0.88rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 500;
   color: var(--text-main);
   cursor: pointer;
   text-align: left;
 }
 
-.accordion-header .icon {
-  font-size: 1.2rem;
-  transition: transform 0.25s ease;
+.pdp-accordion .accordion-h2 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  color: var(--text-main);
 }
 
-.accordion-item.is-open .accordion-header .icon {
-  transform: rotate(45deg);
+.pdp-accordion .accordion-chevron {
+  transition: transform 200ms ease;
+  color: var(--text-main);
 }
 
-.accordion-content {
+.pdp-accordion .accordion-item.is-open .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+.pdp-accordion .accordion-content {
   max-height: 0;
+  opacity: 0;
   overflow: hidden;
-  transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), padding 0.35s ease;
+  transition: max-height 200ms ease, opacity 200ms ease, padding 200ms ease;
+  padding: 0;
   font-size: 0.88rem;
   line-height: 1.65;
   color: var(--text-muted);
-  padding: 0;
 }
 
-.accordion-item.is-open .accordion-content {
-  max-height: 300px;
-  padding-bottom: 1.25rem;
+.pdp-accordion .accordion-item.is-open .accordion-content {
+  max-height: 500px;
+  opacity: 1;
+  padding-bottom: 1.15rem;
+}
+
+/* STEP 4: "Complete the Look" Related Section */
+.pdp-related-section {
+  margin-top: 5rem;
+  padding-top: 3.5rem;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.pdp-related-heading {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  color: var(--text-main);
+  text-align: left;
 }
 
 .pdp-details-list {
@@ -3307,6 +3431,271 @@ html.js-reveal-active .reveal-on-scroll:not(.is-revealed) {
   padding: 0.75rem 1rem;
   font-size: 0.82rem;
   letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+/* PDP Size Guide Link Trigger */
+.pdp-size-guide-link {
+  background: transparent;
+  border: none;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  transition: color 200ms ease;
+}
+
+.pdp-size-guide-link:hover {
+  color: var(--text-main);
+}
+
+/* Validation Hint & Highlight */
+.pdp-validation-hint {
+  font-size: 0.78rem;
+  color: var(--accent-terracotta);
+  font-weight: 600;
+  margin: 0.25rem 0 0.5rem;
+  display: none;
+}
+
+.shake-highlight {
+  animation: pdpShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  border-radius: var(--radius-strict);
+}
+
+@keyframes pdpShake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+/* Size Guide Modal Drawer Backdrop */
+.size-guide-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms ease;
+  padding: 1rem;
+}
+
+.size-guide-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.size-guide-modal {
+  background-color: var(--bg-cream, #F9F8F5);
+  width: 100%;
+  max-width: 640px;
+  border-radius: var(--radius-strict);
+  border: 1px solid var(--border-hairline);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.size-guide-header {
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid var(--border-hairline);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.size-guide-body {
+  padding: 1.75rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.unit-toggle-row {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-hairline);
+  padding-bottom: 1rem;
+}
+
+.unit-btn {
+  padding: 0.4rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border-radius: var(--radius-strict);
+  border: 1px solid var(--border-hairline);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.unit-btn.active, .unit-btn:hover {
+  background: var(--text-main);
+  color: var(--text-inverse);
+  border-color: var(--text-main);
+}
+
+.size-table-wrapper {
+  overflow-x: auto;
+}
+
+.size-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.size-table th {
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0.75rem 0.5rem;
+  border-bottom: 2px solid var(--border-hairline);
+}
+
+.size-table td {
+  padding: 0.85rem 0.5rem;
+  border-bottom: 1px solid var(--border-hairline);
+  color: var(--text-main);
+}
+
+.size-guide-note {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  background-color: var(--bg-bone);
+  padding: 1rem;
+  border-radius: var(--radius-strict);
+  border: 1px solid var(--border-hairline);
+}
+
+/* PDP Lightbox Modal */
+.pdp-lightbox-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 14, 12, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 10050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 280ms ease;
+}
+
+.pdp-lightbox-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.pdp-lightbox-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.pdp-lightbox-stage {
+  max-width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pdp-lightbox-img {
+  max-width: 100%;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: var(--radius-strict);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  background: transparent;
+  border: none;
+  color: #FFFFFF;
+  font-size: 2.5rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.8;
+  transition: opacity 200ms ease;
+}
+
+.lightbox-close-btn:hover {
+  opacity: 1;
+}
+
+.lightbox-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 200ms ease;
+}
+
+.lightbox-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.lightbox-nav-btn.prev {
+  left: 2rem;
+}
+
+.lightbox-nav-btn.next {
+  right: 2rem;
+}
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.82rem;
+  letter-spacing: 2px;
   text-transform: uppercase;
 }
 

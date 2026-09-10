@@ -910,7 +910,9 @@ function openProductQuickViewModal(product) {
   const modalBtn = document.getElementById('modalAddToCartBtn');
   if (modalBtn) {
     modalBtn.addEventListener('click', () => {
-      addToCart(product, modalSelections);
+      if (typeof addToCart === 'function') {
+        addToCart(product, modalSelections);
+      }
       closeProductQuickViewModal();
     });
   }
@@ -939,7 +941,9 @@ function attachFavoriteListeners(container) {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const prodId = btn.getAttribute('data-id');
-      toggleFavorite(prodId);
+      if (typeof toggleFavorite === 'function') {
+        toggleFavorite(prodId);
+      }
     });
   });
 }

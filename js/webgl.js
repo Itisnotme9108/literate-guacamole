@@ -4,7 +4,7 @@
  */
 
 (function () {
-  'use me';
+  'use strict';
 
   // Perform immediate skip checks before loading any 3D scripts
   const isHomepage = Boolean(document.getElementById('heroSection'));

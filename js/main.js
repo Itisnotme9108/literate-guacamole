@@ -702,7 +702,9 @@ function initWishlistUI() {
 
   window.openWishlistItemQuickView = function(prodId) {
     closeWishlist();
-    const allProducts = typeof catalogProducts !== 'undefined' && catalogProducts.length > 0 ? catalogProducts : LOCAL_PRODUCTS_FALLBACK;
+    const allProducts = typeof catalogProducts !== 'undefined' && catalogProducts.length > 0
+      ? catalogProducts
+      : (typeof LOCAL_PRODUCTS_FALLBACK !== 'undefined' ? LOCAL_PRODUCTS_FALLBACK : []);
     const prod = allProducts.find(p => p.id === prodId);
     if (prod && typeof openProductQuickViewModal === 'function') {
       openProductQuickViewModal(prod);
